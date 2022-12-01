@@ -54,7 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	}
 	
-	map.blockCount = 50;
+	map.blockCount = 25;
 
 	Player player;
 
@@ -115,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (Novice::IsPressMouse(0) == true && map.blockCount > 0) {
 							map.map[y][x] = map.TMPBLOCK;
-							map.tmpTime[y][x] = 180;
+							map.tmpTime[y][x] = 300;
 							map.blockCount--;
 						}
 
@@ -191,7 +191,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		player.Draw();
 
-		Novice::ScreenPrintf(10, 10, "%d", 20*MAP_SIZE);
+		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
+		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
+		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
+		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
 
 		///
 		/// ↑描画処理ここまで

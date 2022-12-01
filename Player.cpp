@@ -11,7 +11,7 @@ Player::Player() {
 
 	vector = { 0,0 };
 	velocity = { 0,0 };
-	speed = 10.0f;
+	speed = 5.0f;
 
 	gravityVector = { 0,0 };
 	gravityVelocity = { 0,0 };
@@ -27,7 +27,7 @@ void Player::Update(Map map) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
 
-	if (Key::IsPress(DIK_W)) {
+	/*if (Key::IsPress(DIK_W)) {
 		vector = { 0,-1 };
 		velocity = vector * speed;
 		Vec2 tmpLeftTop,tmpRightTop;
@@ -50,8 +50,8 @@ void Player::Update(Map map) {
 			RightBottom += velocity;
 		}
 		
-	}
-	if (Key::IsPress(DIK_S)) {
+	}*/
+	/*if (Key::IsPress(DIK_S)) {
 		vector = { 0,1 };
 		velocity = vector * speed;
 		Vec2 tmpLeftBottom, tmpRightBottom;
@@ -74,7 +74,7 @@ void Player::Update(Map map) {
 			RightBottom += velocity;
 		}
 		
-	}
+	}*/
 	if (Key::IsPress(DIK_A)) {
 		vector = { -1,0 };
 		velocity = vector * speed;
@@ -135,7 +135,7 @@ void Player::Update(Map map) {
 			RightBottom.x = num + MAP_SIZE;
 		}
 	}
-	if (Key::IsTrigger(DIK_SPACE) && jumpFlag) {
+	if (Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
 		gravityVelocity = gravityVector * jumpSpeed;
@@ -230,8 +230,5 @@ void Player::Update(Map map) {
 
 void Player::Draw() {
 	
-	Novice::ScreenPrintf(0, 20, "jumpFlag:%d", jumpFlag);
-	Novice::ScreenPrintf(0, 60, "RightBottom.y:%f", RightBottom.y);
-	/*Novice::ScreenPrintf(0, 80, "RightTop.x:%f,RightTop.y:%f", RightTop.x, RightTop.y*-1 + Mapchip::kWindowHeight);*/
 	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, RED);
 }
