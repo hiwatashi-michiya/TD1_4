@@ -6,7 +6,9 @@ struct Map{
 	enum TILE {
 		NONE,
 		BLOCK,
+		TMPNONE,
 		TMPBLOCK
+		
 	};
 	int map[50][50];
 

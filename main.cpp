@@ -7,6 +7,11 @@
 
 const char kWindowTitle[] = "LC1A_21_ヒワタシミチヤ";
 
+enum DRAWTYPE {
+	MAKE,
+	ERASE
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -38,6 +43,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHit = false;
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
+
+	DRAWTYPE drawType = MAKE;
 
 	Map map;
 
@@ -88,6 +95,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		if (Key::IsTrigger(DIK_R)) {
+			player.Init();
+			FILE* fp = NULL;
+			fopen_s(&fp, "./Resources/test.csv", "rt");
+			if (fp == NULL) {
+				return 0;
+			}
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+			fclose(fp);
+			map.blockCount = 25;
+		}
+
 		player.Update(map);
 
 		pMouseX = &mouseX;
@@ -136,6 +159,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
+				if (map.map[y][x] == map.TMPNONE) {
+
+					map.tmpTime[y][x]--;
+
+					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+						mouseY > y * MAP_SIZE &&
+						mouseX < x * MAP_SIZE + MAP_SIZE &&
+						mouseX > x * MAP_SIZE) {
+
+					}
+
+					if (map.tmpTime[y][x] == 0) {
+						map.map[y][x] = map.BLOCK;
+						map.blockCount++;
+					}
+
+				}
+
 				if (map.map[y][x] == map.BLOCK) {
 
 					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
@@ -143,9 +184,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						mouseX < x * MAP_SIZE + MAP_SIZE &&
 						mouseX > x * MAP_SIZE) {
 
-						if (Novice::IsPressMouse(1) == true) {
-							map.map[y][x] = map.NONE;
+						if (Novice::IsPressMouse(1) == true && map.blockCount > 0) {
+							map.map[y][x] = map.TMPNONE;
+							map.tmpTime[y][x] = 300;
+							map.blockCount--;
 						}
+
+					}
 
 					}
 					
