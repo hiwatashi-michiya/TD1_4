@@ -8,7 +8,6 @@ struct Map{
 		BLOCK,
 		TMPBLOCK
 	};
-
 	int map[50][50];
 
 	int tmpTime[50][50];

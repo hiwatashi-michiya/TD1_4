@@ -1,6 +1,7 @@
 ﻿#define _USE_MATH_DEFINES
 #include <Novice.h>
 #include <math.h>
+#include <stdio.h>
 #include "Player.h"
 #include "Key.h"
 
@@ -40,14 +41,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Map map;
 
+	FILE* fp = NULL;
+	fopen_s(&fp, "./Resources/test.csv", "rt");
+	if (fp == NULL) {
+		return 0;
+	}
+	for (int y = 0; y < 50; y++) {
+		for (int x = 0; x < 50; x++) {
+			fscanf_s(fp, "%d,", &map.map[y][x]);
+		}
+	}
+	fclose(fp);
+	
 	for (int y = 0; y < 50; y++) {
 
 		for (int x = 0; x < 50; x++) {
-			map.map[y][x] = map.NONE;
+			/*map.map[y][x] = map.NONE;
 
 			if (y == 20) {
 				map.map[y][x] = map.BLOCK;
-			}
+			}*/
 
 			map.tmpTime[y][x] = 0;
 		}
