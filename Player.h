@@ -7,8 +7,6 @@ class Player
 public:
 	Player();
 	void Init();
-	
-	void Init();
 
 	Vec2 LeftTop;
 	Vec2 RightTop;

@@ -19,8 +19,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
 	// キー入力結果を受け取る箱
-	char keys[256] = {0};
-	char preKeys[256] = {0};
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
 	int* pMouseX = 0;
 	int* pMouseY = 0;
@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 	fclose(fp);
-	
+
 	for (int y = 0; y < 50; y++) {
 
 		for (int x = 0; x < 50; x++) {
@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 	}
-	
+
 	map.blockCount = 25;
 
 	Player player;
@@ -192,10 +192,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
-					}
-					
-
 				}
+
+
+
 
 				if (map.map[y][x] == map.TMPBLOCK) {
 
