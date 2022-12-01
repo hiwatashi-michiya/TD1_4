@@ -1,15 +1,18 @@
 #pragma once
 
-enum TILE {
-	NONE,
-	BLOCK,
-	TMPBLOCK
-};
-
 const int MAP_SIZE = 32;
 
-static int map[50][50] = { 0 };
+struct Map{
+	enum TILE {
+		NONE,
+		BLOCK,
+		TMPBLOCK
+	};
 
-static int tmpTime[50][50] = { 0 };
+	int map[50][50];
 
-static int blockCount = 50;
+	int tmpTime[50][50];
+
+	int blockCount;
+};
+

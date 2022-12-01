@@ -23,7 +23,7 @@ Player::Player() {
 	texture = Novice::LoadTexture("white1x1.png");
 }
 
-void Player::Update() {
+void Player::Update(Map map) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
 
@@ -43,7 +43,7 @@ void Player::Update() {
 		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
 		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
 
-		if (map[LeftTopY][LeftTopX]==NONE && map[RightTopY][RightTopX] == NONE) {
+		if (map.map[LeftTopY][LeftTopX]== map.NONE && map.map[RightTopY][RightTopX] == map.NONE) {
 			LeftTop += velocity;
 			RightTop += velocity;
 			LeftBottom += velocity;
@@ -67,7 +67,7 @@ void Player::Update() {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (map[LeftBottomY][LeftBottomX] == NONE && map[RightBottomY][RightBottomX] == NONE) {
+		if (map.map[LeftBottomY][LeftBottomX] == map.NONE && map.map[RightBottomY][RightBottomX] == map.NONE) {
 			LeftTop += velocity;
 			RightTop += velocity;
 			LeftBottom += velocity;
@@ -91,7 +91,7 @@ void Player::Update() {
 		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
 		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
 		
-		if (map[LeftTopY][LeftTopX] == NONE && map[LeftBottomY][LeftBottomX] == NONE) {
+		if (map.map[LeftTopY][LeftTopX] == map.NONE && map.map[LeftBottomY][LeftBottomX] == map.NONE) {
 			LeftTop += velocity;
 			RightTop += velocity;
 			LeftBottom += velocity;
@@ -121,7 +121,7 @@ void Player::Update() {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (map[RightTopY][RightTopX] == NONE && map[RightBottomY][RightBottomX] == NONE) {
+		if (map.map[RightTopY][RightTopX] == map.NONE && map.map[RightBottomY][RightBottomX] == map.NONE) {
 			LeftTop += velocity;
 			RightTop += velocity;
 			LeftBottom += velocity;
@@ -152,7 +152,7 @@ void Player::Update() {
 		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
 		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
 
-		if (map[LeftTopY][LeftTopX] == NONE && map[RightTopY][RightTopX] == NONE) {
+		if (map.map[LeftTopY][LeftTopX] == map.NONE && map.map[RightTopY][RightTopX] == map.NONE) {
 			LeftTop += gravityVelocity;
 			RightTop += gravityVelocity;
 			LeftBottom += gravityVelocity;
@@ -198,7 +198,7 @@ void Player::Update() {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (!(map[LeftTopY][LeftTopX] == NONE) || !(map[RightTopY][RightTopX] == NONE)) {
+		if (!(map.map[LeftTopY][LeftTopX] == map.NONE) || !(map.map[RightTopY][RightTopX] == map.NONE)) {
 			float num = (LeftTopY+1) * MAP_SIZE;
 			LeftTop.y = num;
 			RightTop.y = num;
@@ -206,7 +206,7 @@ void Player::Update() {
 			RightBottom.y = num + MAP_SIZE;
 			gravityVelocity = { 0,0 };
 		}
-		if (map[LeftBottomY][LeftBottomX] == NONE && map[RightBottomY][RightBottomX] == NONE) {
+		if (map.map[LeftBottomY][LeftBottomX] == map.NONE && map.map[RightBottomY][RightBottomX] == map.NONE) {
 			jumpFlag=false;
 			LeftTop += gravityVelocity;
 			RightTop += gravityVelocity;

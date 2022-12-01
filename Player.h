@@ -2,7 +2,6 @@
 #include "Vec2.h"
 #include "Map.h"
 
-
 class Player
 {
 public:
@@ -29,7 +28,7 @@ public:
 
 	int texture;
 
-	void Update();
+	void Update(Map map);
 	void Draw();
 
 	

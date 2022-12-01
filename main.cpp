@@ -38,9 +38,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
 
-	for (int x = 0; x < 50; x++) {
-		map[20][x] = BLOCK;
+	Map map;
+
+	for (int y = 0; y < 50; y++) {
+
+		for (int x = 0; x < 50; x++) {
+			map.map[y][x] = map.NONE;
+
+			if (y == 20) {
+				map.map[y][x] = map.BLOCK;
+			}
+
+			map.tmpTime[y][x] = 0;
+		}
+
 	}
+	
+	map.blockCount = 50;
 
 	Player player;
 
@@ -61,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		player.Update();
+		player.Update(map);
 
 		pMouseX = &mouseX;
 		pMouseY = &mouseY;
@@ -92,24 +106,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < 50; x++) {
 
-				if (map[y][x] == NONE) {
+				if (map.map[y][x] == map.NONE) {
 
 					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
 						mouseY > y * MAP_SIZE &&
 						mouseX < x * MAP_SIZE + MAP_SIZE &&
 						mouseX > x * MAP_SIZE) {
 
-						if (Novice::IsPressMouse(0) == true && blockCount > 0) {
-							map[y][x] = TMPBLOCK;
-							tmpTime[y][x] = 180;
-							blockCount--;
+						if (Novice::IsPressMouse(0) == true && map.blockCount > 0) {
+							map.map[y][x] = map.TMPBLOCK;
+							map.tmpTime[y][x] = 180;
+							map.blockCount--;
 						}
 
 					}
 
 				}
 
-				if (map[y][x] == BLOCK) {
+				if (map.map[y][x] == map.BLOCK) {
 
 					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
 						mouseY > y * MAP_SIZE &&
@@ -120,9 +134,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
-				if (map[y][x] == TMPBLOCK) {
+				if (map.map[y][x] == map.TMPBLOCK) {
 
-					tmpTime[y][x]--;
+					map.tmpTime[y][x]--;
 
 					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
 						mouseY > y * MAP_SIZE &&
@@ -131,9 +145,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
-					if (tmpTime[y][x] == 0) {
-						map[y][x] = NONE;
-						blockCount++;
+					if (map.tmpTime[y][x] == 0) {
+						map.map[y][x] = map.NONE;
+						map.blockCount++;
 					}
 
 				}
@@ -161,7 +175,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < 50; x++) {
 
-				if (map[y][x] == BLOCK || map[y][x] == TMPBLOCK) {
+				if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.TMPBLOCK) {
 
 					Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
 						x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
