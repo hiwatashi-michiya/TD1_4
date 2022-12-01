@@ -16,7 +16,7 @@ public:
 	Vec2 velocity;
 	
 	float speed;
-
+	
 	bool jumpFlag;
 	float jumpSpeed;
 

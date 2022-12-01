@@ -7,11 +7,13 @@ Player::Player() {
 }
 
 void Player::Init() {
+	
 	LeftTop = { 32,32 };
-	RightTop = { 96,32 };
-	LeftBottom = { 32,96 };
-	RightBottom = { 96,96 };
+	RightTop = { 64,32 };
+	LeftBottom = { 32,64 };
+	RightBottom = { 64,64 };
 
+	
 
 	vector = { 0,0 };
 	velocity = { 0,0 };
