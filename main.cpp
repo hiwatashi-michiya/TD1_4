@@ -7,6 +7,11 @@
 
 const char kWindowTitle[] = "LC1A_21_ヒワタシミチヤ";
 
+enum DRAWTYPE {
+	MAKE,
+	ERASE
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -38,6 +43,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHit = false;
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
+
+	DRAWTYPE drawType = MAKE;
 
 	Map map;
 
@@ -136,12 +143,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
+				if (map.map[y][x] == map.TMPNONE) {
+
+					map.tmpTime[y][x]--;
+
+					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+						mouseY > y * MAP_SIZE &&
+						mouseX < x * MAP_SIZE + MAP_SIZE &&
+						mouseX > x * MAP_SIZE) {
+
+					}
+
+					if (map.tmpTime[y][x] == 0) {
+						map.map[y][x] = map.BLOCK;
+						map.blockCount++;
+					}
+
+				}
+
 				if (map.map[y][x] == map.BLOCK) {
 
 					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
 						mouseY > y * MAP_SIZE &&
 						mouseX < x * MAP_SIZE + MAP_SIZE &&
 						mouseX > x * MAP_SIZE) {
+
+						if (Novice::IsPressMouse(1) == true && map.blockCount > 0) {
+							map.map[y][x] = map.TMPNONE;
+							map.tmpTime[y][x] = 300;
+							map.blockCount--;
+						}
 
 					}
 

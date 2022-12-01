@@ -91,7 +91,8 @@ void Player::Update(Map map) {
 		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
 		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
 		
-		if (map.map[LeftTopY][LeftTopX] == map.NONE && map.map[LeftBottomY][LeftBottomX] == map.NONE) {
+		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
+			(map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE)) {
 			LeftTop += velocity;
 			RightTop += velocity;
 			LeftBottom += velocity;
@@ -121,7 +122,8 @@ void Player::Update(Map map) {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (map.map[RightTopY][RightTopX] == map.NONE && map.map[RightBottomY][RightBottomX] == map.NONE) {
+		if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) &&
+			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			LeftTop += velocity;
 			RightTop += velocity;
 			LeftBottom += velocity;
@@ -152,7 +154,8 @@ void Player::Update(Map map) {
 		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
 		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
 
-		if (map.map[LeftTopY][LeftTopX] == map.NONE && map.map[RightTopY][RightTopX] == map.NONE) {
+		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
+			(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
 			LeftTop += gravityVelocity;
 			RightTop += gravityVelocity;
 			LeftBottom += gravityVelocity;
@@ -198,7 +201,8 @@ void Player::Update(Map map) {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (!(map.map[LeftTopY][LeftTopX] == map.NONE) || !(map.map[RightTopY][RightTopX] == map.NONE)) {
+		if (!(map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) ||
+			!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
 			float num = (LeftTopY+1) * MAP_SIZE;
 			LeftTop.y = num;
 			RightTop.y = num;
@@ -206,7 +210,8 @@ void Player::Update(Map map) {
 			RightBottom.y = num + MAP_SIZE;
 			gravityVelocity = { 0,0 };
 		}
-		if (map.map[LeftBottomY][LeftBottomX] == map.NONE && map.map[RightBottomY][RightBottomX] == map.NONE) {
+		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
+			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			jumpFlag=false;
 			LeftTop += gravityVelocity;
 			RightTop += gravityVelocity;
