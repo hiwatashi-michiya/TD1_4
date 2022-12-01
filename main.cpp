@@ -108,6 +108,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 			fclose(fp);
+			map.blockCount = 25;
 		}
 
 		player.Update(map);
