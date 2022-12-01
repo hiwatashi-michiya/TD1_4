@@ -143,7 +143,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						mouseX < x * MAP_SIZE + MAP_SIZE &&
 						mouseX > x * MAP_SIZE) {
 
+						if (Novice::IsPressMouse(1) == true) {
+							map.map[y][x] = map.NONE;
+						}
+
 					}
+					
 
 				}
 
@@ -171,7 +176,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		preMouseX = mouseX;
 		preMouseY = mouseY;
-
+		if (Key::IsPress(DIK_R)) {
+			player.Init();
+			FILE* fp = NULL;
+			fopen_s(&fp, "./Resources/test.csv", "rt");
+			if (fp == NULL) {
+				return 0;
+			}
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+			fclose(fp);
+		}
 
 		///
 		/// ↑更新処理ここまで

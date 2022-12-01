@@ -3,10 +3,14 @@
 #include"Key.h"
 
 Player::Player() {
+	Init();
+}
+
+void Player::Init() {
 	LeftTop = { 32,32 };
-	RightTop = { 64,32 };
-	LeftBottom = { 32,64 };
-	RightBottom = { 64,64 };
+	RightTop = { 96,32 };
+	LeftBottom = { 32,96 };
+	RightBottom = { 96,96 };
 
 
 	vector = { 0,0 };
@@ -22,7 +26,6 @@ Player::Player() {
 
 	texture = Novice::LoadTexture("white1x1.png");
 }
-
 void Player::Update(Map map) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
@@ -135,7 +138,7 @@ void Player::Update(Map map) {
 			RightBottom.x = num + MAP_SIZE;
 		}
 	}
-	if (Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE) && jumpFlag) {
+	if ((Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
 		gravityVelocity = gravityVector * jumpSpeed;
