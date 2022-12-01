@@ -3,6 +3,10 @@
 #include"Key.h"
 
 Player::Player() {
+	Init();
+}
+
+void Player::Init() {
 	LeftTop = { 32,32 };
 	RightTop = { 64,32 };
 	LeftBottom = { 32,64 };

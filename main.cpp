@@ -95,6 +95,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		if (Key::IsTrigger(DIK_R)) {
+			player.Init();
+			FILE* fp = NULL;
+			fopen_s(&fp, "./Resources/test.csv", "rt");
+			if (fp == NULL) {
+				return 0;
+			}
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+			fclose(fp);
+		}
+
 		player.Update(map);
 
 		pMouseX = &mouseX;
