@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		
+		///俺も食いたかった！！！！！
 		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
 			slow = 0.3f;
 		}
