@@ -44,6 +44,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
 
+	int slowTime = 0;
+
 	DRAWTYPE drawType = MAKE;
 
 	Map map;
@@ -98,7 +100,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		///俺も食いたかった！！！！！
 		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
-			slow = 0.3f;
+			slow = 1.0f;
 		}
 		else {
 			slow = 1.0f;
@@ -228,7 +230,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		player.Update(map, slow);
+		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
+			
+			slowTime++;
+
+			if (slowTime == 60) {
+				slowTime = 0;
+			}
+
+			if (slowTime % 5 == 0) {
+				player.Update(map, slow);
+			}
+
+		}
+		else {
+
+			slowTime = 0;
+
+			player.Update(map, slow);
+
+		}
+
+		
 
 		preMouseX = mouseX;
 		preMouseY = mouseY;
