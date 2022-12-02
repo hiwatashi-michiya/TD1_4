@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Player player;
 
-	float slow = 1.0f;
+	bool slowFlag = false;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -98,10 +98,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		///俺も食いたかった！！！！！
 		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
-			slow = 0.3f;
+			slowFlag = true;
 		}
 		else {
-			slow = 1.0f;
+			slowFlag = false;
 		}
 		if (Key::IsTrigger(DIK_R)) {
 			player.Init();
@@ -228,8 +228,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		player.Update(map, slow);
-
+		if (slowFlag) {
+			player.Update(map/*, slow*/);
+		}
 		preMouseX = mouseX;
 		preMouseY = mouseY;
 		if (Key::IsPress(DIK_R)) {

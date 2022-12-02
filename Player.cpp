@@ -27,7 +27,7 @@ void Player::Init() {
 
 	texture = Novice::LoadTexture("white1x1.png");
 }
-void Player::Update(Map map,float slow) {
+void Player::Update(Map map/*,float slow*/) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
 
@@ -81,7 +81,7 @@ void Player::Update(Map map,float slow) {
 	}*/
 	if (Key::IsPress(DIK_A)) {
 		vector = { -1,0 };
-		velocity = vector * speed * slow;
+		velocity = vector * speed /** slow*/;
 
 		////////////////////////当たり判定/////////////////////////
 		Vec2 tmpLeftTop, tmpLeftBottom;
@@ -114,7 +114,7 @@ void Player::Update(Map map,float slow) {
 	}
 	if (Key::IsPress(DIK_D)) {
 		vector = { 1,0 };
-		velocity = vector * speed * slow;
+		velocity = vector * speed /** slow*/;
 
 		////////////////////////当たり判定/////////////////////////
 		Vec2 tmpRightTop, tmpRightBottom;
@@ -148,12 +148,12 @@ void Player::Update(Map map,float slow) {
 	if ((Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
-		if (slow < 1.0f) {
-			gravityVelocity = gravityVector * jumpSpeed * slow * 1.7;//1.7って値適当
-		}
-		else {
+		//if (slow < 1.0f) {
+		//	gravityVelocity = gravityVector * jumpSpeed * slow * 1.7;//1.7って値適当
+		//}
+		//else {
 			gravityVelocity = gravityVector * jumpSpeed/* * slow*/;
-		}
+		/*}*/
 		////////////////////////当たり判定/////////////////////////
 		Vec2 tmpLeftTop, tmpRightTop;
 		int LeftTopX, RightTopX;
@@ -191,7 +191,7 @@ void Player::Update(Map map,float slow) {
 
 
 		gravityVector = { 0,1 }; 
-		gravityVelocity += gravityVector * gravitySpeed * slow;
+		gravityVelocity += gravityVector * gravitySpeed /** slow*/;
 		/*gravityVelocity *= slow;*/
 		
 
