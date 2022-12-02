@@ -144,7 +144,12 @@ void Player::Update(Map map,float slow) {
 	if ((Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
-		gravityVelocity = gravityVector * jumpSpeed * slow;
+		/*if (slow < 1.0f) {
+			gravityVelocity = gravityVector * jumpSpeed * slow * 1.7;
+		}
+		else {*/
+			gravityVelocity = gravityVector * jumpSpeed/* * slow*/;
+		/*}*/
 		Vec2 tmpLeftTop, tmpRightTop;
 		int LeftTopX, RightTopX;
 		int LeftTopY, RightTopY;
@@ -181,8 +186,8 @@ void Player::Update(Map map,float slow) {
 
 
 		gravityVector = { 0,1 }; 
-		gravityVelocity *= slow;
-		gravityVelocity += gravityVector * gravitySpeed /** slow*/;
+		gravityVelocity += gravityVector * gravitySpeed * slow;
+		/*gravityVelocity *= slow;*/
 		
 		Vec2 tmpLeftTop, tmpRightTop,tmpLeftBottom, tmpRightBottom;
 		int LeftTopX, RightTopX,LeftBottomX, RightBottomX;
