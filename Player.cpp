@@ -145,7 +145,7 @@ void Player::Update(Map map,float slow) {
 			RightBottom.x = num + MAP_SIZE;
 		}
 	}
-	if ((Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE)) && jumpFlag) {
+	if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
 		if (slow < 1.0f) {
