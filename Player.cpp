@@ -27,7 +27,7 @@ void Player::Init() {
 
 	texture = Novice::LoadTexture("white1x1.png");
 }
-void Player::Update(Map map/*,float slow*/) {
+void Player::Update(Map map,float slow) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
 

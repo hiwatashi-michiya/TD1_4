@@ -238,7 +238,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				slowTime = 0;
 			}
 
-			if (slowTime % 5 == 0) {
+			if (slowTime % 2 == 0) {
 				player.Update(map, slow);
 			}
 
