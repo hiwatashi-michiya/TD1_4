@@ -82,6 +82,8 @@ void Player::Update(Map map,float slow) {
 	if (Key::IsPress(DIK_A)) {
 		vector = { -1,0 };
 		velocity = vector * speed * slow;
+
+		////////////////////////“–‚½‚è”»’è/////////////////////////
 		Vec2 tmpLeftTop, tmpLeftBottom;
 		int LeftTopX, LeftBottomX;
 		int LeftTopY, LeftBottomY;
@@ -113,6 +115,8 @@ void Player::Update(Map map,float slow) {
 	if (Key::IsPress(DIK_D)) {
 		vector = { 1,0 };
 		velocity = vector * speed * slow;
+
+		////////////////////////“–‚½‚è”»’è/////////////////////////
 		Vec2 tmpRightTop, tmpRightBottom;
 		int RightTopX, RightBottomX;
 		int RightTopY, RightBottomY;
@@ -144,12 +148,13 @@ void Player::Update(Map map,float slow) {
 	if ((Key::IsTrigger(DIK_W) || Key::IsTrigger(DIK_SPACE)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
-		/*if (slow < 1.0f) {
-			gravityVelocity = gravityVector * jumpSpeed * slow * 1.7;
+		if (slow < 1.0f) {
+			gravityVelocity = gravityVector * jumpSpeed * slow * 1.7;//1.7‚Á‚Ä’l“K“–
 		}
-		else {*/
+		else {
 			gravityVelocity = gravityVector * jumpSpeed/* * slow*/;
-		/*}*/
+		}
+		////////////////////////“–‚½‚è”»’è/////////////////////////
 		Vec2 tmpLeftTop, tmpRightTop;
 		int LeftTopX, RightTopX;
 		int LeftTopY, RightTopY;
@@ -189,6 +194,8 @@ void Player::Update(Map map,float slow) {
 		gravityVelocity += gravityVector * gravitySpeed * slow;
 		/*gravityVelocity *= slow;*/
 		
+
+		////////////////////////“–‚½‚è”»’è/////////////////////////
 		Vec2 tmpLeftTop, tmpRightTop,tmpLeftBottom, tmpRightBottom;
 		int LeftTopX, RightTopX,LeftBottomX, RightBottomX;
 		int LeftTopY, RightTopY,LeftBottomY, RightBottomY;
