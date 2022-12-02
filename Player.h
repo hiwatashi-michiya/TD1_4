@@ -29,7 +29,7 @@ public:
 
 	int texture;
 
-	void Update(Map map);
+	void Update(Map map, float slow);
 	void Draw();
 
 	

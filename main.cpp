@@ -78,6 +78,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Player player;
 
+	float slow = 1.0f;
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -94,7 +96,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-
+		
+		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
+			slow = 0.3f;
+		}
+		else {
+			slow = 1.0f;
+		}
 		if (Key::IsTrigger(DIK_R)) {
 			player.Init();
 			FILE* fp = NULL;
@@ -111,7 +119,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			map.blockCount = 25;
 		}
 
-		player.Update(map);
 
 		pMouseX = &mouseX;
 		pMouseY = &mouseY;
@@ -153,6 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							map.map[y][x] = map.TMPBLOCK;
 							map.tmpTime[y][x] = 300;
 							map.blockCount--;
+							
 						}
 
 					}
@@ -188,6 +196,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							map.map[y][x] = map.TMPNONE;
 							map.tmpTime[y][x] = 300;
 							map.blockCount--;
+							
 						}
 
 					}
@@ -218,6 +227,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 		}
+
+		player.Update(map, slow);
 
 		preMouseX = mouseX;
 		preMouseY = mouseY;
@@ -271,7 +282,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
-
+		Novice::ScreenPrintf(10, 200, "slow:%f", slow);
 		///
 		/// ↑描画処理ここまで
 		///
