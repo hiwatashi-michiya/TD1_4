@@ -283,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
-		Novice::ScreenPrintf(10, 200, "slow:%f", slow);
+		/*Novice::ScreenPrintf(10, 200, "slow:%f", slow);*/
 		///
 		/// ↑描画処理ここまで
 		///
