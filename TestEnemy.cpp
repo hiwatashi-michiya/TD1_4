@@ -3,12 +3,12 @@
 
 TestEnemy::TestEnemy()
 {
+	position = { 0.0f,0.0f };
 	Init();
 }
 
 void TestEnemy::Init()
 {
-	position = { 128.0f,32.0f };
 	LeftTop = { position.x + 0.0f,position.y + 0.0f };
 	RightTop = { position.x + 64.0f,position.y + 0.0f };
 	LeftBottom = { position.x + 0.0f,position.y + 64.0f };
@@ -25,11 +25,21 @@ void TestEnemy::Init()
 	speed = 0.5f;
 }
 
+void TestEnemy::Set(Vec2 pos)
+{
+	position = pos;
+	LeftTop = { position.x + 0.0f,position.y + 0.0f };
+	RightTop = { position.x + 64.0f,position.y + 0.0f };
+	LeftBottom = { position.x + 0.0f,position.y + 64.0f };
+	RightBottom = { position.x + 64.0f,position.y + 64.0f };
+}
+
+
+
 void TestEnemy::Update(Player player,Map map, float slow)
 {
 	if ((player.RightBottom.x >= LeftBottom.x && player.RightBottom.x <= RightBottom.x) || (player.LeftBottom.x <= LeftBottom.x && player.LeftBottom.x >= RightBottom.x) && !isAlive) {
 		isAlive = true;
-		/*fallFlag = true;*/
 	}
 
 	if (isAlive) {
@@ -63,25 +73,24 @@ void TestEnemy::Update(Player player,Map map, float slow)
 			float num = (LeftTopY + 1) * MAP_SIZE;
 			LeftTop.y = num;
 			RightTop.y = num;
-			LeftBottom.y = num + MAP_SIZE;
-			RightBottom.y = num + MAP_SIZE;
+			LeftBottom.y = num + MAP_SIZE * 2;
+			RightBottom.y = num + MAP_SIZE * 2;
 			velocity = { 0,0 };
 		}
 		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
 			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
-			LeftTop += velocity;
-			RightTop += velocity;
-			LeftBottom += velocity;
-			RightBottom += velocity;
+			LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;
 		}
 		else {
-			float num = (LeftTopY)*MAP_SIZE;
+			float num = (LeftTopY) * MAP_SIZE;
 			LeftTop.y = num;
 			RightTop.y = num;
-			LeftBottom.y = num + MAP_SIZE;
-			RightBottom.y = num + MAP_SIZE;
+			LeftBottom.y = num + MAP_SIZE * 2;
+			RightBottom.y = num + MAP_SIZE * 2;
 			velocity = { 0,0 };
-			/*isAlive = false;*/
 			Init();
 		}
 		

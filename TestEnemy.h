@@ -7,6 +7,7 @@ class TestEnemy
 public:
 	TestEnemy();
 	void Init();
+	void Set(Vec2 pos);
 	void Update(Player player,Map map, float slow);
 	void Draw();
 

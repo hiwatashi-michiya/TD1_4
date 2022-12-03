@@ -7,10 +7,11 @@ Player::Player() {
 }
 
 void Player::Init() {
-	LeftTop = { 32,32 };
-	RightTop = { 64,32 };
-	LeftBottom = { 32,64 };
-	RightBottom = { 64,64 };
+	position = { 32.0f,640.0f };
+	LeftTop = { position.x+0,position.y + 0 };
+	RightTop = { position.x + 32,position.y + 0 };
+	LeftBottom = { position.x+0,position.y + 32 };
+	RightBottom = { position.x + 32,position.y + 32 };
 
 	
 

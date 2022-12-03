@@ -80,7 +80,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	map.blockCount = 25;
 
 	Player player;
-	TestEnemy testEnemy;
+
+	TestEnemy testEnemy[4];
+
+	testEnemy[0].Set({ 960.0f,32.0f });
+	testEnemy[1].Set({ 886.0f,32.0f });
+	testEnemy[2].Set({ 812.0f,32.0f });
+	testEnemy[3].Set({ 738.0f,32.0f });
 
 	float slow = 1.0f;
 
@@ -202,7 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							map.map[y][x] = map.TMPNONE;
 							map.tmpTime[y][x] = 300;
 							map.blockCount--;
-							
+
 						}
 
 					}
@@ -235,7 +241,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		/*if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
-			
+
 			slowTime++;
 
 			if (slowTime == 60) {
@@ -256,6 +262,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			testEnemy.Update(player, map, slow);
 
 		}*/
+		for (int i = 0; i < 4; i++) {
+			testEnemy[i].Update(player, map, slow);
+		}
 
 		player.Update(map, slow);
 
@@ -306,7 +315,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
 
 		player.Draw();
-		testEnemy.Draw();
+		for (int i = 0; i < 4; i++) {
+			testEnemy[i].Draw();
+		}
 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");

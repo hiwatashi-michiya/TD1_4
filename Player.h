@@ -8,6 +8,7 @@ public:
 	Player();
 	void Init();
 
+	Vec2 position;
 	Vec2 LeftTop;
 	Vec2 RightTop;
 	Vec2 LeftBottom;
