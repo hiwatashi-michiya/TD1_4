@@ -246,11 +246,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							mouseX < x * MAP_SIZE + MAP_SIZE &&
 							mouseX > x * MAP_SIZE) {
 
-							if (Novice::IsPressMouse(0) == true && map.blockCount > 0) {
+							if (Novice::IsPressMouse(0) == true ) {
+								if (map.blockCount > 0) {
+									map.map[y][x] = map.TMPBLOCK;
+									map.tmpTime[y][x] = 300;
+									map.blockCount--;
+									map.blockColor[y][x] = 0xFFFFFFFF;
+								}
+								else {
+
+								int MinTmpTime = 300;
+								int DelX = x;
+								int DelY = y;
+								for (int y = 0; y < 50; y++) {
+									for (int x = 0; x < 50; x++) {
+										if (MinTmpTime > int(map.tmpTime[y][x]) && int(map.tmpTime[y][x] != 0)) {
+											MinTmpTime = int(map.tmpTime[y][x]);
+											DelX = x;
+											DelY = y;
+										}
+									}
+								}
+
+
+
+								map.map[DelY][DelX] = map.NONE;
+								map.tmpTime[DelY][DelX] = 0;
 								map.map[y][x] = map.TMPBLOCK;
 								map.tmpTime[y][x] = 300;
-								map.blockCount--;
 								map.blockColor[y][x] = 0xFFFFFFFF;
+
+
+							}
 							}
 
 						}
@@ -333,17 +360,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							mouseX < x * MAP_SIZE + MAP_SIZE &&
 							mouseX > x * MAP_SIZE) {
 
-							if (Novice::IsPressMouse(0) == true && mapEasy.blockCount > 0) {
-								mapEasy.map[y][x] = mapEasy.TMPBLOCK;
-								mapEasy.tmpTime[y][x] = 300;
-								mapEasy.blockCount--;
-								mapEasy.blockColor[y][x] = 0xFFFFFFFF;
-							}
+							if (Novice::IsPressMouse(0) == true) {
+								if (mapEasy.blockCount > 0) {
+									mapEasy.map[y][x] = mapEasy.TMPBLOCK;
+									mapEasy.tmpTime[y][x] = 300;
+									mapEasy.blockCount--;
+									mapEasy.blockColor[y][x] = 0xFFFFFFFF;
+								}
+								else {
 
+									int MinTmpTime = 300;
+									int DelX = x;
+									int DelY = y;
+									for (int y = 0; y < 50; y++) {
+										for (int x = 0; x < 50; x++) {
+											if (MinTmpTime > int(mapEasy.tmpTime[y][x]) && int(mapEasy.tmpTime[y][x] != 0)) {
+												MinTmpTime = int(mapEasy.tmpTime[y][x]);
+												DelX = x;
+												DelY = y;
+											}
+										}
+									}
+
+								
+
+									mapEasy.map[DelY][DelX] = mapEasy.NONE;
+									mapEasy.tmpTime[DelY][DelX] = 0;
+									mapEasy.map[y][x] = mapEasy.TMPBLOCK;
+									mapEasy.tmpTime[y][x] = 300;
+									mapEasy.blockColor[y][x] = 0xFFFFFFFF;
+
+									
+								}
+							}
 						}
 
 					}
-
+					Novice::ScreenPrintf(200, 200, "%d", mapEasy.blockCount);
 					if (mapEasy.map[y][x] == mapEasy.TMPNONE) {
 
 						mapEasy.tmpTime[y][x]--;
@@ -532,7 +585,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//もの運び
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
-		Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+		//Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
 		if (Map == 1) {
 			for (int y = 0; y < 50; y++) {
 
