@@ -201,11 +201,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				for (int y = 0; y < 50; y++) {
 					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
+						fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
 					}
 				}
 				fclose(fp);
-				map.blockCount = 25;
+				mapEasy.blockCount = 25;
 			}
 		}
 
@@ -289,6 +289,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							}
 
 						}
+
+						map.blockColor[y][x] = 0xFF3399FF;
 
 					}
 
@@ -375,6 +377,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							}
 
 						}
+
+						mapEasy.blockColor[y][x] = 0xFF3399FF;
 
 					}
 
