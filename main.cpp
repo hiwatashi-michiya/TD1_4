@@ -74,6 +74,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}*/
 
 			map.tmpTime[y][x] = 0;
+
+			map.blockColor[y][x] = 0xFFFFFFFF;
 		}
 
 	}
@@ -180,7 +182,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							map.map[y][x] = map.TMPBLOCK;
 							map.tmpTime[y][x] = 300;
 							map.blockCount--;
-
+							map.blockColor[y][x] = 0xFFFFFFFF;
 						}
 
 					}
@@ -241,6 +243,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						map.map[y][x] = map.NONE;
 						map.blockCount++;
 					}
+
+					map.blockColor[y][x] = 0x000000FF + (0xFFFFFF00 * (map.tmpTime[y][x] / 300));
 
 				}
 
@@ -314,7 +318,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
 						x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
-						0, 0, 32, 32, TILE, 0xFFFFFFFF);
+						0, 0, 32, 32, TILE, map.blockColor[y][x]);
 
 				}
 
