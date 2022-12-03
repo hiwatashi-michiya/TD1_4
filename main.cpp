@@ -125,7 +125,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		///俺も食いたかった！！！！ゴメンネ; ;
 		
-		if ((Novice::IsPressMouse(1) || Novice::IsPressMouse(0))) {
+		if (( Novice::IsPressMouse(0))) {
 			slowFlag = true;
 		}
 		else {
@@ -256,7 +256,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						if (Novice::IsPressMouse(1) == true && map.blockCount > 0) {
 							map.map[y][x] = map.TMPNONE;
 							map.tmpTime[y][x] = 300;
-							map.blockCount--;
 
 						}
 
