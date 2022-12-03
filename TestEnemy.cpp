@@ -33,59 +33,58 @@ void TestEnemy::Update(Player player,Map map, float slow)
 	}
 
 	if (isAlive) {
-		if (fallFlag) {
-			vector = { 0.0f,1.0f };
-			velocity += vector * speed;
-			Vec2 tmpLeftTop, tmpRightTop, tmpLeftBottom, tmpRightBottom;
-			int LeftTopX, RightTopX, LeftBottomX, RightBottomX;
-			int LeftTopY, RightTopY, LeftBottomY, RightBottomY;
+		vector = { 0.0f,1.0f };
+		velocity += vector * speed;
+		Vec2 tmpLeftTop, tmpRightTop, tmpLeftBottom, tmpRightBottom;
+		int LeftTopX, RightTopX, LeftBottomX, RightBottomX;
+		int LeftTopY, RightTopY, LeftBottomY, RightBottomY;
 
-			tmpLeftTop = LeftTop + velocity;
-			tmpRightTop.x = (RightTop.x - 1) + velocity.x;
-			tmpRightTop.y = (RightTop.y) + velocity.y;
-			tmpLeftBottom.x = LeftBottom.x + velocity.x;
-			tmpLeftBottom.y = (LeftBottom.y) + velocity.y;
-			tmpRightBottom.x = RightBottom.x - 1 + velocity.x;
-			tmpRightBottom.y = RightBottom.y + velocity.y;
+		tmpLeftTop = LeftTop + velocity;
+		tmpRightTop.x = (RightTop.x - 1) + velocity.x;
+		tmpRightTop.y = (RightTop.y) + velocity.y;
+		tmpLeftBottom.x = LeftBottom.x + velocity.x;
+		tmpLeftBottom.y = (LeftBottom.y) + velocity.y;
+		tmpRightBottom.x = RightBottom.x - 1 + velocity.x;
+		tmpRightBottom.y = RightBottom.y + velocity.y;
 
-			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
-			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+		LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+		LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
 
-			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
-			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
 
-			LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
-			LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
+		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
+		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
 
-			RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
-			RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-			if (!(map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) ||
-				!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
-				float num = (LeftTopY + 1) * MAP_SIZE;
-				LeftTop.y = num;
-				RightTop.y = num;
-				LeftBottom.y = num + MAP_SIZE;
-				RightBottom.y = num + MAP_SIZE;
-				velocity = { 0,0 };
-			}
-			if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
-				(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
-				LeftTop += velocity;
-				RightTop += velocity;
-				LeftBottom += velocity;
-				RightBottom += velocity;
-			}
-			else {
-				float num = (LeftTopY)*MAP_SIZE;
-				LeftTop.y = num;
-				RightTop.y = num;
-				LeftBottom.y = num + MAP_SIZE;
-				RightBottom.y = num + MAP_SIZE;
-				velocity = { 0,0 };
-				/*isAlive = false;*/
-				Init();
-			}
+		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
+		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
+		if (!(map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) ||
+			!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
+			float num = (LeftTopY + 1) * MAP_SIZE;
+			LeftTop.y = num;
+			RightTop.y = num;
+			LeftBottom.y = num + MAP_SIZE;
+			RightBottom.y = num + MAP_SIZE;
+			velocity = { 0,0 };
 		}
+		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
+			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
+			LeftTop += velocity;
+			RightTop += velocity;
+			LeftBottom += velocity;
+			RightBottom += velocity;
+		}
+		else {
+			float num = (LeftTopY)*MAP_SIZE;
+			LeftTop.y = num;
+			RightTop.y = num;
+			LeftBottom.y = num + MAP_SIZE;
+			RightBottom.y = num + MAP_SIZE;
+			velocity = { 0,0 };
+			/*isAlive = false;*/
+			Init();
+		}
+		
 	}
 }
 
