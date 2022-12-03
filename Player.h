@@ -31,7 +31,7 @@ public:
 	int texture;
 
 	void Update(Map map, float slow);
-	void Draw();
+	void Draw(float isColorReverse);
 
 	
 };

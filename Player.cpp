@@ -248,7 +248,18 @@ void Player::Update(Map map,float slow) {
 }
 
 
-void Player::Draw() {
+void Player::Draw(float isColorReverse) {
+
+	int BaseColorR = (RED & 0xFF000000) >> 24;
+	int BaseColorG = (RED & 0x00FF0000) >> 16;
+	int BaseColorB = (RED & 0x0000FF00) >> 8;
+
+	BaseColorR = BaseColorR * isColorReverse + (255 - BaseColorR) * (1.0f - isColorReverse);
+	BaseColorG = BaseColorG * isColorReverse + (255 - BaseColorG) * (1.0f - isColorReverse);
+	BaseColorB = BaseColorB * isColorReverse + (255 - BaseColorB) * (1.0f - isColorReverse);
+
+	int PlayerColor = (BaseColorR << 24) + (BaseColorG << 16) + (BaseColorB << 8) + 255;
+
 	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
-	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, RED);
+	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, PlayerColor);
 }

@@ -12,7 +12,7 @@ struct Map{
 	};
 	int map[50][50];
 
-	int tmpTime[50][50];
+	float tmpTime[50][50];
 
 	unsigned int blockColor[50][50];
 

@@ -9,6 +9,9 @@
 
 const char kWindowTitle[] = "LC1A_21_ヒワタシミチヤ";
 
+int ColorReverse(int basecolor);
+float isColorReverse = 0;
+
 enum DRAWTYPE {
 	MAKE,
 	ERASE
@@ -41,6 +44,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ellipseRadius = 50;
 
 	int color = 0x000000FF;
+	unsigned int backgroundColor = 0xFF88FFFF;
+	
 
 	bool isHit = false;
 
@@ -116,13 +121,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		///俺も食いたかった！！！！！
+		///俺も食いたかった！！！！ゴメンネ; ;
 		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
-			slow = 0.6f;
+			slow /= 1.1;
 		}
 		else {
+			slow *= 1.1;
+		}
+
+		if (slow > 1.0) {
 			slow = 1.0f;
 		}
+
+		if (slow < 0.2f) {
+			slow = 0.2f;
+		}
+
+		isColorReverse = (slow - 0.2f) / 0.8f;
 
 
 		if (Key::IsTrigger(DIK_R)) {
@@ -244,8 +259,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						map.blockCount++;
 					}
 
-					map.blockColor[y][x] = 0x000000FF + (0xFFFFFF00 * (map.tmpTime[y][x] / 300));
-
+					map.blockColor[y][x] = (int(255 * (map.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 8) + 255;
+					Novice::ScreenPrintf(60, 200, "%d");
 				}
 
 			}
@@ -281,6 +296,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			testEnemy2[i].Update(player, map, slow);
 		}
 		player.Update(map, slow);
+		//testEnemy.Update(player, map, slow);
 
 		preMouseX = mouseX;
 		preMouseY = mouseY;
@@ -310,6 +326,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//もの運び
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
+		Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+
 		for (int y = 0; y < 50; y++) {
 
 			for (int x = 0; x < 50; x++) {
@@ -326,9 +344,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
+		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, ColorReverse(color), kFillModeSolid);
 
-		player.Draw();
+		player.Draw(isColorReverse);
 		for (int i = 0; i < kTestEnemy2; i++) {
 			testEnemy2[i].Draw();
 		}
@@ -341,6 +359,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
 		/*Novice::ScreenPrintf(10, 200, "slow:%f", slow);*/
+
 		///
 		/// ↑描画処理ここまで
 		///
@@ -357,4 +376,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの終了
 	Novice::Finalize();
 	return 0;
+}
+
+int ColorReverse(int basecolor)
+{
+	int BaseColorR = (basecolor & 0xFF000000) >> 24;
+	int BaseColorG = (basecolor & 0x00FF0000) >> 16;
+	int BaseColorB = (basecolor & 0x0000FF00) >> 8;
+
+	BaseColorR = BaseColorR * isColorReverse + (255 - BaseColorR) * (1.0f - isColorReverse);
+	BaseColorG = BaseColorG * isColorReverse + (255 - BaseColorG) * (1.0f - isColorReverse);
+	BaseColorB = BaseColorB * isColorReverse + (255 - BaseColorB) * (1.0f - isColorReverse);
+
+	return (BaseColorR << 24) + (BaseColorG << 16) + (BaseColorB << 8) + 255;
 }
