@@ -262,6 +262,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
+					map.blockColor[y][x] = 0xFF3399FF;
+
 				}
 
 
