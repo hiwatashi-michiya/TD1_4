@@ -52,6 +52,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
 
 	int slowTime = 0;
+	bool canSlow = true;
+	bool slowFlag = false;
 
 	DRAWTYPE drawType = MAKE;
 
@@ -122,12 +124,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 		///俺も食いたかった！！！！ゴメンネ; ;
-		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
-			slow /= 1.1;
+		
+		if ((Novice::IsPressMouse(1) || Novice::IsPressMouse(0))) {
+			slowFlag = true;
 		}
 		else {
-			slow *= 1.1;
+			slowFlag = false;
 		}
+
+		if (slowFlag == true) {
+			if (canSlow == true) {
+				slowTime++;
+				slow /= 1.1;
+			}
+			if (slowTime > 60) {
+				canSlow = false;
+			}
+		}
+
+		if (canSlow == false || slowFlag == false) {
+			slow *= 1.1;
+			if (slowTime > 0) {
+				slowTime--;
+			}
+			else {
+				canSlow = true;
+			}
+		}
+		
 
 		if (slow > 1.0) {
 			slow = 1.0f;
@@ -260,7 +284,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 
 					map.blockColor[y][x] = (int(255 * (map.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 8) + 255;
-					Novice::ScreenPrintf(60, 200, "%d");
+					
 				}
 
 			}
@@ -354,6 +378,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			testEnemy[i].Draw();
 		}
 
+		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
