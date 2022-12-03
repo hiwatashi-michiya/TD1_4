@@ -55,7 +55,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	DRAWTYPE drawType = MAKE;
 
-	Map map;
+	Map map,mapEasy;
+	int Map = 0;
 
 	FILE* fp = NULL;
 	fopen_s(&fp, "./Resources/test.csv", "rt");
@@ -69,24 +70,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	fclose(fp);
 
+	fp = NULL;
+	fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+	if (fp == NULL) {
+		return 0;
+	}
+	for (int y = 0; y < 50; y++) {
+		for (int x = 0; x < 50; x++) {
+			fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+		}
+	}
+	fclose(fp);
+
 	for (int y = 0; y < 50; y++) {
 
 		for (int x = 0; x < 50; x++) {
-			/*map.map[y][x] = map.NONE;
-
-			if (y == 20) {
-				map.map[y][x] = map.BLOCK;
-			}*/
 
 			map.tmpTime[y][x] = 0;
 
 			map.blockColor[y][x] = 0xFFFFFFFF;
+
+			mapEasy.tmpTime[y][x] = 0;
+
+			mapEasy.blockColor[y][x] = 0xFFFFFFFF;
 		}
 
 	}
 
 	map.blockCount = 25;
-
+	mapEasy.blockCount = 25;
 	Player player;
 
 	const int kTestEnemy = 6;
@@ -141,19 +153,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		if (Key::IsTrigger(DIK_R)) {
-			player.Init();
-			FILE* fp = NULL;
-			fopen_s(&fp, "./Resources/test.csv", "rt");
-			if (fp == NULL) {
-				return 0;
-			}
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
-					fscanf_s(fp, "%d,", &map.map[y][x]);
+			if (Map == 1) {
+				player.Init();
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+				if (fp == NULL) {
+					return 0;
 				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				map.blockCount = 25;
 			}
-			fclose(fp);
-			map.blockCount = 25;
+			else {
+				player.Init();
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				map.blockCount = 25;
+			}
 		}
 
 
@@ -181,90 +210,177 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ellipseY += mouseSpeedY;
 		}*/
 		//
+		if (Map == 1) {
+			for (int y = 0; y < 50; y++) {
 
-		for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
 
-			for (int x = 0; x < 50; x++) {
+					if (map.map[y][x] == map.NONE) {
 
-				if (map.map[y][x] == map.NONE) {
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
 
-					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
-						mouseY > y * MAP_SIZE &&
-						mouseX < x * MAP_SIZE + MAP_SIZE &&
-						mouseX > x * MAP_SIZE) {
-
-						if (Novice::IsPressMouse(0) == true && map.blockCount > 0) {
-							map.map[y][x] = map.TMPBLOCK;
-							map.tmpTime[y][x] = 300;
-							map.blockCount--;
-							map.blockColor[y][x] = 0xFFFFFFFF;
-						}
-
-					}
-
-				}
-
-				if (map.map[y][x] == map.TMPNONE) {
-
-					map.tmpTime[y][x]--;
-
-					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
-						mouseY > y * MAP_SIZE &&
-						mouseX < x * MAP_SIZE + MAP_SIZE &&
-						mouseX > x * MAP_SIZE) {
-
-					}
-
-					if (map.tmpTime[y][x] == 0) {
-						map.map[y][x] = map.BLOCK;
-						map.blockCount++;
-					}
-
-				}
-
-				if (map.map[y][x] == map.BLOCK) {
-
-					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
-						mouseY > y * MAP_SIZE &&
-						mouseX < x * MAP_SIZE + MAP_SIZE &&
-						mouseX > x * MAP_SIZE) {
-
-						if (Novice::IsPressMouse(1) == true && map.blockCount > 0) {
-							map.map[y][x] = map.TMPNONE;
-							map.tmpTime[y][x] = 300;
-							map.blockCount--;
+							if (Novice::IsPressMouse(0) == true && map.blockCount > 0) {
+								map.map[y][x] = map.TMPBLOCK;
+								map.tmpTime[y][x] = 300;
+								map.blockCount--;
+								map.blockColor[y][x] = 0xFFFFFFFF;
+							}
 
 						}
 
 					}
 
-				}
+					if (map.map[y][x] == map.TMPNONE) {
 
+						map.tmpTime[y][x]--;
 
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
 
+						}
 
-				if (map.map[y][x] == map.TMPBLOCK) {
-
-					map.tmpTime[y][x]--;
-
-					if (mouseY < y * MAP_SIZE + MAP_SIZE &&
-						mouseY > y * MAP_SIZE &&
-						mouseX < x * MAP_SIZE + MAP_SIZE &&
-						mouseX > x * MAP_SIZE) {
+						if (map.tmpTime[y][x] == 0) {
+							map.map[y][x] = map.BLOCK;
+							map.blockCount++;
+						}
 
 					}
 
-					if (map.tmpTime[y][x] == 0) {
-						map.map[y][x] = map.NONE;
-						map.blockCount++;
+					if (map.map[y][x] == map.BLOCK) {
+
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
+
+							if (Novice::IsPressMouse(1) == true && map.blockCount > 0) {
+								map.map[y][x] = map.TMPNONE;
+								map.tmpTime[y][x] = 300;
+								map.blockCount--;
+
+							}
+
+						}
+
 					}
 
-					map.blockColor[y][x] = (int(255 * (map.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 8) + 255;
-					Novice::ScreenPrintf(60, 200, "%d");
+
+
+
+					if (map.map[y][x] == map.TMPBLOCK) {
+
+						map.tmpTime[y][x]--;
+
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
+
+						}
+
+						if (map.tmpTime[y][x] == 0) {
+							map.map[y][x] = map.NONE;
+							map.blockCount++;
+						}
+
+						map.blockColor[y][x] = (int(255 * (map.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 8) + 255;
+						Novice::ScreenPrintf(60, 200, "%d");
+					}
+
 				}
 
 			}
+		}
+		else {
+			for (int y = 0; y < 50; y++) {
 
+				for (int x = 0; x < 50; x++) {
+
+					if (mapEasy.map[y][x] == mapEasy.NONE) {
+
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
+
+							if (Novice::IsPressMouse(0) == true && mapEasy.blockCount > 0) {
+								mapEasy.map[y][x] = mapEasy.TMPBLOCK;
+								mapEasy.tmpTime[y][x] = 300;
+								mapEasy.blockCount--;
+								mapEasy.blockColor[y][x] = 0xFFFFFFFF;
+							}
+
+						}
+
+					}
+
+					if (mapEasy.map[y][x] == mapEasy.TMPNONE) {
+
+						mapEasy.tmpTime[y][x]--;
+
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
+
+						}
+
+						if (mapEasy.tmpTime[y][x] == 0) {
+							mapEasy.map[y][x] = mapEasy.BLOCK;
+							mapEasy.blockCount++;
+						}
+
+					}
+
+					if (mapEasy.map[y][x] == mapEasy.BLOCK) {
+
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
+
+							if (Novice::IsPressMouse(1) == true && mapEasy.blockCount > 0) {
+								mapEasy.map[y][x] = mapEasy.TMPNONE;
+								mapEasy.tmpTime[y][x] = 300;
+								mapEasy.blockCount--;
+
+							}
+
+						}
+
+					}
+
+
+
+
+					if (mapEasy.map[y][x] == mapEasy.TMPBLOCK) {
+
+						mapEasy.tmpTime[y][x]--;
+
+						if (mouseY < y * MAP_SIZE + MAP_SIZE &&
+							mouseY > y * MAP_SIZE &&
+							mouseX < x * MAP_SIZE + MAP_SIZE &&
+							mouseX > x * MAP_SIZE) {
+
+						}
+
+						if (mapEasy.tmpTime[y][x] == 0) {
+							mapEasy.map[y][x] = map.NONE;
+							mapEasy.blockCount++;
+						}
+
+						mapEasy.blockColor[y][x] = (int(255 * (mapEasy.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (mapEasy.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (mapEasy.tmpTime[y][x] / 300.0f)) << 8) + 255;
+						Novice::ScreenPrintf(60, 200, "%d");
+					}
+
+				}
+
+			}
 		}
 
 		/*if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
@@ -289,30 +405,93 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			testEnemy.Update(player, map, slow);
 
 		}*/
-		for (int i = 0; i < kTestEnemy; i++) {
-			testEnemy[i].Update(player, map, slow);
+		if (Map == 1) {
+			for (int i = 0; i < kTestEnemy; i++) {
+				testEnemy[i].Update(player, map, slow);
+			}
+			for (int i = 0; i < kTestEnemy2; i++) {
+				testEnemy2[i].Update(player, map, slow);
+			}
+			player.Update(map, slow);
 		}
-		for (int i = 0; i < kTestEnemy2; i++) {
-			testEnemy2[i].Update(player, map, slow);
+		else {
+			player.Update(mapEasy, slow);
 		}
-		player.Update(map, slow);
+		
 		//testEnemy.Update(player, map, slow);
 
 		preMouseX = mouseX;
 		preMouseY = mouseY;
 		if (Key::IsPress(DIK_R)) {
-			player.Init();
-			FILE* fp = NULL;
-			fopen_s(&fp, "./Resources/test.csv", "rt");
-			if (fp == NULL) {
-				return 0;
-			}
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
-					fscanf_s(fp, "%d,", &map.map[y][x]);
+			if (Map == 1) {
+				player.Init();
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+				if (fp == NULL) {
+					return 0;
 				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
 			}
-			fclose(fp);
+			else {
+				player.Init();
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+					}
+				}
+				fclose(fp);
+			}
+		}
+
+		if (Key::IsTrigger(DIK_M)) {
+			if (Map == 0) {
+				player.Init();
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				testEnemy[0].Set({ 928.0f,32.0f });
+				testEnemy[1].Set({ 832.0f,32.0f });
+				testEnemy[2].Set({ 736.0f,32.0f });
+				testEnemy[3].Set({ 640.0f,32.0f });
+				testEnemy[4].Set({ 1120.0f,32.0f });
+				testEnemy[5].Set({ 1184.0f,32.0f });
+				testEnemy2[0].Set({ 32.0f,256.0f });
+				testEnemy2[1].Set({ 32.0f,352.0f });
+				Map = 1;
+			}
+			else {
+				player.Init();
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+					}
+				}
+				fclose(fp);
+				Map = 0;
+			}
 		}
 
 		///
@@ -327,31 +506,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
 		Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+		if (Map == 1) {
+			for (int y = 0; y < 50; y++) {
 
-		for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
 
-			for (int x = 0; x < 50; x++) {
+					if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK) {
 
-				if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK) {
+						Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
+							x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
+							0, 0, 32, 32, TILE, map.blockColor[y][x]);
 
-					Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
-						x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
-						0, 0, 32, 32, TILE, map.blockColor[y][x]);
+					}
 
 				}
 
 			}
+		}
+		else {
+			for (int y = 0; y < 50; y++) {
 
+				for (int x = 0; x < 50; x++) {
+
+					if (mapEasy.map[y][x] == mapEasy.BLOCK || mapEasy.map[y][x] == mapEasy.CANTBLOCK || mapEasy.map[y][x] == mapEasy.TMPBLOCK) {
+
+						Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
+							x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
+							0, 0, 32, 32, TILE, mapEasy.blockColor[y][x]);
+
+					}
+
+				}
+
+			}
 		}
 
 		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, ColorReverse(color), kFillModeSolid);
 
 		player.Draw(isColorReverse);
-		for (int i = 0; i < kTestEnemy2; i++) {
-			testEnemy2[i].Draw();
-		}
-		for (int i = 0; i < kTestEnemy; i++) {
-			testEnemy[i].Draw();
+		if (Map == 1) {
+			for (int i = 0; i < kTestEnemy2; i++) {
+				testEnemy2[i].Draw();
+			}
+			for (int i = 0; i < kTestEnemy; i++) {
+				testEnemy[i].Draw();
+			}
 		}
 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
