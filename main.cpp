@@ -92,16 +92,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int kTestEnemy = 6;
 	TestEnemy testEnemy[kTestEnemy];
 
-	testEnemy[0].Set({ 960.0f,32.0f });
-	testEnemy[1].Set({ 886.0f,32.0f });
-	testEnemy[2].Set({ 812.0f,32.0f });
-	testEnemy[3].Set({ 738.0f,32.0f });
+	testEnemy[0].Set({ 928.0f,32.0f });
+	testEnemy[1].Set({ 832.0f,32.0f });
+	testEnemy[2].Set({ 736.0f,32.0f });
+	testEnemy[3].Set({ 640.0f,32.0f });
 	testEnemy[4].Set({ 1120.0f,32.0f });
 	testEnemy[5].Set({ 1184.0f,32.0f });
 
 	const int kTestEnemy2 = 2;
 	TestEnemy2 testEnemy2[kTestEnemy2];
-	testEnemy2[0].Set({ 32.0f,288.0f });
+	testEnemy2[0].Set({ 32.0f,256.0f });
 	testEnemy2[1].Set({ 32.0f,352.0f });
 	float slow = 1.0f;
 
@@ -332,7 +332,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < 50; x++) {
 
-				if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.TMPBLOCK) {
+				if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK) {
 
 					Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
 						x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,

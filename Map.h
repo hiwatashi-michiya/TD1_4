@@ -5,6 +5,7 @@ const int MAP_SIZE = 32;
 struct Map{
 	enum TILE {
 		NONE,
+		CANTBLOCK,
 		BLOCK,
 		TMPNONE,
 		TMPBLOCK

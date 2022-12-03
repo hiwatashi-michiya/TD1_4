@@ -25,5 +25,6 @@ public:
 	Vec2 vector;
 	Vec2 velocity;
 	float speed;
+	int cooltime;
 };
 

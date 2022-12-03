@@ -22,7 +22,8 @@ void TestEnemy2::Init()
 	texture = Novice::LoadTexture("white1x1.png");
 	velocity = { 0.0f, 0.0f };
 	vector = { 0.0f,0.0f };
-	speed = 0.5f;
+	speed = 0.05f;
+	cooltime = 0;
 }
 
 void TestEnemy2::Set(Vec2 pos)
@@ -68,7 +69,7 @@ void TestEnemy2::Update(Player player, Map map, float slow)
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) ||
+		/*if (!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) ||
 			!(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			float num = (LeftTopX + 1) * MAP_SIZE;
 			LeftTop.x = num;
@@ -76,7 +77,7 @@ void TestEnemy2::Update(Player player, Map map, float slow)
 			LeftBottom.x = num + MAP_SIZE * 2;
 			RightBottom.x = num + MAP_SIZE * 2;
 			velocity = { 0,0 };
-		}
+		}*/
 		if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) &&
 			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			LeftTop += velocity * slow;
@@ -85,13 +86,16 @@ void TestEnemy2::Update(Player player, Map map, float slow)
 			RightBottom += velocity * slow;
 		}
 		else {
-			float num = (RightTopX)*MAP_SIZE;
+			float num = (RightTopX - 2)*MAP_SIZE;
 			LeftTop.x = num;
-			RightTop.x = num;
-			LeftBottom.x = num + MAP_SIZE * 2;
+			RightTop.x = num + MAP_SIZE * 2;
+			LeftBottom.x = num ;
 			RightBottom.x = num + MAP_SIZE * 2;
 			velocity = { 0,0 };
+			/*cooltime++;
+			if (cooltime >= 20) {*/
 			Init();
+			/*}*/
 		}
 
 	}
