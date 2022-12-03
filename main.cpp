@@ -282,10 +282,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							mouseX < x * MAP_SIZE + MAP_SIZE &&
 							mouseX > x * MAP_SIZE) {
 
-							if (Novice::IsPressMouse(1) == true && map.blockCount > 0) {
-								map.map[y][x] = map.TMPNONE;
-								map.tmpTime[y][x] = 300;
-								map.blockCount--;
+						if (Novice::IsPressMouse(1) == true) {
+							map.map[y][x] = map.TMPNONE;
+							map.tmpTime[y][x] = 300;
 
 							}
 
@@ -566,6 +565,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, ColorReverse(color), kFillModeSolid);
+
+		Novice::DrawBox(20, 700, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
 
 		player.Draw(isColorReverse);
 		if (Map == 1) {
