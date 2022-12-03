@@ -1,13 +1,13 @@
-#include "TestEnemy.h"
+#include "TestEnemy2.h"
 #include <Novice.h>
 
-TestEnemy::TestEnemy()
+TestEnemy2::TestEnemy2()
 {
 	position = { 0.0f,0.0f };
 	Init();
 }
 
-void TestEnemy::Init()
+void TestEnemy2::Init()
 {
 	LeftTop = { position.x + 0.0f,position.y + 0.0f };
 	RightTop = { position.x + 64.0f,position.y + 0.0f };
@@ -20,12 +20,12 @@ void TestEnemy::Init()
 
 
 	texture = Novice::LoadTexture("white1x1.png");
-	velocity = {0.0f, 0.0f};
-	vector = {0.0f,0.0f};
+	velocity = { 0.0f, 0.0f };
+	vector = { 0.0f,0.0f };
 	speed = 0.5f;
 }
 
-void TestEnemy::Set(Vec2 pos)
+void TestEnemy2::Set(Vec2 pos)
 {
 	position = pos;
 	LeftTop = { position.x + 0.0f,position.y + 0.0f };
@@ -36,14 +36,14 @@ void TestEnemy::Set(Vec2 pos)
 
 
 
-void TestEnemy::Update(Player player,Map map, float slow)
+void TestEnemy2::Update(Player player, Map map, float slow)
 {
-	if ((player.RightBottom.x >= LeftBottom.x && player.RightBottom.x <= RightBottom.x) || (player.LeftBottom.x <= LeftBottom.x && player.LeftBottom.x >= RightBottom.x) && !isAlive) {
+	if ((player.LeftTop.y >= LeftTop.y && player.LeftTop.y <= LeftBottom.y) || (player.LeftBottom.y <= LeftTop.y && player.LeftBottom.y >= LeftBottom.y) && !isAlive) {
 		isAlive = true;
 	}
 
 	if (isAlive) {
-		vector = { 0.0f,1.0f };
+		vector = { 1.0f,0.0f };
 		velocity += vector * speed;
 		Vec2 tmpLeftTop, tmpRightTop, tmpLeftBottom, tmpRightBottom;
 		int LeftTopX, RightTopX, LeftBottomX, RightBottomX;
@@ -68,16 +68,16 @@ void TestEnemy::Update(Player player,Map map, float slow)
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (!(map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) ||
+		if (!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) ||
 			!(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
-			float num = (LeftTopY + 1) * MAP_SIZE;
-			LeftTop.y = num;
-			RightTop.y = num;
-			LeftBottom.y = num + MAP_SIZE * 2;
-			RightBottom.y = num + MAP_SIZE * 2;
+			float num = (LeftTopX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num;
+			LeftBottom.x = num + MAP_SIZE * 2;
+			RightBottom.x = num + MAP_SIZE * 2;
 			velocity = { 0,0 };
 		}
-		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
+		if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) &&
 			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			LeftTop += velocity * slow;
 			RightTop += velocity * slow;
@@ -85,19 +85,19 @@ void TestEnemy::Update(Player player,Map map, float slow)
 			RightBottom += velocity * slow;
 		}
 		else {
-			float num = (LeftBottomY) * MAP_SIZE;
-			LeftTop.y = num;
-			RightTop.y = num;
-			LeftBottom.y = num + MAP_SIZE * 2;
-			RightBottom.y = num + MAP_SIZE * 2;
+			float num = (RightTopX)*MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num;
+			LeftBottom.x = num + MAP_SIZE * 2;
+			RightBottom.x = num + MAP_SIZE * 2;
 			velocity = { 0,0 };
 			Init();
 		}
-		
+
 	}
 }
 
-void TestEnemy::Draw()
+void TestEnemy2::Draw()
 {
-	Novice::DrawQuad(LeftTop.x, LeftTop.y, RightTop.x, RightTop.y, LeftBottom.x, LeftBottom.y, RightBottom.x, RightBottom.y,0,0,64,64, texture,WHITE);
+	Novice::DrawQuad(LeftTop.x, LeftTop.y, RightTop.x, RightTop.y, LeftBottom.x, LeftBottom.y, RightBottom.x, RightBottom.y, 0, 0, 64, 64, texture, WHITE);
 }

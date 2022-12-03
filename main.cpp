@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "Player.h"
 #include "TestEnemy.h"
+#include "TestEnemy2.h"
 #include "Key.h"
 
 const char kWindowTitle[] = "LC1A_21_ヒワタシミチヤ";
@@ -81,13 +82,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Player player;
 
-	TestEnemy testEnemy[4];
+	const int kTestEnemy = 6;
+	TestEnemy testEnemy[kTestEnemy];
 
 	testEnemy[0].Set({ 960.0f,32.0f });
 	testEnemy[1].Set({ 886.0f,32.0f });
 	testEnemy[2].Set({ 812.0f,32.0f });
 	testEnemy[3].Set({ 738.0f,32.0f });
+	testEnemy[4].Set({ 1120.0f,32.0f });
+	testEnemy[5].Set({ 1184.0f,32.0f });
 
+	const int kTestEnemy2 = 2;
+	TestEnemy2 testEnemy2[kTestEnemy2];
+	testEnemy2[0].Set({ 32.0f,288.0f });
+	testEnemy2[1].Set({ 32.0f,352.0f });
 	float slow = 1.0f;
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -262,10 +270,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			testEnemy.Update(player, map, slow);
 
 		}*/
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < kTestEnemy; i++) {
 			testEnemy[i].Update(player, map, slow);
 		}
-
+		for (int i = 0; i < kTestEnemy2; i++) {
+			testEnemy2[i].Update(player, map, slow);
+		}
 		player.Update(map, slow);
 
 		preMouseX = mouseX;
@@ -315,7 +325,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
 
 		player.Draw();
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < kTestEnemy2; i++) {
+			testEnemy2[i].Draw();
+		}
+		for (int i = 0; i < kTestEnemy; i++) {
 			testEnemy[i].Draw();
 		}
 
