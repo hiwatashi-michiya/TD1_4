@@ -14,6 +14,10 @@ struct Map{
 
 	int tmpTime[50][50];
 
+	unsigned int blockColor[50][50];
+
 	int blockCount;
+
+	
 };
 

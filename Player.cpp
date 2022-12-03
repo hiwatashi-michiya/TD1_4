@@ -99,10 +99,10 @@ void Player::Update(Map map,float slow) {
 		
 		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
 			(map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE)) {
-			LeftTop += velocity;
-			RightTop += velocity;
-			LeftBottom += velocity;
-			RightBottom += velocity;
+			LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;
 		}
 		else {
 			float num = (LeftBottomX+1) * MAP_SIZE;
@@ -132,10 +132,10 @@ void Player::Update(Map map,float slow) {
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
 		if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) &&
 			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
-			LeftTop += velocity;
-			RightTop += velocity;
-			LeftBottom += velocity;
-			RightBottom += velocity;
+			LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;
 		}
 		else {
 			float num = (RightBottomX - 1) * MAP_SIZE;
@@ -148,12 +148,7 @@ void Player::Update(Map map,float slow) {
 	if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
-		//if (slow < 1.0f) {
-		//	gravityVelocity = gravityVector * jumpSpeed * slow * 1.7;//1.7‚Á‚Ä’l“K“–
-		//}
-		//else {
-			gravityVelocity = gravityVector * jumpSpeed/* * slow*/;
-		/*}*/
+		gravityVelocity.y = gravityVector.y * jumpSpeed;
 		////////////////////////“–‚½‚è”»’è/////////////////////////
 		Vec2 tmpLeftTop, tmpRightTop;
 		int LeftTopX, RightTopX;
@@ -170,10 +165,10 @@ void Player::Update(Map map,float slow) {
 
 		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
 			(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
-			LeftTop += gravityVelocity;
+			LeftTop += gravityVelocity ;
 			RightTop += gravityVelocity;
-			LeftBottom += gravityVelocity;
-			RightBottom += gravityVelocity;
+			LeftBottom += gravityVelocity ;
+			RightBottom += gravityVelocity ;
 		}
 		else {
  			float num = (LeftTopY+1) * MAP_SIZE;
@@ -190,9 +185,8 @@ void Player::Update(Map map,float slow) {
 	{
 
 
-		gravityVector = { 0,1 }; 
-		gravityVelocity += gravityVector * gravitySpeed /** slow*/;
-		/*gravityVelocity *= slow;*/
+		gravityVector = { 0,1 * slow };
+		gravityVelocity += gravityVector * gravitySpeed ;
 		
 
 		////////////////////////“–‚½‚è”»’è/////////////////////////
@@ -231,10 +225,10 @@ void Player::Update(Map map,float slow) {
 		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
 			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			jumpFlag=false;
-			LeftTop += gravityVelocity;
-			RightTop += gravityVelocity;
-			LeftBottom += gravityVelocity;
-			RightBottom += gravityVelocity;
+			LeftTop += gravityVelocity * slow;
+			RightTop += gravityVelocity * slow;
+			LeftBottom += gravityVelocity * slow;
+			RightBottom += gravityVelocity * slow;
 		}
 		else {
 			float num = (LeftTopY) * MAP_SIZE;
@@ -248,10 +242,12 @@ void Player::Update(Map map,float slow) {
 	}
 	prekey = key;
 	key = 0;
+
+	Novice::ScreenPrintf(0, 400, "slow:%0.2f", slow);
 }
 
 
 void Player::Draw() {
-	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity);
+	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
 	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, RED);
 }

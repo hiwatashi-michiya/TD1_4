@@ -102,11 +102,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		///俺も食いたかった！！！！！
 		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
-			slow = 1.0f;
+			slow = 0.6f;
 		}
 		else {
 			slow = 1.0f;
 		}
+
+
 		if (Key::IsTrigger(DIK_R)) {
 			player.Init();
 			FILE* fp = NULL;
@@ -164,7 +166,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							map.map[y][x] = map.TMPBLOCK;
 							map.tmpTime[y][x] = 300;
 							map.blockCount--;
-							
+
 						}
 
 					}
@@ -232,7 +234,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
+		/*if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
 			
 			slowTime++;
 
@@ -253,9 +255,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Update(map, slow);
 			testEnemy.Update(player, map, slow);
 
-		}
+		}*/
 
-		
+		player.Update(map, slow);
 
 		preMouseX = mouseX;
 		preMouseY = mouseY;
