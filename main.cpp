@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "Player.h"
+#include "TestEnemy.h"
 #include "Key.h"
 
 const char kWindowTitle[] = "LC1A_21_ヒワタシミチヤ";
@@ -79,6 +80,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	map.blockCount = 25;
 
 	Player player;
+	TestEnemy testEnemy;
 
 	float slow = 1.0f;
 
@@ -240,6 +242,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (slowTime % 2 == 0) {
 				player.Update(map, slow);
+				testEnemy.Update(player,map, slow);
 			}
 
 		}
@@ -248,6 +251,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			slowTime = 0;
 
 			player.Update(map, slow);
+			testEnemy.Update(player, map, slow);
 
 		}
 
@@ -300,6 +304,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
 
 		player.Draw();
+		testEnemy.Draw();
 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
