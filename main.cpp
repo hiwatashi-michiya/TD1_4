@@ -57,7 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	DRAWTYPE drawType = MAKE;
 
-	Map map,mapEasy;
+	Map map;
 	int Map = 0;
 
 	FILE* fp = NULL;
@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	for (int y = 0; y < 50; y++) {
 		for (int x = 0; x < 50; x++) {
-			fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+			fscanf_s(fp, "%d,", &map.map[y][x]);
 		}
 	}
 	fclose(fp);
@@ -92,15 +92,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			map.blockColor[y][x] = 0xFFFFFFFF;
 
-			mapEasy.tmpTime[y][x] = 0;
+			//mapEasy.tmpTime[y][x] = 0;
 
-			mapEasy.blockColor[y][x] = 0xFFFFFFFF;
+			//mapEasy.blockColor[y][x] = 0xFFFFFFFF;
 		}
 
 	}
 
 	map.blockCount = 25;
-	mapEasy.blockCount = 25;
+	//mapEasy.blockCount = 25;
 	Player player;
 
 	const int kTestEnemy = 6;
@@ -201,11 +201,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				for (int y = 0; y < 50; y++) {
 					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+						fscanf_s(fp, "%d,", &map.map[y][x]);
 					}
 				}
 				fclose(fp);
-				mapEasy.blockCount = 25;
+				map.blockCount = 25;
 			}
 		}
 
@@ -234,7 +234,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ellipseY += mouseSpeedY;
 		}*/
 		//
-		if (Map == 1) {
+		//if (Map == 1) {
 			for (int y = 0; y < 50; y++) {
 
 				for (int x = 0; x < 50; x++) {
@@ -340,15 +340,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							map.blockCount++;
 						}
 
-					map.blockColor[y][x] = (int(255 * (map.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 8) + 255;
-					
-				}
+						map.blockColor[y][x] = (int(255 * (map.tmpTime[y][x] / 300.0f)) << 24) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 16) + (int(255 * (map.tmpTime[y][x] / 300.0f)) << 8) + 255;
+
+					}
+
+					if (map.map[y][x] == map.CANTBLOCK) {
+						map.blockColor[y][x] = 0xFFEEFFFF;
+					}
 
 				}
 
 			}
-		}
-		else {
+		//}
+		/*else {
 			for (int y = 0; y < 50; y++) {
 
 				for (int x = 0; x < 50; x++) {
@@ -461,7 +465,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 			}
-		}
+		}*/
 
 		/*if (Novice::IsPressMouse(1) || Novice::IsPressMouse(0)) {
 
@@ -495,7 +499,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Update(map, slow);
 		}
 		else {
-			player.Update(mapEasy, slow);
+			player.Update(map, slow);
 		}
 		
 		//testEnemy.Update(player, map, slow);
@@ -526,7 +530,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				for (int y = 0; y < 50; y++) {
 					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+						fscanf_s(fp, "%d,", &map.map[y][x]);
 					}
 				}
 				fclose(fp);
@@ -566,7 +570,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				for (int y = 0; y < 50; y++) {
 					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &mapEasy.map[y][x]);
+						fscanf_s(fp, "%d,", &map.map[y][x]);
 					}
 				}
 				fclose(fp);
@@ -585,8 +589,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//もの運び
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
-		//Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
-		if (Map == 1) {
+		Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+		//if (Map == 1) {
 			for (int y = 0; y < 50; y++) {
 
 				for (int x = 0; x < 50; x++) {
@@ -602,8 +606,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 			}
-		}
-		else {
+		//}
+		/*else {
 			for (int y = 0; y < 50; y++) {
 
 				for (int x = 0; x < 50; x++) {
@@ -619,11 +623,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 			}
-		}
+		}*/
 
 		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, ColorReverse(color), kFillModeSolid);
 
-		Novice::DrawBox(20, 700, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
+		Novice::DrawBox(20, 700, 20 * ( 60 - slowTime), 10, 0, 0xFFFF00FF, kFillModeSolid);
+		Novice::DrawBox(20, 680, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
 
 		player.Draw(isColorReverse);
 		if (Map == 1) {
