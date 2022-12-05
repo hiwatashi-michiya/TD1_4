@@ -18,7 +18,7 @@ struct Map{
 	unsigned int blockColor[50][50];
 
 	int blockCount;
-
+	int blockNum[50][50];
 	
 };
 
