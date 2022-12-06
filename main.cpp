@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ellipseRadius = 50;
 
 	int color = 0x000000FF;
-	unsigned int backgroundColor = 0xFF88FFFF;
+	unsigned int backgroundColor = 0xFFCCFFFF;
 	
 
 	bool isHit = false;
@@ -55,6 +55,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int slowTime = 0;
 	bool canSlow = true;
 	bool slowFlag = false;
+
+
 
 	DRAWTYPE drawType = MAKE;
 
@@ -252,7 +254,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-							if (Novice::IsPressMouse(0) == true ) {
+							if (Novice::IsPressMouse(0) == true && canSlow == true) {
 								
 								
 								if (preMousePush == true) {
