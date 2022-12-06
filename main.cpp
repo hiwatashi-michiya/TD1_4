@@ -263,6 +263,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Map--;
 
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					map.blockNum[y][x] = 0;
+					map.map[y][x] == map.NONE;
+					map.blockCount = 25;
+				}
+			}
+
 			if (Map == 1) {
 				FILE* fp = NULL;
 				fopen_s(&fp, "./Resources/test.csv", "rt");
@@ -299,6 +307,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.SetLeft();
 
 			Map++;
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					map.blockNum[y][x] = 0;
+					map.map[y][x] == map.NONE;
+					map.blockCount = 25;
+				}
+			}
 
 			if (Map == 1) {
 				FILE* fp = NULL;
@@ -503,7 +519,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 															map.blockCount++;
 															map.tmpTime[y][x] = 0;
 
-															map.blockNum[y][x]++;
+															//map.blockNum[y][x]++;
 														}
 													}
 												}
@@ -567,6 +583,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 												map.blockCount++;
 												map.tmpTime[y][x] = 0;
 
+												//map.blockNum[y][x]++;
 											}
 										}
 									}
@@ -604,7 +621,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (map.tmpTime[y][x] == 0) {
 							map.map[y][x] = map.BLOCK;
-							map.blockCount++;
+							//map.blockCount++;
 						}
 
 					}
