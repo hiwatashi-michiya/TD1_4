@@ -252,148 +252,157 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-							if (Novice::IsPressMouse(0) == true ) {
+							if (Novice::IsPressMouse(0) == true && preMousePush != false) {
 								
-								
-								if (preMousePush == true) {
-									
-									while (1) {
-										
-
-										if (setMouseYGrid < mouseYGrid) {
-											setMouseYGrid++;
-										}
-										if (setMouseYGrid > mouseYGrid) {
-											setMouseYGrid--;
-										}
-										if (setMouseXGrid < mouseXGrid) {
-											setMouseXGrid++;
-										}
-										if (setMouseXGrid > mouseXGrid) {
-											setMouseXGrid--;
-										}
-
-										if (setMouseYGrid == mouseYGrid && setMouseXGrid == mouseXGrid) {
-											//Novice::DrawBox(0, 0, 600, 600, 0, RED,kFillModeSolid);
-											break;
-										}
-										
-										if (map.map[setMouseYGrid][setMouseXGrid] == map.NONE) {
-											if (map.blockCount > 0) {
-												map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
-												map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
-												map.blockCount--;
-												map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;
-
-												for (int y = 0; y < 50; y++) {
-													for (int x = 0; x < 50; x++) {
-														map.blockNum[y][x]++;
-													}
-												}
-												map.blockNum[setMouseYGrid][setMouseXGrid] = 0;
-											}
-											else {
-								
-												/*int MinTmpTime = 300;
-												for (int y = 0; y < 50; y++) {
-													for (int x = 0; x < 50; x++) {
-														if (MinTmpTime > int(map.tmpTime[y][x]) && int(map.tmpTime[y][x] != 0)) {
-															MinTmpTime = int(map.tmpTime[y][x]);
-														}
-													}
-												}*/
-								
-												for (int y = 0; y < 50; y++) {
-													for (int x = 0; x < 50; x++) {
-														if (int(map.blockNum[y][x]) == 24) {
-															map.map[y][x] = map.NONE;
-															map.blockCount++;
-															map.tmpTime[y][x] = 0;
-
-															map.blockNum[y][x]++;
-														}
-													}
-												}
-								
-												map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
-												map.blockCount--;
-												map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
-												map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;
-								
-												for (int y = 0; y < 50; y++) {
-													for (int x = 0; x < 50; x++) {
-														map.blockNum[y][x]++;
-													}
-												}
-												map.blockNum[setMouseYGrid][setMouseXGrid] = 0;
-											}
-										}
-
-
-										/*map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
-										map.blockCount--;
-										map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
-										map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;*/
-
-
-										
-								
-									}
-
-								
-								}
-
-								if (map.blockCount > 0) {
-									map.map[y][x] = map.TMPBLOCK;
-									map.tmpTime[y][x] = 300;
+								for (int i = -2; i < 3; i++) {
+									map.map[y][x + i] = map.TMPBLOCK;
 									map.blockCount--;
-									map.blockColor[y][x] = 0xFFFFFFFF;
-
-									for (int y = 0; y < 50; y++) {
-										for (int x = 0; x < 50; x++) {
-											map.blockNum[y][x]++;
-										}
-									}
-									map.blockNum[y][x] = 0;
+									map.tmpTime[y][x + i] = 300;
+									map.blockColor[y][x + i] = 0xFFFFFFFF;
 								}
-								else {
 
-									/*int MinTmpTime = 300;
-									for (int y = 0; y < 50; y++) {
-										for (int x = 0; x < 50; x++) {
-											if (MinTmpTime > int(map.tmpTime[y][x]) && int(map.tmpTime[y][x] != 0)) {
-												MinTmpTime = int(map.tmpTime[y][x]);
-											}
-										}
-									}*/
-
-									for (int y = 0; y < 50; y++) {
-										for (int x = 0; x < 50; x++) {
-											if (int(map.blockNum[y][x]) == 24) {
-												map.map[y][x] = map.NONE;
-												map.blockCount++;
-												map.tmpTime[y][x] = 0;
-
-											}
-										}
-									}
-
-
-									map.map[y][x] = map.TMPBLOCK;
-									map.blockCount--;
-									map.tmpTime[y][x] = 300;
-									map.blockColor[y][x] = 0xFFFFFFFF;
-
-
-									for (int y = 0; y < 50; y++) {
-										for (int x = 0; x < 50; x++) {
-											map.blockNum[y][x]++;
-										}
-									}
-									map.blockNum[y][x] = 0;
-								}
-								
 							}
+							//	
+							//	
+							//	if (preMousePush == true) {
+							//		
+							//		while (1) {
+							//			
+
+							//			if (setMouseYGrid < mouseYGrid) {
+							//				setMouseYGrid++;
+							//			}
+							//			if (setMouseYGrid > mouseYGrid) {
+							//				setMouseYGrid--;
+							//			}
+							//			if (setMouseXGrid < mouseXGrid) {
+							//				setMouseXGrid++;
+							//			}
+							//			if (setMouseXGrid > mouseXGrid) {
+							//				setMouseXGrid--;
+							//			}
+
+							//			if (setMouseYGrid == mouseYGrid && setMouseXGrid == mouseXGrid) {
+							//				//Novice::DrawBox(0, 0, 600, 600, 0, RED,kFillModeSolid);
+							//				break;
+							//			}
+							//			
+							//			if (map.map[setMouseYGrid][setMouseXGrid] == map.NONE) {
+							//				if (map.blockCount > 0) {
+							//					map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
+							//					map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
+							//					map.blockCount--;
+							//					map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;
+
+							//					for (int y = 0; y < 50; y++) {
+							//						for (int x = 0; x < 50; x++) {
+							//							map.blockNum[y][x]++;
+							//						}
+							//					}
+							//					map.blockNum[setMouseYGrid][setMouseXGrid] = 0;
+							//				}
+							//				else {
+							//	
+							//					/*int MinTmpTime = 300;
+							//					for (int y = 0; y < 50; y++) {
+							//						for (int x = 0; x < 50; x++) {
+							//							if (MinTmpTime > int(map.tmpTime[y][x]) && int(map.tmpTime[y][x] != 0)) {
+							//								MinTmpTime = int(map.tmpTime[y][x]);
+							//							}
+							//						}
+							//					}*/
+							//	
+							//					for (int y = 0; y < 50; y++) {
+							//						for (int x = 0; x < 50; x++) {
+							//							if (int(map.blockNum[y][x]) == 24) {
+							//								map.map[y][x] = map.NONE;
+							//								map.blockCount++;
+							//								map.tmpTime[y][x] = 0;
+
+							//								map.blockNum[y][x]++;
+							//							}
+							//						}
+							//					}
+							//	
+							//					map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
+							//					map.blockCount--;
+							//					map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
+							//					map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;
+							//	
+							//					for (int y = 0; y < 50; y++) {
+							//						for (int x = 0; x < 50; x++) {
+							//							map.blockNum[y][x]++;
+							//						}
+							//					}
+							//					map.blockNum[setMouseYGrid][setMouseXGrid] = 0;
+							//				}
+							//			}
+
+
+							//			/*map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
+							//			map.blockCount--;
+							//			map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
+							//			map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;*/
+
+
+							//			
+							//	
+							//		}
+
+							//	
+							//	}
+
+							//	if (map.blockCount > 0) {
+							//		map.map[y][x] = map.TMPBLOCK;
+							//		map.tmpTime[y][x] = 300;
+							//		map.blockCount--;
+							//		map.blockColor[y][x] = 0xFFFFFFFF;
+
+							//		for (int y = 0; y < 50; y++) {
+							//			for (int x = 0; x < 50; x++) {
+							//				map.blockNum[y][x]++;
+							//			}
+							//		}
+							//		map.blockNum[y][x] = 0;
+							//	}
+							//	else {
+
+							//		/*int MinTmpTime = 300;
+							//		for (int y = 0; y < 50; y++) {
+							//			for (int x = 0; x < 50; x++) {
+							//				if (MinTmpTime > int(map.tmpTime[y][x]) && int(map.tmpTime[y][x] != 0)) {
+							//					MinTmpTime = int(map.tmpTime[y][x]);
+							//				}
+							//			}
+							//		}*/
+
+							//		for (int y = 0; y < 50; y++) {
+							//			for (int x = 0; x < 50; x++) {
+							//				if (int(map.blockNum[y][x]) == 24) {
+							//					map.map[y][x] = map.NONE;
+							//					map.blockCount++;
+							//					map.tmpTime[y][x] = 0;
+
+							//				}
+							//			}
+							//		}
+
+
+							//		map.map[y][x] = map.TMPBLOCK;
+							//		map.blockCount--;
+							//		map.tmpTime[y][x] = 300;
+							//		map.blockColor[y][x] = 0xFFFFFFFF;
+
+
+							//		for (int y = 0; y < 50; y++) {
+							//			for (int x = 0; x < 50; x++) {
+							//				map.blockNum[y][x]++;
+							//			}
+							//		}
+							//		map.blockNum[y][x] = 0;
+							//	}
+							//	
+							//}
 
 						}
 
