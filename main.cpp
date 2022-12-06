@@ -106,7 +106,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	const int kTestEnemy = 6;
 	TestEnemy testEnemy[kTestEnemy];
-
+	//
 	testEnemy[0].Set({ 928.0f,32.0f });
 	testEnemy[1].Set({ 832.0f,32.0f });
 	testEnemy[2].Set({ 736.0f,32.0f });
