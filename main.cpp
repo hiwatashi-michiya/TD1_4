@@ -47,9 +47,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ellipseRadius = 50;
 
 	int color = 0x000000FF;
-	unsigned int backgroundColor = 0xFF88FFFF;
+	unsigned int backgroundColor = 0x555555FF;
 	
-
 	bool isHit = false;
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
@@ -58,6 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isShowBorder = false;
 
 	int slowTime = 0;
+	const int kslowTimeMax = 120;
 	bool canSlow = true;
 	bool slowFlag = false;
 
@@ -65,6 +65,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Map map;
 	int Map = 0;
+
+	enum {
+		putBlockMode, // ブロック設置
+		explodeMode,  // 爆破
+		handMode //つかむとかたたくとか
+	};
+
+	int mouseActionMode = putBlockMode;
+
 
 	FILE* fp = NULL;
 	fopen_s(&fp, "./Resources/test.csv", "rt");
@@ -152,12 +161,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		///俺も食いたかった！！！！ゴメンネ; ;
 		///疲れた
+		///学校だとふとんがいないから集中できないし、仮にこの世にふとんがいなかったら精神が崩壊してる。
+		///ふとんがいてくれるから俺はがんばれる。
 
-		if (( Novice::IsPressMouse(0))) {
+		if (Novice::GetWheel() < 0) {
+			if (mouseActionMode < handMode) {
+				mouseActionMode++;
+			}
+		}
+		else if (Novice::GetWheel() > 0) {
+			if (mouseActionMode > putBlockMode) {
+				mouseActionMode--;
+			}
+		}
+
+
+		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
 			slowFlag = true;
 		}
 		else {
 			slowFlag = false;
+			/*if (preMousePush) {
+				canSlow = false;
+			}*/
 		}
 
 		if (slowFlag == true) {
@@ -165,7 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				slowTime++;
 				slow /= 1.1;
 			}
-			if (slowTime > 60) {
+			if (slowTime > kslowTimeMax) {
 				canSlow = false;
 			}
 		}
@@ -201,6 +227,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 		}
+
+		
 		/// 
 		///マップ書き込み機能のフラグをオンにする
 		///Eキーを押すと青のラインが出現する。出現している間はエディタ機能を使える
@@ -461,7 +489,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-							if (Novice::IsPressMouse(0) == true) {
+							if (Novice::IsPressMouse(0) == true && canSlow == true && slowFlag == true && mouseActionMode == putBlockMode) {
 
 
 								if (preMousePush == true) {
@@ -610,6 +638,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 
 					//Novice::ScreenPrintf(60, 200, "%d", map.blockCount);
+					if (y == mouseYGrid && x == mouseXGrid) {
+						if (Novice::IsPressMouse(0) == true && preMousePush == false) {
+							for (int i = -1; i < 2; i++) {
+								for (int j = -1; j < 2; j++) {
+									if (map.map[y + j][x + i] == map.BLOCK) {
+										map.map[y + j][x + i] = map.TMPNONE;
+										map.tmpTime[y + j][x + i] = 300;
+									}
+								}
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								if (map.map[y][x + i] == map.BLOCK) {
+									map.map[y][x + i] = map.TMPNONE;
+									map.tmpTime[y][x + i] = 300;
+								}
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								if (map.map[y + i][x] == map.BLOCK) {
+									map.map[y + i][x] = map.TMPNONE;
+									map.tmpTime[y + i][x] = 300;
+								}
+							}
+
+						}
+					}
 
 					if (map.map[y][x] == map.TMPNONE) {
 
@@ -630,11 +685,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-							if (Novice::IsPressMouse(1) == true) {
-								map.map[y][x] = map.TMPNONE;
-								map.tmpTime[y][x] = 300;
-
-							}
+							
 
 						}
 
@@ -967,13 +1018,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}*/
 
-		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, ColorReverse(color), kFillModeSolid);
+	
 		
 
 		
 
-		Novice::DrawBox(20, 700, 20 * ( 60 - slowTime), 10, 0, 0xFFFF00FF, kFillModeSolid);
-		Novice::DrawBox(20, 680, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
+		Novice::DrawBox(20, 700, 10 * (kslowTimeMax - slowTime), 10, 0, GREEN, kFillModeSolid);
+		//Novice::DrawBox(20, 680, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
 
 		player.Draw(isColorReverse);
 		if (Map == 1) {
@@ -983,6 +1034,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < kTestEnemy; i++) {
 				testEnemy[i].Draw();
 			}
+		}
+
+		switch (mouseActionMode)
+		{
+		case putBlockMode:
+			Novice::DrawBox(1280, 0, -64, 64, 0, RED, kFillModeSolid);
+			Novice::DrawBox(mouseX - 10, mouseY - 10, 20, 20, 0.0f, color, kFillModeSolid);
+			break;
+		case explodeMode:
+			Novice::DrawBox(1280, 0, -64, 64, 0, GREEN, kFillModeSolid);
+			
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					if (y == mouseYGrid && x == mouseXGrid) {
+							for (int i = -1; i < 2; i++) {
+								for (int j = -1; j < 2; j++) {
+									Novice::DrawBox((x - j) * 32, (y - i) * 32, 32, 32, 0, 0xFF0000EE, kFillModeWireFrame);
+								}
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								Novice::DrawBox((x - i) * 32, (y) * 32, 32, 32, 0, 0xFF0000EE, kFillModeWireFrame);
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								Novice::DrawBox((x) * 32, (y - i) * 32, 32, 32, 0, 0xFF0000EE, kFillModeWireFrame);
+							}
+					}
+				}
+			}
+			Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
+			break;
+		case handMode:
+			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
+			break;
 		}
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
