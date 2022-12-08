@@ -7,7 +7,9 @@
 #include "TestEnemy2.h"
 #include "Key.h"
 
-const char kWindowTitle[] = "LC1A_21_ヒワタシミチヤ";
+const char kWindowTitle[] = "map";
+
+const int kMaxBlock = 5;
 
 int ColorReverse(int basecolor);
 float isColorReverse = 0;
@@ -45,14 +47,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ellipseRadius = 50;
 
 	int color = 0x000000FF;
-	unsigned int backgroundColor = 0xFFCCFFFF;
+	unsigned int backgroundColor = 0x555555FF;
 	
-
 	bool isHit = false;
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
+	int FRAMEBORDER = Novice::LoadTexture("./Resources/frameborder.png");
+
+	bool isShowBorder = false;
 
 	int slowTime = 0;
+	const int kslowTimeMax = 120;
 	bool canSlow = true;
 	bool slowFlag = false;
 
@@ -62,6 +67,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Map map;
 	int Map = 0;
+
+	enum {
+		putBlockMode, // ブロック設置
+		explodeMode,  // 爆破
+		handMode //つかむとかたたくとか
+	};
+
+	int mouseActionMode = putBlockMode;
+
 
 	FILE* fp = NULL;
 	fopen_s(&fp, "./Resources/test.csv", "rt");
@@ -102,6 +116,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	}
 
+	bool isEdit = false;
+
+	int setNumber = 0;
+
+	char string[kMaxBlock][2] = { "0", "1", "2", "3", "4" };
+
+	
 	map.blockCount = 25;
 	//mapEasy.blockCount = 25;
 	Player player;
@@ -141,12 +162,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 		///俺も食いたかった！！！！ゴメンネ; ;
-		
-		if (( Novice::IsPressMouse(0))) {
+		///疲れた
+		///学校だとふとんがいないから集中できないし、仮にこの世にふとんがいなかったら精神が崩壊してる。
+		///ふとんがいてくれるから俺はがんばれる。
+
+		if (Novice::GetWheel() < 0) {
+			if (mouseActionMode < handMode) {
+				mouseActionMode++;
+			}
+		}
+		else if (Novice::GetWheel() > 0) {
+			if (mouseActionMode > putBlockMode) {
+				mouseActionMode--;
+			}
+		}
+
+
+		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
 			slowFlag = true;
 		}
 		else {
 			slowFlag = false;
+			/*if (preMousePush) {
+				canSlow = false;
+			}*/
 		}
 
 		if (slowFlag == true) {
@@ -154,7 +193,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				slowTime++;
 				slow /= 1.1;
 			}
-			if (slowTime > 60) {
+			if (slowTime > kslowTimeMax) {
 				canSlow = false;
 			}
 		}
@@ -180,6 +219,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		isColorReverse = (slow - 0.2f) / 0.8f;
 
+		if (Key::IsTrigger(DIK_Q)) {
+
+			if (isShowBorder == false) {
+				isShowBorder = true;
+			}
+			else {
+				isShowBorder = false;
+			}
+
+		}
+
+		
+		/// 
+		///マップ書き込み機能のフラグをオンにする
+		///Eキーを押すと青のラインが出現する。出現している間はエディタ機能を使える
+		///再度Eキーを押すと通常のゲームプレイに戻る
+		/// 
+		///デバッグ中の操作
+		///数字キーを押すと設置するブロックを変えることができる
+		///0:NONE(ブロックなし)
+		///1:CANTBLOCK(壊せないブロック)
+		///2:BLOCK(消せるブロック)
+		///配置は通常プレイと同じでなぞって配置できる
+		/// 
+		if (Key::IsTrigger(DIK_E)) {
+			
+			if (isEdit == false) {
+				isEdit = true;
+			}
+			else {
+				isEdit = false;
+			}
+
+		}
 
 		if (Key::IsTrigger(DIK_R)) {
 			if (Map == 1) {
@@ -214,6 +287,112 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 
+		if (player.LeftBottom.x < 32) {
+
+			player.SetRight();
+
+			Map--;
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					map.blockNum[y][x] = 0;
+					map.map[y][x] == map.NONE;
+					map.blockCount = 25;
+				}
+			}
+
+			if (Map == 1) {
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				map.blockCount = 25;
+			}
+			else {
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				map.blockCount = 25;
+			}
+
+		}
+
+		if (player.LeftBottom.x > 1280) {
+
+			player.SetLeft();
+
+			Map++;
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					map.blockNum[y][x] = 0;
+					map.map[y][x] == map.NONE;
+					map.blockCount = 25;
+				}
+			}
+
+			if (Map == 1) {
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				map.blockCount = 25;
+			}
+			else {
+				FILE* fp = NULL;
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				if (fp == NULL) {
+					return 0;
+				}
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+				fclose(fp);
+				map.blockCount = 25;
+			}
+
+		}
+
+		if (isEdit == true) {
+
+			//書き込む数字の設定
+			if (Key::IsTrigger(DIK_0)) {
+				setNumber = 0;
+			}
+
+			if (Key::IsTrigger(DIK_1)) {
+				setNumber = 1;
+			}
+
+			if (Key::IsTrigger(DIK_2)) {
+				setNumber = 2;
+			}
+
+		}
 
 		pMouseX = &mouseX;
 		pMouseY = &mouseY;
@@ -246,6 +425,64 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		int premouseXGrid = preMouseX / MAP_SIZE;
 		int setMouseYGrid = premouseYGrid;
 		int setMouseXGrid = premouseXGrid;
+
+		if (isEdit == true) {
+
+			if (Novice::IsPressMouse(0) == true) {
+
+				FILE* fp = NULL;
+
+				if (Map == 0) {
+					fopen_s(&fp, "./Resources/mapEasy.csv", "r+b");
+					if (fp == NULL) {
+						return 0;
+					}
+				}
+				else {
+					fopen_s(&fp, "./Resources/test.csv", "r+b");
+					if (fp == NULL) {
+						return 0;
+					}
+				}
+
+				fseek(fp, (setMouseYGrid * 102) + (setMouseXGrid * 2), SEEK_SET);
+
+				fputs(string[setNumber], fp);
+
+				fclose(fp);
+
+				if (Map == 1) {
+					FILE* fp = NULL;
+					fopen_s(&fp, "./Resources/test.csv", "rt");
+					if (fp == NULL) {
+						return 0;
+					}
+					for (int y = 0; y < 50; y++) {
+						for (int x = 0; x < 50; x++) {
+							fscanf_s(fp, "%d,", &map.map[y][x]);
+						}
+					}
+					fclose(fp);
+				}
+				else {
+					FILE* fp = NULL;
+					fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+					if (fp == NULL) {
+						return 0;
+					}
+					for (int y = 0; y < 50; y++) {
+						for (int x = 0; x < 50; x++) {
+							fscanf_s(fp, "%d,", &map.map[y][x]);
+						}
+					}
+					fclose(fp);
+				}
+
+			}
+
+		}
+		else {
+
 			for (int y = 0; y < 50; y++) {
 
 				for (int x = 0; x < 50; x++) {
@@ -254,13 +491,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-							if (Novice::IsPressMouse(0) == true && canSlow == true) {
-								
-								
+							if (Novice::IsPressMouse(0) == true && canSlow == true && slowFlag == true && mouseActionMode == putBlockMode) {
+
+
 								if (preMousePush == true) {
-									
+
 									while (1) {
-										
+
 
 										if (setMouseYGrid < mouseYGrid) {
 											setMouseYGrid++;
@@ -279,7 +516,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 											//Novice::DrawBox(0, 0, 600, 600, 0, RED,kFillModeSolid);
 											break;
 										}
-										
+
 										if (map.map[setMouseYGrid][setMouseXGrid] == map.NONE) {
 											if (map.blockCount > 0) {
 												map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
@@ -295,7 +532,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 												map.blockNum[setMouseYGrid][setMouseXGrid] = 0;
 											}
 											else {
-								
+
 												/*int MinTmpTime = 300;
 												for (int y = 0; y < 50; y++) {
 													for (int x = 0; x < 50; x++) {
@@ -304,7 +541,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 														}
 													}
 												}*/
-								
+
 												for (int y = 0; y < 50; y++) {
 													for (int x = 0; x < 50; x++) {
 														if (int(map.blockNum[y][x]) == 24) {
@@ -312,16 +549,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 															map.blockCount++;
 															map.tmpTime[y][x] = 0;
 
-															map.blockNum[y][x]++;
+															//map.blockNum[y][x]++;
 														}
 													}
 												}
-								
+
 												map.map[setMouseYGrid][setMouseXGrid] = map.TMPBLOCK;
 												map.blockCount--;
 												map.tmpTime[setMouseYGrid][setMouseXGrid] = 300;
 												map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;
-								
+
 												for (int y = 0; y < 50; y++) {
 													for (int x = 0; x < 50; x++) {
 														map.blockNum[y][x]++;
@@ -338,11 +575,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 										map.blockColor[setMouseYGrid][setMouseXGrid] = 0xFFFFFFFF;*/
 
 
-										
-								
+
+
 									}
 
-								
+
 								}
 
 								if (map.blockCount > 0) {
@@ -376,6 +613,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 												map.blockCount++;
 												map.tmpTime[y][x] = 0;
 
+												//map.blockNum[y][x]++;
 											}
 										}
 									}
@@ -394,7 +632,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 									}
 									map.blockNum[y][x] = 0;
 								}
-								
+
 							}
 
 						}
@@ -402,6 +640,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 
 					//Novice::ScreenPrintf(60, 200, "%d", map.blockCount);
+					if (y == mouseYGrid && x == mouseXGrid && mouseActionMode == explodeMode) {
+						if (Novice::IsPressMouse(0) == true && preMousePush == false) {
+							for (int i = -1; i < 2; i++) {
+								for (int j = -1; j < 2; j++) {
+									if (map.map[y + j][x + i] == map.BLOCK) {
+										map.map[y + j][x + i] = map.TMPNONE;
+										map.tmpTime[y + j][x + i] = 300;
+									}
+								}
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								if (map.map[y][x + i] == map.BLOCK) {
+									map.map[y][x + i] = map.TMPNONE;
+									map.tmpTime[y][x + i] = 300;
+								}
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								if (map.map[y + i][x] == map.BLOCK) {
+									map.map[y + i][x] = map.TMPNONE;
+									map.tmpTime[y + i][x] = 300;
+								}
+							}
+
+						}
+					}
 
 					if (map.map[y][x] == map.TMPNONE) {
 
@@ -413,7 +678,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (map.tmpTime[y][x] == 0) {
 							map.map[y][x] = map.BLOCK;
-							map.blockCount++;
+							//map.blockCount++;
 						}
 
 					}
@@ -422,11 +687,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-						if (Novice::IsPressMouse(1) == true) {
-							map.map[y][x] = map.TMPNONE;
-							map.tmpTime[y][x] = 300;
-
-							}
+							
 
 						}
 
@@ -463,6 +724,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 			}
+
+		}
+
+		
 		//}
 		/*else {
 			for (int y = 0; y < 50; y++) {
@@ -727,6 +992,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 			}
+
+			if (isShowBorder == true) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00000088);
+			}
+
+			if (isEdit == true) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+			}
+
 		//}
 		/*else {
 			for (int y = 0; y < 50; y++) {
@@ -746,13 +1020,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}*/
 
-		Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, ColorReverse(color), kFillModeSolid);
+	
 		
 
 		
 
-		Novice::DrawBox(20, 700, 20 * ( 60 - slowTime), 10, 0, 0xFFFF00FF, kFillModeSolid);
-		Novice::DrawBox(20, 680, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
+		Novice::DrawBox(20, 700, 10 * (kslowTimeMax - slowTime), 10, 0, GREEN, kFillModeSolid);
+		//Novice::DrawBox(20, 680, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
 
 		player.Draw(isColorReverse);
 		if (Map == 1) {
@@ -762,6 +1036,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < kTestEnemy; i++) {
 				testEnemy[i].Draw();
 			}
+		}
+
+		switch (mouseActionMode)
+		{
+		case putBlockMode:
+			Novice::DrawBox(1280, 0, -64, 64, 0, RED, kFillModeSolid);
+			Novice::DrawBox(mouseX - 10, mouseY - 10, 20, 20, 0.0f, color, kFillModeSolid);
+			break;
+		case explodeMode:
+			Novice::DrawBox(1280, 0, -64, 64, 0, GREEN, kFillModeSolid);
+			
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					if (y == mouseYGrid && x == mouseXGrid) {
+							for (int i = -1; i < 2; i++) {
+								for (int j = -1; j < 2; j++) {
+									Novice::DrawBox((x - j) * 32, (y - i) * 32, 32, 32, 0, 0xFF0000EE, kFillModeWireFrame);
+								}
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								Novice::DrawBox((x - i) * 32, (y) * 32, 32, 32, 0, 0xFF0000EE, kFillModeWireFrame);
+							}
+
+							for (int i = -2; i < 3; i += 4) {
+								Novice::DrawBox((x) * 32, (y - i) * 32, 32, 32, 0, 0xFF0000EE, kFillModeWireFrame);
+							}
+					}
+				}
+			}
+			Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
+			break;
+		case handMode:
+			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
+			break;
 		}
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 

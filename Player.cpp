@@ -28,6 +28,21 @@ void Player::Init() {
 
 	texture = Novice::LoadTexture("white1x1.png");
 }
+
+void Player::SetLeft() {
+	LeftTop.x = 32;
+	RightTop.x = 64;
+	LeftBottom.x = 32;
+	RightBottom.x = 64;
+}
+
+void Player::SetRight() {
+	LeftTop.x = 1280;
+	RightTop.x = 1312;
+	LeftBottom.x = 1280;
+	RightBottom.x = 1312;
+}
+
 void Player::Update(Map map,float slow) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
