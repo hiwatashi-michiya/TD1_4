@@ -32,6 +32,8 @@ public:
 	Vec2 gravityVelocity;
 	float gravitySpeed;
 
+	bool expflag = false;
+
 	int key;
 	int prekey;
 

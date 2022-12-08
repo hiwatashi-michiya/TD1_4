@@ -183,6 +183,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 
+		expPos = { float(mouseX),float(mouseY) };
+		expCir = { expPos  , expRad };
+
+		if (expFlag == true) {
+
+			int pow = 15;
+
+			float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
+
+			float ecpPowF = expRad / expPowDistance;
+
+			Vec2 expPowVec =
+			{ ((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) / expRad * pow),
+				((player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) / expRad * pow) };
+
+			if (expPowVec.y < 0) {
+				expPowVec.y = -pow - expPowVec.y;
+			}
+			else {
+				expPowVec.y = pow - expPowVec.y;
+			}
+
+			if (expPowVec.x < 0) {
+				expPowVec.x = -pow - expPowVec.x;
+			}
+			else {
+				expPowVec.x = pow - expPowVec.x;
+			}
+
+			player.hitCircle(expCir, expPowVec, 0);
+
+		}
 
 		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
 			slowFlag = true;
@@ -745,38 +777,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			}
 
-			expPos = { float(mouseX),float(mouseY) };
-			expCir = { expPos  , expRad };
-
-			if (expFlag == true) {
-
-				int pow = 15;
-
-				float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
-
-				float ecpPowF = expRad / expPowDistance;
-
-				Vec2 expPowVec = 
-				{ ((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) / expRad * pow),
-					((player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) / expRad * pow)};
-
-				if (expPowVec.y < 0) {
-					expPowVec.y = -pow - expPowVec.y;
-				}
-				else {
-					expPowVec.y = pow - expPowVec.y;
-				}
-
-				if (expPowVec.x < 0) {
-					expPowVec.x = -pow - expPowVec.x;
-				}
-				else {
-					expPowVec.x = pow - expPowVec.x;
-				}
-
-				player.hitCircle(expCir, expPowVec, 0);
-				
-			}
+			
 
 			
 
