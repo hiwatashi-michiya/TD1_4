@@ -8,7 +8,8 @@ struct Map{
 		CANTBLOCK,
 		BLOCK,
 		TMPNONE,
-		TMPBLOCK
+		TMPBLOCK,
+		NEEDLE
 		
 	};
 	int map[50][50];
