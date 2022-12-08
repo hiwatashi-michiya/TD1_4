@@ -1,6 +1,8 @@
 #pragma once
 #include "Vec2.h"
 #include "Map.h"
+#include"Quad.h"
+#include"Circle.h"
 
 class Player
 {
@@ -17,6 +19,9 @@ public:
 	Vec2 RightBottom;
 	Vec2 vector;
 	Vec2 velocity;
+	Vec2 knockBackVelocity= {0,0};
+
+	Quad playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
 	
 	float speed;
 	
@@ -27,6 +32,8 @@ public:
 	Vec2 gravityVelocity;
 	float gravitySpeed;
 
+	bool expflag = false;
+
 	int key;
 	int prekey;
 
@@ -35,6 +42,8 @@ public:
 	void Update(Map map, float slow);
 	void Draw(float isColorReverse);
 
-	
+	Quad GetPlayerQuad() { return playerColQuad;};
+
+	void hitCircle(Circle targetCircle, Vec2 knockBack,int Damage);
 };
 

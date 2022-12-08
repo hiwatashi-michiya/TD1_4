@@ -1,6 +1,8 @@
 #include "Player.h"
 #include <Novice.h>
 #include"Key.h"
+#include"Collision.h"
+#include"Circle.h"
 
 Player::Player() {
 	Init();
@@ -13,7 +15,7 @@ void Player::Init() {
 	LeftBottom = { position.x+0,position.y + 32 };
 	RightBottom = { position.x + 32,position.y + 32 };
 
-	
+	playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
 
 	vector = { 0,0 };
 	velocity = { 0,0 };
@@ -246,6 +248,23 @@ void Player::Update(Map map,float slow) {
 
 	}
 
+	{
+		///*if (knockBackVelocity.x > 0) {
+		//	knockBackVelocity.x -= 1;
+		//}
+		//if (knockBackVelocity.x < 0) {
+		//	knockBackVelocity.x += 1;
+		//}*/
+		//knockBackVelocity.y += 1;
+
+
+		//LeftTop += knockBackVelocity;
+		//RightTop += knockBackVelocity;
+		//LeftBottom += knockBackVelocity;
+		//RightBottom += knockBackVelocity;
+	}
+
+
 	
 	//d—Í
 	{
@@ -366,8 +385,13 @@ void Player::Update(Map map,float slow) {
 			jumpFlag = true;
 		}
 	}
+
+	
+
 	prekey = key;
 	key = 0;
+
+	playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
 
 	Novice::ScreenPrintf(0, 400, "slow:%0.2f", slow);
 }
@@ -387,4 +411,14 @@ void Player::Draw(float isColorReverse) {
 
 	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
 	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, PlayerColor);
+}
+
+void Player::hitCircle(Circle targetCircle,Vec2 knockBack, int Damage)
+{
+	if (Collision::CircleToQuad(targetCircle, playerColQuad)) {
+
+		gravityVelocity = { 0,0 };
+
+		gravityVelocity = knockBack;
+	}
 }

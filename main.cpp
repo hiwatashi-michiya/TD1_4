@@ -6,6 +6,9 @@
 #include "TestEnemy.h"
 #include "TestEnemy2.h"
 #include "Key.h"
+#include "Collision.h"
+#include "Circle.h"
+#include "Quad.h"
 
 const char kWindowTitle[] = "map";
 
@@ -60,6 +63,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int kslowTimeMax = 120;
 	bool canSlow = true;
 	bool slowFlag = false;
+
+	Vec2 expPos = { 640,360};
+	float expRad = 128;
+	Circle expCir = { expPos  , expRad };
+	bool expFlag = false;
 
 	DRAWTYPE drawType = MAKE;
 
@@ -175,6 +183,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 
+		expPos = { float(mouseX),float(mouseY) };
+		expCir = { expPos  , expRad };
+
+		if (expFlag == true) {
+
+			int pow = 15;
+
+			float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
+
+			float ecpPowF = expRad / expPowDistance;
+
+			Vec2 expPowVec =
+			{ ((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) / expRad * pow),
+				((player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) / expRad * pow) };
+
+			if (expPowVec.y < 0) {
+				expPowVec.y = -pow - expPowVec.y;
+			}
+			else {
+				expPowVec.y = pow - expPowVec.y;
+			}
+
+			if (expPowVec.x < 0) {
+				expPowVec.x = -pow - expPowVec.x;
+			}
+			else {
+				expPowVec.x = pow - expPowVec.x;
+			}
+
+			player.hitCircle(expCir, expPowVec, 0);
+
+		}
 
 		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
 			slowFlag = true;
@@ -485,6 +525,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		else {
 
+			expFlag = false;
+
 			for (int y = 0; y < 50; y++) {
 
 				for (int x = 0; x < 50; x++) {
@@ -493,7 +535,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
 
-							if (Novice::IsPressMouse(0) == true && canSlow == true && slowFlag == true && mouseActionMode == putBlockMode) {
+							if (Novice::IsPressMouse(0) == true && slowTime > 0 && mouseActionMode == putBlockMode) {
 
 
 								if (preMousePush == true) {
@@ -644,6 +686,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					//Novice::ScreenPrintf(60, 200, "%d", map.blockCount);
 					if (y == mouseYGrid && x == mouseXGrid && mouseActionMode == explodeMode) {
 						if (Novice::IsPressMouse(0) == true && preMousePush == false) {
+							expFlag = true;
 							for (int i = -1; i < 2; i++) {
 								for (int j = -1; j < 2; j++) {
 									if (map.map[y + j][x + i] == map.BLOCK) {
@@ -734,8 +777,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			}
 
+			
+
+			
+
 		}
 
+		
 		
 		//}
 		/*else {
@@ -1075,7 +1123,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 			}
-			Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
+			
+			Novice::DrawEllipse(expPos.x, expPos.y, expRad, expRad, 0, GREEN, kFillModeWireFrame);
+			Novice::DrawEllipse(mouseX, mouseY, 20, 20, 0.0f, color, kFillModeSolid);
+			
 			break;
 		case handMode:
 			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
@@ -1088,6 +1139,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
 		/*Novice::ScreenPrintf(10, 200, "slow:%f", slow);*/
+
+		
+		if (expFlag == true) {
+			//Novice::DrawBox(0, 0, 1280, 64, 0, 0xFFFF00FF, kFillModeSolid);
+			Novice::DrawEllipse(expPos.x, expPos.y, expRad, expRad, 0, GREEN, kFillModeSolid);
+		}
 
 		///
 		/// ↑描画処理ここまで
