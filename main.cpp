@@ -1003,7 +1003,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			if (isShowBorder == true) {
-				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00000088);
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
 			}
 
 			if (isEdit == true) {
