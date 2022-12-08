@@ -642,7 +642,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 
 					//Novice::ScreenPrintf(60, 200, "%d", map.blockCount);
-					if (y == mouseYGrid && x == mouseXGrid) {
+					if (y == mouseYGrid && x == mouseXGrid && mouseActionMode == explodeMode) {
 						if (Novice::IsPressMouse(0) == true && preMousePush == false) {
 							for (int i = -1; i < 2; i++) {
 								for (int j = -1; j < 2; j++) {
