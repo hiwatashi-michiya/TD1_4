@@ -12,7 +12,7 @@
 
 const char kWindowTitle[] = "map";
 
-const int kMaxBlock = 5;
+const int kMaxBlock = 10;
 
 int ColorReverse(int basecolor);
 float isColorReverse = 0;
@@ -126,27 +126,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int setNumber = 0;
 
-	char string[kMaxBlock][2] = { "0", "1", "2", "3", "4" };
+	char string[kMaxBlock][2] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 	
 	map.blockCount = 25;
 	//mapEasy.blockCount = 25;
 	Player player;
 
-	const int kTestEnemy = 6;
-	TestEnemy testEnemy[kTestEnemy];
-	//
-	testEnemy[0].Set({ 928.0f,32.0f });
-	testEnemy[1].Set({ 832.0f,32.0f });
-	testEnemy[2].Set({ 736.0f,32.0f });
-	testEnemy[3].Set({ 640.0f,32.0f });
-	testEnemy[4].Set({ 1120.0f,32.0f });
-	testEnemy[5].Set({ 1184.0f,32.0f });
+	//const int kTestEnemy = 6;
+	//TestEnemy testEnemy[kTestEnemy];
+	////
+	//testEnemy[0].Set({ 928.0f,32.0f });
+	//testEnemy[1].Set({ 832.0f,32.0f });
+	//testEnemy[2].Set({ 736.0f,32.0f });
+	//testEnemy[3].Set({ 640.0f,32.0f });
+	//testEnemy[4].Set({ 1120.0f,32.0f });
+	//testEnemy[5].Set({ 1184.0f,32.0f });
 
-	const int kTestEnemy2 = 2;
+	/*const int kTestEnemy2 = 2;
 	TestEnemy2 testEnemy2[kTestEnemy2];
 	testEnemy2[0].Set({ 32.0f,256.0f });
-	testEnemy2[1].Set({ 32.0f,352.0f });
+	testEnemy2[1].Set({ 32.0f,352.0f });*/
 	float slow = 1.0f;
 
 	Novice::SetMouseCursorVisibility(0);
@@ -396,6 +396,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (Key::IsTrigger(DIK_2)) {
 				setNumber = 2;
+			}
+
+			if (Key::IsTrigger(DIK_5)) {
+				setNumber = 5;
 			}
 
 		}
@@ -692,6 +696,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
+					//壊せるブロック
 					if (map.map[y][x] == map.BLOCK) {
 
 						if (y == mouseYGrid && x == mouseXGrid) {
@@ -706,7 +711,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-
+					//一時ブロック
 					if (map.map[y][x] == map.TMPBLOCK) {
 
 						map.tmpTime[y][x]--;
@@ -726,8 +731,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						}
 					}
 
+					//壊せないブロック
 					if (map.map[y][x] == map.CANTBLOCK) {
 						map.blockColor[y][x] = 0xFFEEFFFF;
+					}
+
+					//針
+					if (map.map[y][x] == map.NEEDLE) {
+						map.blockColor[y][x] = 0xAAAAFFFF;
 					}
 
 				}
@@ -912,12 +923,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}*/
 		if (Map == 1) {
-			for (int i = 0; i < kTestEnemy; i++) {
+			/*for (int i = 0; i < kTestEnemy; i++) {
 				testEnemy[i].Update(player, map, slow);
 			}
 			for (int i = 0; i < kTestEnemy2; i++) {
 				testEnemy2[i].Update(player, map, slow);
-			}
+			}*/
 			player.Update(map, slow);
 		}
 		else {
@@ -982,14 +993,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				fclose(fp);
-				testEnemy[0].Set({ 928.0f,32.0f });
+			/*	testEnemy[0].Set({ 928.0f,32.0f });
 				testEnemy[1].Set({ 832.0f,32.0f });
 				testEnemy[2].Set({ 736.0f,32.0f });
 				testEnemy[3].Set({ 640.0f,32.0f });
 				testEnemy[4].Set({ 1120.0f,32.0f });
 				testEnemy[5].Set({ 1184.0f,32.0f });
 				testEnemy2[0].Set({ 32.0f,256.0f });
-				testEnemy2[1].Set({ 32.0f,352.0f });
+				testEnemy2[1].Set({ 32.0f,352.0f });*/
 				Map = 1;
 			}
 			else {
@@ -1026,7 +1037,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				for (int x = 0; x < 50; x++) {
 
-					if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK) {
+					if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
 
 						Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
 							x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
@@ -1075,12 +1086,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		player.Draw(isColorReverse);
 		if (Map == 1) {
-			for (int i = 0; i < kTestEnemy2; i++) {
+			/*for (int i = 0; i < kTestEnemy2; i++) {
 				testEnemy2[i].Draw();
 			}
 			for (int i = 0; i < kTestEnemy; i++) {
 				testEnemy[i].Draw();
-			}
+			}*/
 		}
 
 		switch (mouseActionMode)

@@ -115,6 +115,22 @@ void Player::Update(Map map,float slow) {
 		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
 		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
 		
+		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[LeftBottomY][LeftBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
+		}
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
+
 		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
 			(map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE)) {
 			LeftTop += velocity * slow;
@@ -148,6 +164,24 @@ void Player::Update(Map map,float slow) {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
+
+		if ((map.map[RightTopY][RightTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[RightBottomY][RightBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
+		}
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
+
+
 		if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) &&
 			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
 			LeftTop += velocity * slow;
@@ -180,6 +214,22 @@ void Player::Update(Map map,float slow) {
 
 		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
 		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+
+		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[RightTopY][RightTopX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
+		}
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
 
 		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
 			(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
@@ -248,6 +298,66 @@ void Player::Update(Map map,float slow) {
 
 		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
 		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
+
+		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[RightTopY][RightTopX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			tmpLeftTop = LeftTop + gravityVelocity;
+			tmpRightTop.x = (RightTop.x - 1) + gravityVelocity.x;
+			tmpRightTop.y = (RightTop.y) + gravityVelocity.y;
+			tmpLeftBottom.x = LeftBottom.x + gravityVelocity.x;
+			tmpLeftBottom.y = (LeftBottom.y) + gravityVelocity.y;
+			tmpRightBottom.x = RightBottom.x - 1 + gravityVelocity.x;
+			tmpRightBottom.y = RightBottom.y + gravityVelocity.y;
+
+			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+
+			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+
+			LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
+			LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
+
+			RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
+			RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
+		}
+		if ((map.map[LeftBottomY][LeftBottomX] == map.NEEDLE /*|| map.map[LeftBottomY][LeftBottomX] == map.TMPNONE*/) &&
+			(map.map[RightBottomY][RightBottomX] == map.NEEDLE /*|| map.map[RightBottomY][RightBottomX] == map.TMPNONE*/)) {
+			Init();
+			tmpLeftTop = LeftTop + gravityVelocity;
+			tmpRightTop.x = (RightTop.x - 1) + gravityVelocity.x;
+			tmpRightTop.y = (RightTop.y) + gravityVelocity.y;
+			tmpLeftBottom.x = LeftBottom.x + gravityVelocity.x;
+			tmpLeftBottom.y = (LeftBottom.y) + gravityVelocity.y;
+			tmpRightBottom.x = RightBottom.x - 1 + gravityVelocity.x;
+			tmpRightBottom.y = RightBottom.y + gravityVelocity.y;
+
+			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+
+			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+
+			LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
+			LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
+
+			RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
+			RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
+		}
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
+
+
 		if (!(map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) ||
 			!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
 			float num = (LeftTopY+1) * MAP_SIZE;
