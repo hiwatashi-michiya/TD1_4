@@ -738,14 +738,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			expCir = { expPos  , expRad };
 
 			if (expFlag == true) {
-				
-				Vec2 expPowVec = { 0,0 };
 
-				float expPowf = (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y);
+				int pow = 15;
 
+				float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
 
+				float ecpPowF = expRad / expPowDistance;
 
-				player.hitCircle(expCir, { 0,-0 }, 0);
+				Vec2 expPowVec = 
+				{ ((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) / expRad * pow),
+					((player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) / expRad * pow)};
+
+				if (expPowVec.y < 0) {
+					expPowVec.y = -pow - expPowVec.y;
+				}
+				else {
+					expPowVec.y = pow - expPowVec.y;
+				}
+
+				if (expPowVec.x < 0) {
+					expPowVec.x = -pow - expPowVec.x;
+				}
+				else {
+					expPowVec.x = pow - expPowVec.x;
+				}
+
+				player.hitCircle(expCir, expPowVec, 0);
 				
 			}
 
@@ -1093,8 +1111,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 			}
-			Novice::DrawEllipse(mouseX, mouseY, 10, 10, 0.0f, color, kFillModeSolid);
+			
 			Novice::DrawEllipse(expPos.x, expPos.y, expRad, expRad, 0, GREEN, kFillModeWireFrame);
+			Novice::DrawEllipse(mouseX, mouseY, 20, 20, 0.0f, color, kFillModeSolid);
+			
 			break;
 		case handMode:
 			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
