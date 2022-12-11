@@ -188,15 +188,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (expFlag == true) {
 
-			int pow = 15;
+			float pow = 0.5;
 
 			float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
 
-			float ecpPowF = expRad / expPowDistance;
+			float ecpPowF = 1 - (expPowDistance / expRad);
+
+			Vec2 PlayerPos = { player.GetPlayerQuad().LeftTop.x + 32 - expPos.x,
+				player.GetPlayerQuad().LeftTop.y + 32 - expPos.y };
 
 			Vec2 expPowVec =
-			{ ((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) / expRad * pow),
-				((player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) / expRad * pow) };
+			{ PlayerPos.x * -ecpPowF * pow,
+				PlayerPos.y * -ecpPowF * pow };
 
 			if (expPowVec.y < 0) {
 				expPowVec.y = -pow - expPowVec.y;
@@ -213,7 +216,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			player.hitCircle(expCir, expPowVec, 0);
-
+			Novice::ScreenPrintf(600, 200, "%0.2f", ecpPowF);
 		}
 
 		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
@@ -1032,7 +1035,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//もの運び
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
-		Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+		//Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
 		//if (Map == 1) {
 			for (int y = 0; y < 50; y++) {
 
