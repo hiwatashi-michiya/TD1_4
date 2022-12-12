@@ -189,17 +189,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (expFlag == true) {
 
-			int pow = 15;
+			float pow = 0.5;
 
 			float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
 
-			float ecpPowF = expRad / expPowDistance;
+			float ecpPowF = 1 - (expPowDistance / expRad);
+
+			Vec2 PlayerPos = { player.GetPlayerQuad().LeftTop.x + 32 - expPos.x,
+				player.GetPlayerQuad().LeftTop.y + 32 - expPos.y };
 
 			Vec2 expPowVec =
-			{ ((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) / expRad * pow),
-				((player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) / expRad * pow) };
+			{ PlayerPos.x * ecpPowF * pow,
+				PlayerPos.y * ecpPowF * pow };
 
-			if (expPowVec.y < 0) {
+			/*if (expPowVec.y < 0) {
 				expPowVec.y = -pow - expPowVec.y;
 			}
 			else {
@@ -211,10 +214,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			else {
 				expPowVec.x = pow - expPowVec.x;
-			}
+			}*/
 
 			player.hitCircle(expCir, expPowVec, 0);
-
+			Novice::ScreenPrintf(600, 200, "%0.2f", ecpPowF);
 		}
 
 		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
@@ -293,8 +296,42 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
+		Novice::ScreenPrintf(300,300,"%d", Map);
+
 		if (Key::IsTrigger(DIK_R)) {
-			if (Map == 1) {
+
+			player.Init();
+			FILE* fp = NULL;
+
+			switch (Map)
+			{
+			case 0:
+				
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				
+				break;
+			case 1:
+
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+
+				break;
+			}
+
+			if (fp == NULL) {
+				return 0;
+			}
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+
+			fclose(fp);
+			map.blockCount = 25;
+
+
+			/*if (Map == 1) {
 				player.Init();
 				FILE* fp = NULL;
 				fopen_s(&fp, "./Resources/test.csv", "rt");
@@ -309,7 +346,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				fclose(fp);
 				map.blockCount = 25;
 			}
-			else {
+			else if (Map == 0) {
 				player.Init();
 				FILE* fp = NULL;
 				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
@@ -323,7 +360,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				fclose(fp);
 				map.blockCount = 25;
-			}
+			}*/
 		}
 
 		if (player.LeftBottom.x < 32) {
@@ -340,7 +377,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			if (Map == 1) {
+			FILE* fp = NULL;
+
+			switch (Map)
+			{
+			case 0:
+
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+
+				break;
+			case 1:
+
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+
+				break;
+			}
+
+			if (fp == NULL) {
+				return 0;
+			}
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+
+			fclose(fp);
+			map.blockCount = 25;
+
+			/*if (Map == 1) {
 				FILE* fp = NULL;
 				fopen_s(&fp, "./Resources/test.csv", "rt");
 				if (fp == NULL) {
@@ -367,7 +433,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				fclose(fp);
 				map.blockCount = 25;
-			}
+			}*/
 
 		}
 
@@ -385,34 +451,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			if (Map == 1) {
-				FILE* fp = NULL;
-				fopen_s(&fp, "./Resources/test.csv", "rt");
-				if (fp == NULL) {
-					return 0;
-				}
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
-					}
-				}
-				fclose(fp);
-				map.blockCount = 25;
-			}
-			else {
-				FILE* fp = NULL;
+			FILE* fp = NULL;
+
+			switch (Map)
+			{
+			case 0:
+
 				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
-				if (fp == NULL) {
-					return 0;
-				}
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
-					}
-				}
-				fclose(fp);
-				map.blockCount = 25;
+
+				break;
+			case 1:
+
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+
+				break;
 			}
+
+			if (fp == NULL) {
+				return 0;
+			}
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+
+			fclose(fp);
+			map.blockCount = 25;
 
 		}
 
@@ -475,7 +541,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				FILE* fp = NULL;
 
-				if (Map == 0) {
+				/*if (Map == 0) {
 					fopen_s(&fp, "./Resources/mapEasy.csv", "r+b");
 					if (fp == NULL) {
 						return 0;
@@ -486,6 +552,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					if (fp == NULL) {
 						return 0;
 					}
+				}*/
+
+				switch (Map)
+				{
+				case 0:
+
+					fopen_s(&fp, "./Resources/mapEasy.csv", "r+b");
+
+					break;
+				case 1:
+
+					fopen_s(&fp, "./Resources/test.csv", "r+b");
+
+					break;
+				}
+
+				if (fp == NULL) {
+					return 0;
 				}
 
 				fseek(fp, (setMouseYGrid * 102) + (setMouseXGrid * 2), SEEK_SET);
@@ -494,32 +578,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				fclose(fp);
 
-				if (Map == 1) {
-					FILE* fp = NULL;
-					fopen_s(&fp, "./Resources/test.csv", "rt");
-					if (fp == NULL) {
-						return 0;
-					}
-					for (int y = 0; y < 50; y++) {
-						for (int x = 0; x < 50; x++) {
-							fscanf_s(fp, "%d,", &map.map[y][x]);
-						}
-					}
-					fclose(fp);
-				}
-				else {
-					FILE* fp = NULL;
+				//FILE* fp = NULL;
+
+				switch (Map)
+				{
+				case 0:
+
 					fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
-					if (fp == NULL) {
-						return 0;
-					}
-					for (int y = 0; y < 50; y++) {
-						for (int x = 0; x < 50; x++) {
-							fscanf_s(fp, "%d,", &map.map[y][x]);
-						}
-					}
-					fclose(fp);
+
+					break;
+				case 1:
+
+					fopen_s(&fp, "./Resources/test.csv", "rt");
+
+					break;
 				}
+
+				if (fp == NULL) {
+					return 0;
+				}
+
+				for (int y = 0; y < 50; y++) {
+					for (int x = 0; x < 50; x++) {
+						fscanf_s(fp, "%d,", &map.map[y][x]);
+					}
+				}
+
+				fclose(fp);
+				map.blockCount = 25;
 
 			}
 
@@ -876,8 +962,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+					+
 
-					if (mapEasy.map[y][x] == mapEasy.TMPBLOCK) {
 
 						mapEasy.tmpTime[y][x]--;
 
@@ -944,7 +1030,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		preMousePush = Novice::IsPressMouse(0);
 
 		if (Key::IsPress(DIK_R)) {
-			if (Map == 1) {
+			/*if (Map == 1) {
 				player.Init();
 				FILE* fp = NULL;
 				fopen_s(&fp, "./Resources/test.csv", "rt");
@@ -971,7 +1057,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				fclose(fp);
-			}
+			}*/
 		}
 
 		if (Key::IsTrigger(DIK_M)) {
@@ -982,44 +1068,83 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					map.blockCount = 25;
 				}
 			}
-			if (Map == 0) {
-				player.Init();
-				FILE* fp = NULL;
-				fopen_s(&fp, "./Resources/test.csv", "rt");
-				if (fp == NULL) {
-					return 0;
-				}
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
-					}
-				}
-				fclose(fp);
-			/*	testEnemy[0].Set({ 928.0f,32.0f });
-				testEnemy[1].Set({ 832.0f,32.0f });
-				testEnemy[2].Set({ 736.0f,32.0f });
-				testEnemy[3].Set({ 640.0f,32.0f });
-				testEnemy[4].Set({ 1120.0f,32.0f });
-				testEnemy[5].Set({ 1184.0f,32.0f });
-				testEnemy2[0].Set({ 32.0f,256.0f });
-				testEnemy2[1].Set({ 32.0f,352.0f });*/
-				Map = 1;
-			}
-			else {
-				player.Init();
-				FILE* fp = NULL;
+
+			player.Init();
+			FILE* fp = NULL;
+
+			Map++;
+
+			switch (Map)
+			{
+			case 0:
+
 				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
-				if (fp == NULL) {
-					return 0;
-				}
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
-					}
-				}
-				fclose(fp);
+
+				break;
+			case 1:
+
+				fopen_s(&fp, "./Resources/test.csv", "rt");
+
+				break;
+			
+			default:
+
+				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
 				Map = 0;
+				break;
 			}
+
+			if (fp == NULL) {
+				return 0;
+			}
+
+			for (int y = 0; y < 50; y++) {
+				for (int x = 0; x < 50; x++) {
+					fscanf_s(fp, "%d,", &map.map[y][x]);
+				}
+			}
+
+			fclose(fp);
+			map.blockCount = 25;
+
+			//if (Map == 0) {
+			//	player.Init();
+			//	FILE* fp = NULL;
+			//	fopen_s(&fp, "./Resources/test.csv", "rt");
+			//	if (fp == NULL) {
+			//		return 0;
+			//	}
+			//	for (int y = 0; y < 50; y++) {
+			//		for (int x = 0; x < 50; x++) {
+			//			fscanf_s(fp, "%d,", &map.map[y][x]);
+			//		}
+			//	}
+			//	fclose(fp);
+			///*	testEnemy[0].Set({ 928.0f,32.0f });
+			//	testEnemy[1].Set({ 832.0f,32.0f });
+			//	testEnemy[2].Set({ 736.0f,32.0f });
+			//	testEnemy[3].Set({ 640.0f,32.0f });
+			//	testEnemy[4].Set({ 1120.0f,32.0f });
+			//	testEnemy[5].Set({ 1184.0f,32.0f });
+			//	testEnemy2[0].Set({ 32.0f,256.0f });
+			//	testEnemy2[1].Set({ 32.0f,352.0f });*/
+			//	Map = 1;
+			//}
+			//else {
+			//	player.Init();
+			//	FILE* fp = NULL;
+			//	fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+			//	if (fp == NULL) {
+			//		return 0;
+			//	}
+			//	for (int y = 0; y < 50; y++) {
+			//		for (int x = 0; x < 50; x++) {
+			//			fscanf_s(fp, "%d,", &map.map[y][x]);
+			//		}
+			//	}
+			//	fclose(fp);
+			//	Map = 0;
+			//}
 		}
 
 		///
