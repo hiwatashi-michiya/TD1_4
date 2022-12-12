@@ -55,6 +55,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHit = false;
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
+	int DRAWTILE = Novice::LoadTexture("./Resources/colortile.png");
 	int FRAMEBORDER = Novice::LoadTexture("./Resources/frameborder.png");
 
 	bool isShowBorder = false;
