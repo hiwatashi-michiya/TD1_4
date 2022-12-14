@@ -147,12 +147,8 @@ void Player::Update(Map map,float slow) {
 				RightBottom.x = num + MAP_SIZE;
 			}*/
 
-			if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE ||
-				map.map[LeftTopY][LeftTopX] == map.REDNONE || map.map[LeftTopY][LeftTopX] == map.GREENNONE ||
-				map.map[LeftTopY][LeftTopX] == map.BLUENONE) &&
-				(map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE ||
-					map.map[LeftBottomY][LeftBottomX] == map.REDNONE || map.map[LeftBottomY][LeftBottomX] == map.GREENNONE ||
-					map.map[LeftBottomY][LeftBottomX] == map.BLUENONE)) {
+			if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
+				map.AnyNone(map.map[LeftBottomY][LeftBottomX]) == true) {
 				LeftTop += velocity * slow;
 				RightTop += velocity * slow;
 				LeftBottom += velocity * slow;
@@ -203,12 +199,8 @@ void Player::Update(Map map,float slow) {
 			}*/
 
 
-			if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE ||
-				map.map[RightTopY][RightTopX] == map.REDNONE || map.map[RightTopY][RightTopX] == map.GREENNONE ||
-				map.map[RightTopY][RightTopX] == map.BLUENONE) &&
-				(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE ||
-					map.map[RightBottomY][RightBottomX] == map.REDNONE || map.map[RightBottomY][RightBottomX] == map.GREENNONE ||
-					map.map[RightBottomY][RightBottomX] == map.BLUENONE)) {
+			if (map.AnyNone(map.map[RightTopY][RightTopX]) == true &&
+				map.AnyNone(map.map[RightBottomY][RightBottomX]) == true) {
 				LeftTop += velocity * slow;
 				RightTop += velocity * slow;
 				LeftBottom += velocity * slow;
@@ -256,12 +248,8 @@ void Player::Update(Map map,float slow) {
 				RightBottom.x = num + MAP_SIZE;
 			}*/
 
-			if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE ||
-				map.map[LeftTopY][LeftTopX] == map.REDNONE || map.map[LeftTopY][LeftTopX] == map.GREENNONE ||
-				map.map[LeftTopY][LeftTopX] == map.BLUENONE) &&
-				(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE ||
-					map.map[RightTopY][RightTopX] == map.REDNONE || map.map[RightTopY][RightTopX] == map.GREENNONE ||
-					map.map[RightTopY][RightTopX] == map.BLUENONE)) {
+			if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
+				map.AnyNone(map.map[RightTopY][RightTopX]) == true) {
 				LeftTop += gravityVelocity;
 				RightTop += gravityVelocity;
 				LeftBottom += gravityVelocity;
@@ -389,12 +377,8 @@ void Player::Update(Map map,float slow) {
 		}*/
 
 
-		if (!(map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE ||
-			map.map[LeftTopY][LeftTopX] == map.REDNONE || map.map[LeftTopY][LeftTopX] == map.GREENNONE ||
-			map.map[LeftTopY][LeftTopX] == map.BLUENONE) ||
-			!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE ||
-				map.map[RightTopY][RightTopX] == map.REDNONE || map.map[RightTopY][RightTopX] == map.GREENNONE ||
-				map.map[RightTopY][RightTopX] == map.BLUENONE)) {
+		if (!(map.AnyNone(map.map[LeftTopY][LeftTopX])) ||
+			!(map.AnyNone(map.map[RightTopY][RightTopX]))) {
 			float num = (LeftTopY+1) * MAP_SIZE;
 			LeftTop.y = num;
 			RightTop.y = num;
@@ -402,12 +386,8 @@ void Player::Update(Map map,float slow) {
 			RightBottom.y = num + MAP_SIZE;
 			gravityVelocity = { 0,0 };
 		}
-		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE ||
-			map.map[LeftBottomY][LeftBottomX] == map.REDNONE || map.map[LeftBottomY][LeftBottomX] == map.GREENNONE ||
-			map.map[LeftBottomY][LeftBottomX] == map.BLUENONE) &&
-			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE ||
-				map.map[RightBottomY][RightBottomX] == map.REDNONE || map.map[RightBottomY][RightBottomX] == map.GREENNONE ||
-				map.map[RightBottomY][RightBottomX] == map.BLUENONE)) {
+		if (map.AnyNone(map.map[LeftBottomY][LeftBottomX]) == true &&
+			map.AnyNone(map.map[RightBottomY][RightBottomX]) == true) {
 			jumpFlag=false;
 			LeftTop += gravityVelocity * slow;
 			RightTop += gravityVelocity * slow;

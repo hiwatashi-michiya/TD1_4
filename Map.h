@@ -23,6 +23,17 @@ struct Map{
 
 	int map[50][50];
 
+	//“–‚½‚è”»’è‚Ì‚È‚¢ƒuƒƒbƒN‚©‚Ç‚¤‚©‚ğ’²‚×‚é
+	bool AnyNone(int map) {
+
+		if (map == NONE || map == TMPNONE || map == REDNONE || map == GREENNONE || map == BLUENONE) {
+			return true;
+		}
+
+		return false;
+
+	}
+
 	float tmpTime[50][50];
 
 	unsigned int blockColor[50][50];
