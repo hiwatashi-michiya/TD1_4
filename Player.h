@@ -24,6 +24,16 @@ public:
 	Vec2 bombVelocity;
 	float bombLength;
 
+	//ボムの当たり判定
+	Circle bombCollision;
+
+	//ブロックの当たり判定(ボム専用)
+	Vec2 blockLeftTop;
+	Vec2 blockRightTop;
+	Vec2 blockLeftBottom;
+	Vec2 blockRightBottom;
+	Quad blockCollision;
+
 	//爆破したかどうか
 	bool isExplosion;
 

@@ -45,6 +45,10 @@ void Player::BombInit() {
 	bombPosition = { -10000,10000 };
 	bombVelocity = { 0,0 };
 	bombLength = 16.0f;
+	bombCollision.pos.x = -10000;
+	bombCollision.pos.y = -10000;
+	bombCollision.radius = bombLength;
+	blockCollision = { blockLeftTop, blockRightTop, blockLeftBottom, blockRightBottom };
 
 	isThrowMotion = false;
 	isAfterThrow = false;
@@ -87,12 +91,50 @@ void Player::Update(Map map,float slow) {
 
 	}
 
+	//R2で爆弾を投げる状態に遷移
+	if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
+		isThrowMotion = true;
+	}
+
 	//ボムが投げられた状態の時にボムを動かす
 	if (isAfterThrow == true) {
 
 		bombVelocity.y += 0.1f;
 		bombPosition.x += bombVelocity.x;
 		bombPosition.y += bombVelocity.y;
+		bombCollision.pos.x = bombPosition.x;
+		bombCollision.pos.y = bombPosition.y;
+
+		for (int y = 0; y < 50; y++) {
+
+			for (int x = 0; x < 50; x++) {
+
+				//当たり判定の更新
+				blockLeftTop.x = x * MAP_SIZE;
+				blockLeftTop.y = y * MAP_SIZE + MAP_SIZE;
+				blockRightTop.x = x * MAP_SIZE + MAP_SIZE;
+				blockRightTop.y = y * MAP_SIZE + MAP_SIZE;
+				blockLeftBottom.x = x * MAP_SIZE;
+				blockLeftBottom.y = y * MAP_SIZE + MAP_SIZE + MAP_SIZE;
+				blockRightBottom.x = x * MAP_SIZE + MAP_SIZE;
+				blockRightBottom.y = y * MAP_SIZE + MAP_SIZE + MAP_SIZE;
+				blockCollision.LeftTop = blockLeftTop;
+				blockCollision.RightTop = blockRightTop;
+				blockCollision.LeftBottom = blockLeftBottom;
+				blockCollision.RightBottom = blockRightBottom;
+
+				if (Collision::CircleToQuad(bombCollision, blockCollision) == true) {
+
+					//ブロックだったらボムを消す
+					if (map.AnyNone(map.map[y][x]) == false) {
+						BombInit();
+					}
+
+				}
+
+			}
+
+		}
 
 		//画面外に出たら消滅
 		if (bombPosition.x - bombLength > 1280 || bombPosition.x + bombLength < 0) {
@@ -106,11 +148,6 @@ void Player::Update(Map map,float slow) {
 	}
 
 	if (isThrowMotion == false) {
-
-		//R2で爆弾を投げる状態に遷移
-		if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
-			isThrowMotion = true;
-		}
 
 		//スティックの入力追加
 		if (Key::IsPress(DIK_A) || stickPositionX < 0) {
