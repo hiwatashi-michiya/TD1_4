@@ -2,16 +2,25 @@
 
 const int MAP_SIZE = 32;
 
+const int kMaxBlock = 12;
+
 struct Map{
 	enum TILE {
-		NONE,
+		NONE = 10,
 		CANTBLOCK,
 		BLOCK,
 		TMPNONE,
 		TMPBLOCK,
-		NEEDLE
+		NEEDLE,
+		REDNONE,
+		GREENNONE,
+		BLUENONE,
+		REDBLOCK,
+		GREENBLOCK,
+		BLUEBLOCK
 		
 	};
+
 	int map[50][50];
 
 	float tmpTime[50][50];

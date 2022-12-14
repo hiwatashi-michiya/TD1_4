@@ -12,9 +12,8 @@
 
 const char kWindowTitle[] = "map";
 
-const int kMaxBlock = 10;
-
 int ColorReverse(int basecolor);
+
 float isColorReverse = 0;
 
 enum DRAWTYPE {
@@ -55,7 +54,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHit = false;
 
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
-	int DRAWTILE = Novice::LoadTexture("./Resources/colortile.png");
+	int COLORTILE = Novice::LoadTexture("./Resources/colortile.png");
+	int COLORNONE = Novice::LoadTexture("./Resources/colornone.png");
 	int FRAMEBORDER = Novice::LoadTexture("./Resources/frameborder.png");
 
 	bool isShowBorder = false;
@@ -127,7 +127,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int setNumber = 0;
 
-	char string[kMaxBlock][2] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+	char string[kMaxBlock][4] = { 
+		"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+		"20", "21"/*, "22", "23", "24", "25", "26", "27", "28", "29"*/
+	};
 
 	
 	map.blockCount = 25;
@@ -485,20 +488,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (isEdit == true) {
 
 			//書き込む数字の設定
-			if (Key::IsTrigger(DIK_0)) {
-				setNumber = 0;
+			if (setNumber < kMaxBlock - 1) {
+
+				if (Key::IsTrigger(DIK_UP)) {
+					setNumber++;
+				}
+
 			}
 
-			if (Key::IsTrigger(DIK_1)) {
-				setNumber = 1;
-			}
+			if (setNumber > 0) {
 
-			if (Key::IsTrigger(DIK_2)) {
-				setNumber = 2;
-			}
+				if (Key::IsTrigger(DIK_DOWN)) {
+					setNumber--;
+				}
 
-			if (Key::IsTrigger(DIK_5)) {
-				setNumber = 5;
 			}
 
 		}
@@ -572,7 +575,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					return 0;
 				}
 
-				fseek(fp, (setMouseYGrid * 102) + (setMouseXGrid * 2), SEEK_SET);
+				fseek(fp, (setMouseYGrid * 152) + (setMouseXGrid * 3), SEEK_SET);
 
 				fputs(string[setNumber], fp);
 
@@ -853,6 +856,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					//壊せないブロック
 					if (map.map[y][x] == map.CANTBLOCK) {
 						map.blockColor[y][x] = 0xFFEEFFFF;
+					}
+
+					//色ブロック
+					if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.REDBLOCK) {
+						map.blockColor[y][x] = 0xFF0000FF;
+					}
+
+					if (map.map[y][x] == map.GREENNONE || map.map[y][x] == map.GREENBLOCK) {
+						map.blockColor[y][x] = 0x00FF00FF;
+					}
+
+					if (map.map[y][x] == map.BLUENONE || map.map[y][x] == map.BLUEBLOCK) {
+						map.blockColor[y][x] = 0x0000FFFF;
 					}
 
 					//針
@@ -1172,6 +1188,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
+					if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.GREENNONE || map.map[y][x] == map.BLUENONE) {
+
+						Novice::DrawQuad(x* MAP_SIZE, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE,
+							x* MAP_SIZE, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE + MAP_SIZE,
+							0, 0, 32, 32, COLORNONE, map.blockColor[y][x]);
+
+					}
+
+					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK) {
+
+						Novice::DrawQuad(x* MAP_SIZE, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE,
+							x* MAP_SIZE, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE + MAP_SIZE,
+							0, 0, 32, 32, COLORTILE, map.blockColor[y][x]);
+
+					}
+
 				}
 
 			}
@@ -1264,6 +1296,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
+
+		//デバッグ機能、現在置こうとしているマップチップのナンバー表示
+		if (isEdit == true) {
+
+			Novice::DrawBox(990, 690, 200, 30, 0.0f, 0x000000AA, kFillModeSolid);
+			Novice::ScreenPrintf(1000, 700, "setNumber : %d", setNumber + 10);
+
+		}
+
 		/*Novice::ScreenPrintf(10, 200, "slow:%f", slow);*/
 
 		
