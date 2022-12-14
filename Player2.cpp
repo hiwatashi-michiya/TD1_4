@@ -9,7 +9,7 @@ Player2::Player2()
 	size = { 32,32};
 	playerColQuad = { position , int(size.x),int(size.y)};
 
-	speed = 8;
+	speed = 3;
 	
 	
 
@@ -67,7 +67,6 @@ void Player2::Update(Map map)
 		GridInit();
 	}
 
-	Down = nextPosition.y + size.y / 2 - 1;
 	if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
 		moveVector.y = 0;
 		nextPosition.y = DownGrid * MAP_SIZE;
@@ -95,8 +94,8 @@ void Player2::Draw()
 	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RED, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x, Down, 3, 3, 0, RED, kFillModeSolid);
-	Novice::DrawEllipse(LeftGrid * MAP_SIZE, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
-	Novice::DrawEllipse(RightGrid * MAP_SIZE , nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x, DownGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 
@@ -111,9 +110,9 @@ void Player2::GridInit()
 {
 
 	Left = nextPosition.x - size.x / 2;
-	Right = nextPosition.x + size.x / 2 - 1;
+	Right = nextPosition.x + size.x / 2;
 	Up = nextPosition.y - size.y / 2;
-	Down = nextPosition.y + size.y / 2 - 1;
+	Down = nextPosition.y + size.y / 2;
 
 	LeftGrid = Left / MAP_SIZE;
 	RightGrid = Right / MAP_SIZE;
