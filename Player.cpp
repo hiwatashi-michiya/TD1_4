@@ -102,6 +102,7 @@ void Player::Update(Map map,float slow) {
 		bombVelocity.y += 0.1f;
 		bombPosition.x += bombVelocity.x;
 		bombPosition.y += bombVelocity.y;
+		//ボムの当たり判定更新
 		bombCollision.pos.x = bombPosition.x;
 		bombCollision.pos.y = bombPosition.y;
 
@@ -109,7 +110,7 @@ void Player::Update(Map map,float slow) {
 
 			for (int x = 0; x < 50; x++) {
 
-				//当たり判定の更新
+				//ブロックの当たり判定の更新
 				blockLeftTop.x = x * MAP_SIZE;
 				blockLeftTop.y = y * MAP_SIZE + MAP_SIZE;
 				blockRightTop.x = x * MAP_SIZE + MAP_SIZE;
