@@ -112,13 +112,13 @@ void Player::Update(Map map,float slow) {
 
 				//ブロックの当たり判定の更新
 				blockLeftTop.x = x * MAP_SIZE;
-				blockLeftTop.y = y * MAP_SIZE + MAP_SIZE;
+				blockLeftTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
 				blockRightTop.x = x * MAP_SIZE + MAP_SIZE;
-				blockRightTop.y = y * MAP_SIZE + MAP_SIZE;
+				blockRightTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
 				blockLeftBottom.x = x * MAP_SIZE;
-				blockLeftBottom.y = y * MAP_SIZE + MAP_SIZE + MAP_SIZE;
+				blockLeftBottom.y = y * MAP_SIZE + MAP_SIZE;
 				blockRightBottom.x = x * MAP_SIZE + MAP_SIZE;
-				blockRightBottom.y = y * MAP_SIZE + MAP_SIZE + MAP_SIZE;
+				blockRightBottom.y = y * MAP_SIZE + MAP_SIZE;
 				blockCollision.LeftTop = blockLeftTop;
 				blockCollision.RightTop = blockRightTop;
 				blockCollision.LeftBottom = blockLeftBottom;
