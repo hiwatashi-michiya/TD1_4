@@ -12,6 +12,40 @@ public:
 	void SetLeft();
 	void SetRight();
 
+	//ボムの初期化
+	void BombInit();
+
+	//ボムを投げる向き
+	int stickPositionX;
+	int stickPositionY;
+
+	//爆弾の情報
+	Vec2 bombPosition;
+	Vec2 bombVelocity;
+	float bombLength;
+
+	//ボムの当たり判定
+	Circle bombCollision;
+
+	//ブロックの当たり判定(ボム専用)
+	Vec2 blockLeftTop;
+	Vec2 blockRightTop;
+	Vec2 blockLeftBottom;
+	Vec2 blockRightBottom;
+	Quad blockCollision;
+
+	//爆破したかどうか
+	bool isExplosion;
+
+	//投げるモーションに入っているかどうか
+	bool isThrowMotion;
+
+	//投げたかどうか
+	bool isAfterThrow;
+
+	//ボムの画像
+	int bombTexture;
+
 	Vec2 position;
 	Vec2 LeftTop;
 	Vec2 RightTop;

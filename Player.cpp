@@ -1,3 +1,5 @@
+#define USE_MATH_DEFINES_
+#include <math.h>
 #include "Player.h"
 #include <Novice.h>
 #include"Key.h"
@@ -16,7 +18,6 @@ void Player::Init() {
 	RightBottom = { position.x + 32,position.y + 32 };
 
 	playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
-
 	vector = { 0,0 };
 	velocity = { 0,0 };
 	speed = 5.0f;
@@ -28,7 +29,30 @@ void Player::Init() {
 	jumpFlag = false;
 	jumpSpeed = 15.0f;
 
+	stickPositionX = 0;
+	stickPositionY = 0;
+
+	BombInit();
+
 	texture = Novice::LoadTexture("white1x1.png");
+	bombTexture = Novice::LoadTexture("./Resources/bomb.png");
+}
+
+//ボムの位置の初期化
+void Player::BombInit() {
+
+	//ボムのステータス
+	bombPosition = { -10000,10000 };
+	bombVelocity = { 0,0 };
+	bombLength = 16.0f;
+	bombCollision.pos.x = -10000;
+	bombCollision.pos.y = -10000;
+	bombCollision.radius = bombLength;
+	blockCollision = { blockLeftTop, blockRightTop, blockLeftBottom, blockRightBottom };
+
+	isThrowMotion = false;
+	isAfterThrow = false;
+
 }
 
 void Player::SetLeft() {
@@ -49,201 +73,234 @@ void Player::Update(Map map,float slow) {
 	vector = { 0,0 };
 	gravityVector = { 0,0 };
 
-	/*if (Key::IsPress(DIK_W)) {
-		vector = { 0,-1 };
-		velocity = vector * speed;
-		Vec2 tmpLeftTop,tmpRightTop;
-		int LeftTopX, RightTopX;
-		int LeftTopY, RightTopY;
-		tmpLeftTop = LeftTop + velocity;
-		tmpRightTop.x = (RightTop.x - 1) + velocity.x;
-		tmpRightTop.y = (RightTop.y ) + velocity.y;
+	//パッドのスティック入力受付
+	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
 
-		LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
-		LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+	//爆弾を投げようとしている状態か
+	if (isThrowMotion == true) {
 
-		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
-		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
-
-		if (map.map[LeftTopY][LeftTopX]== map.NONE && map.map[RightTopY][RightTopX] == map.NONE) {
-			LeftTop += velocity;
-			RightTop += velocity;
-			LeftBottom += velocity;
-			RightBottom += velocity;
+		//R2で爆弾を投げる
+		if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
+			isAfterThrow = true;
+			bombVelocity.x = cosf((stickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f;
+			bombVelocity.y = sinf(stickPositionY * M_PI / powf(2, 16)) * 5.0f;
+			bombPosition.x = LeftTop.x + bombLength;
+			bombPosition.y = LeftTop.y + bombLength;
+			isThrowMotion = false;
 		}
-		
-	}*/
-	/*if (Key::IsPress(DIK_S)) {
-		vector = { 0,1 };
-		velocity = vector * speed;
-		Vec2 tmpLeftBottom, tmpRightBottom;
-		int LeftBottomX, RightBottomX;
-		int LeftBottomY, RightBottomY;
-		tmpLeftBottom.x = LeftBottom.x + velocity.x;
-		tmpLeftBottom.y = (LeftBottom.y-1) + velocity.y;
-		tmpRightBottom.x = RightBottom.x-1 + velocity.x;
-		tmpRightBottom.y = RightBottom.y - 1 + velocity.y;
 
-		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
-		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
-
-		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
-		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-		if (map.map[LeftBottomY][LeftBottomX] == map.NONE && map.map[RightBottomY][RightBottomX] == map.NONE) {
-			LeftTop += velocity;
-			RightTop += velocity;
-			LeftBottom += velocity;
-			RightBottom += velocity;
-		}
-		
-	}*/
-	if (Key::IsPress(DIK_A)) {
-		vector = { -1,0 };
-		velocity = vector * speed /** slow*/;
-
-		////////////////////////当たり判定/////////////////////////
-		Vec2 tmpLeftTop, tmpLeftBottom;
-		int LeftTopX, LeftBottomX;
-		int LeftTopY, LeftBottomY;
-		tmpLeftTop = LeftTop + velocity;
-		tmpLeftBottom.x = LeftBottom.x + velocity.x;
-		tmpLeftBottom.y = (LeftBottom.y - 1) + velocity.y;
-
-		LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
-		LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
-
-		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
-		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
-		
-		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
-			(map.map[LeftBottomY][LeftBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
-			Init();
-			/*LeftTop += velocity * slow;
-			RightTop += velocity * slow;
-			LeftBottom += velocity * slow;
-			RightBottom += velocity * slow;*/
-		}
-		/*else {
-			float num = (LeftBottomX + 1) * MAP_SIZE;
-			LeftTop.x = num;
-			RightTop.x = num + MAP_SIZE;
-			LeftBottom.x = num;
-			RightBottom.x = num + MAP_SIZE;
-		}*/
-
-		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
-			(map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE)) {
-			LeftTop += velocity * slow;
-			RightTop += velocity * slow;
-			LeftBottom += velocity * slow;
-			RightBottom += velocity * slow;
-		}
-		else {
-			float num = (LeftBottomX+1) * MAP_SIZE;
-			LeftTop.x = num;
-			RightTop.x = num + MAP_SIZE;
-			LeftBottom.x = num;
-			RightBottom.x = num + MAP_SIZE;
-		}
 	}
-	if (Key::IsPress(DIK_D)) {
-		vector = { 1,0 };
-		velocity = vector * speed /** slow*/;
 
-		////////////////////////当たり判定/////////////////////////
-		Vec2 tmpRightTop, tmpRightBottom;
-		int RightTopX, RightBottomX;
-		int RightTopY, RightBottomY;
-		tmpRightTop.x = (RightTop.x - 1) + velocity.x;
-		tmpRightTop.y = (RightTop.y) + velocity.y;
-		tmpRightBottom.x = RightBottom.x - 1 + velocity.x;
-		tmpRightBottom.y = RightBottom.y - 1 + velocity.y;
-
-		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
-		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
-
-		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
-		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-
-		if ((map.map[RightTopY][RightTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
-			(map.map[RightBottomY][RightBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
-			Init();
-			/*LeftTop += velocity * slow;
-			RightTop += velocity * slow;
-			LeftBottom += velocity * slow;
-			RightBottom += velocity * slow;*/
-		}
-		/*else {
-			float num = (LeftBottomX + 1) * MAP_SIZE;
-			LeftTop.x = num;
-			RightTop.x = num + MAP_SIZE;
-			LeftBottom.x = num;
-			RightBottom.x = num + MAP_SIZE;
-		}*/
-
-
-		if ((map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE) &&
-			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
-			LeftTop += velocity * slow;
-			RightTop += velocity * slow;
-			LeftBottom += velocity * slow;
-			RightBottom += velocity * slow;
-		}
-		else {
-			float num = (RightBottomX - 1) * MAP_SIZE;
-			LeftTop.x = num;
-			RightTop.x = num + MAP_SIZE;
-			LeftBottom.x = num;
-			RightBottom.x = num + MAP_SIZE;
-		}
+	//R2で爆弾を投げる状態に遷移
+	if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
+		isThrowMotion = true;
 	}
-	if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
-		jumpFlag = false;
-		gravityVector = { 0,-1 };
-		gravityVelocity.y = gravityVector.y * jumpSpeed;
-		////////////////////////当たり判定/////////////////////////
-		Vec2 tmpLeftTop, tmpRightTop;
-		int LeftTopX, RightTopX;
-		int LeftTopY, RightTopY;
-		tmpLeftTop = LeftTop + gravityVelocity;
-		tmpRightTop.x = (RightTop.x - 1) + gravityVelocity.x;
-		tmpRightTop.y = (RightTop.y) + gravityVelocity.y;
 
-		LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
-		LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+	//ボムが投げられた状態の時にボムを動かす
+	if (isAfterThrow == true) {
 
-		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
-		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+		bombVelocity.y += 0.1f;
+		bombPosition.x += bombVelocity.x;
+		bombPosition.y += bombVelocity.y;
+		//ボムの当たり判定更新
+		bombCollision.pos.x = bombPosition.x;
+		bombCollision.pos.y = bombPosition.y;
 
-		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
-			(map.map[RightTopY][RightTopX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
-			Init();
-			/*LeftTop += velocity * slow;
-			RightTop += velocity * slow;
-			LeftBottom += velocity * slow;
-			RightBottom += velocity * slow;*/
+		for (int y = 0; y < 50; y++) {
+
+			for (int x = 0; x < 50; x++) {
+
+				//ブロックの当たり判定の更新
+				blockLeftTop.x = x * MAP_SIZE;
+				blockLeftTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
+				blockRightTop.x = x * MAP_SIZE + MAP_SIZE;
+				blockRightTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
+				blockLeftBottom.x = x * MAP_SIZE;
+				blockLeftBottom.y = y * MAP_SIZE + MAP_SIZE;
+				blockRightBottom.x = x * MAP_SIZE + MAP_SIZE;
+				blockRightBottom.y = y * MAP_SIZE + MAP_SIZE;
+				blockCollision.LeftTop = blockLeftTop;
+				blockCollision.RightTop = blockRightTop;
+				blockCollision.LeftBottom = blockLeftBottom;
+				blockCollision.RightBottom = blockRightBottom;
+
+				if (Collision::CircleToQuad(bombCollision, blockCollision) == true) {
+
+					//ブロックだったらボムを消す
+					if (map.AnyNone(map.map[y][x]) == false) {
+						BombInit();
+					}
+
+				}
+
+			}
+
 		}
-		/*else {
-			float num = (LeftBottomX + 1) * MAP_SIZE;
-			LeftTop.x = num;
-			RightTop.x = num + MAP_SIZE;
-			LeftBottom.x = num;
-			RightBottom.x = num + MAP_SIZE;
-		}*/
 
-		if ((map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) &&
-			(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
-			LeftTop += gravityVelocity ;
-			RightTop += gravityVelocity;
-			LeftBottom += gravityVelocity ;
-			RightBottom += gravityVelocity ;
+		//画面外に出たら消滅
+		if (bombPosition.x - bombLength > 1280 || bombPosition.x + bombLength < 0) {
+			BombInit();
 		}
-		else {
- 			float num = (LeftTopY+1) * MAP_SIZE;
-			LeftTop.y = num;
-			RightTop.y = num;
-			LeftBottom.y = num + MAP_SIZE;
-			RightBottom.y = num + MAP_SIZE;
+
+		if (bombPosition.y - bombLength > 720 || bombPosition.y + bombLength < 0) {
+			BombInit();
+		}
+
+	}
+
+	if (isThrowMotion == false) {
+
+		//スティックの入力追加
+		if (Key::IsPress(DIK_A) || stickPositionX < 0) {
+			vector = { -1,0 };
+			velocity = vector * speed /** slow*/;
+
+			////////////////////////当たり判定/////////////////////////
+			Vec2 tmpLeftTop, tmpLeftBottom;
+			int LeftTopX, LeftBottomX;
+			int LeftTopY, LeftBottomY;
+			tmpLeftTop = LeftTop + velocity;
+			tmpLeftBottom.x = LeftBottom.x + velocity.x;
+			tmpLeftBottom.y = (LeftBottom.y - 1) + velocity.y;
+
+			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+
+			LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
+			LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
+
+			if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+				(map.map[LeftBottomY][LeftBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+				Init();
+				/*LeftTop += velocity * slow;
+				RightTop += velocity * slow;
+				LeftBottom += velocity * slow;
+				RightBottom += velocity * slow;*/
+			}
+			/*else {
+				float num = (LeftBottomX + 1) * MAP_SIZE;
+				LeftTop.x = num;
+				RightTop.x = num + MAP_SIZE;
+				LeftBottom.x = num;
+				RightBottom.x = num + MAP_SIZE;
+			}*/
+
+			if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
+				map.AnyNone(map.map[LeftBottomY][LeftBottomX]) == true) {
+				LeftTop += velocity * slow;
+				RightTop += velocity * slow;
+				LeftBottom += velocity * slow;
+				RightBottom += velocity * slow;
+			}
+			else {
+				float num = (LeftBottomX + 1) * MAP_SIZE;
+				LeftTop.x = num;
+				RightTop.x = num + MAP_SIZE;
+				LeftBottom.x = num;
+				RightBottom.x = num + MAP_SIZE;
+			}
+		}
+		//スティックの入力追加
+		if (Key::IsPress(DIK_D) || stickPositionX > 0) {
+			vector = { 1,0 };
+			velocity = vector * speed /** slow*/;
+
+			////////////////////////当たり判定/////////////////////////
+			Vec2 tmpRightTop, tmpRightBottom;
+			int RightTopX, RightBottomX;
+			int RightTopY, RightBottomY;
+			tmpRightTop.x = (RightTop.x - 1) + velocity.x;
+			tmpRightTop.y = (RightTop.y) + velocity.y;
+			tmpRightBottom.x = RightBottom.x - 1 + velocity.x;
+			tmpRightBottom.y = RightBottom.y - 1 + velocity.y;
+
+			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+
+			RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
+			RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
+
+			if ((map.map[RightTopY][RightTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+				(map.map[RightBottomY][RightBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+				Init();
+				/*LeftTop += velocity * slow;
+				RightTop += velocity * slow;
+				LeftBottom += velocity * slow;
+				RightBottom += velocity * slow;*/
+			}
+			/*else {
+				float num = (LeftBottomX + 1) * MAP_SIZE;
+				LeftTop.x = num;
+				RightTop.x = num + MAP_SIZE;
+				LeftBottom.x = num;
+				RightBottom.x = num + MAP_SIZE;
+			}*/
+
+
+			if (map.AnyNone(map.map[RightTopY][RightTopX]) == true &&
+				map.AnyNone(map.map[RightBottomY][RightBottomX]) == true) {
+				LeftTop += velocity * slow;
+				RightTop += velocity * slow;
+				LeftBottom += velocity * slow;
+				RightBottom += velocity * slow;
+			}
+			else {
+				float num = (RightBottomX - 1) * MAP_SIZE;
+				LeftTop.x = num;
+				RightTop.x = num + MAP_SIZE;
+				LeftBottom.x = num;
+				RightBottom.x = num + MAP_SIZE;
+			}
+		}
+		if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
+			jumpFlag = false;
+			gravityVector = { 0,-1 };
+			gravityVelocity.y = gravityVector.y * jumpSpeed;
+			////////////////////////当たり判定/////////////////////////
+			Vec2 tmpLeftTop, tmpRightTop;
+			int LeftTopX, RightTopX;
+			int LeftTopY, RightTopY;
+			tmpLeftTop = LeftTop + gravityVelocity;
+			tmpRightTop.x = (RightTop.x - 1) + gravityVelocity.x;
+			tmpRightTop.y = (RightTop.y) + gravityVelocity.y;
+
+			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+
+			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+
+			if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+				(map.map[RightTopY][RightTopX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+				Init();
+				/*LeftTop += velocity * slow;
+				RightTop += velocity * slow;
+				LeftBottom += velocity * slow;
+				RightBottom += velocity * slow;*/
+			}
+			/*else {
+				float num = (LeftBottomX + 1) * MAP_SIZE;
+				LeftTop.x = num;
+				RightTop.x = num + MAP_SIZE;
+				LeftBottom.x = num;
+				RightBottom.x = num + MAP_SIZE;
+			}*/
+
+			if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
+				map.AnyNone(map.map[RightTopY][RightTopX]) == true) {
+				LeftTop += gravityVelocity;
+				RightTop += gravityVelocity;
+				LeftBottom += gravityVelocity;
+				RightBottom += gravityVelocity;
+			}
+			else {
+				float num = (LeftTopY + 1) * MAP_SIZE;
+				LeftTop.y = num;
+				RightTop.y = num;
+				LeftBottom.y = num + MAP_SIZE;
+				RightBottom.y = num + MAP_SIZE;
+			}
+
 		}
 
 	}
@@ -358,8 +415,8 @@ void Player::Update(Map map,float slow) {
 		}*/
 
 
-		if (!(map.map[LeftTopY][LeftTopX] == map.NONE || map.map[LeftTopY][LeftTopX] == map.TMPNONE) ||
-			!(map.map[RightTopY][RightTopX] == map.NONE || map.map[RightTopY][RightTopX] == map.TMPNONE)) {
+		if (!(map.AnyNone(map.map[LeftTopY][LeftTopX])) ||
+			!(map.AnyNone(map.map[RightTopY][RightTopX]))) {
 			float num = (LeftTopY+1) * MAP_SIZE;
 			LeftTop.y = num;
 			RightTop.y = num;
@@ -367,8 +424,8 @@ void Player::Update(Map map,float slow) {
 			RightBottom.y = num + MAP_SIZE;
 			gravityVelocity = { 0,0 };
 		}
-		if ((map.map[LeftBottomY][LeftBottomX] == map.NONE || map.map[LeftBottomY][LeftBottomX] == map.TMPNONE) &&
-			(map.map[RightBottomY][RightBottomX] == map.NONE || map.map[RightBottomY][RightBottomX] == map.TMPNONE)) {
+		if (map.AnyNone(map.map[LeftBottomY][LeftBottomX]) == true &&
+			map.AnyNone(map.map[RightBottomY][RightBottomX]) == true) {
 			jumpFlag=false;
 			LeftTop += gravityVelocity * slow;
 			RightTop += gravityVelocity * slow;
@@ -410,6 +467,16 @@ void Player::Draw(float isColorReverse) {
 	int PlayerColor = (BaseColorR << 24) + (BaseColorG << 16) + (BaseColorB << 8) + 255;
 
 	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
+
+	//ボムを投げている状態の時ボムを表示
+	if (isAfterThrow == true) {
+		Novice::DrawQuad(bombPosition.x - bombLength, bombPosition.y - bombLength,
+			bombPosition.x + bombLength, bombPosition.y - bombLength,
+			bombPosition.x - bombLength, bombPosition.y + bombLength,
+			bombPosition.x + bombLength, bombPosition.y + bombLength,
+			0, 0, 32, 32, bombTexture, 0xFFFFFFFF);
+	}
+
 	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, PlayerColor);
 }
 
