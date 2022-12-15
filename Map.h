@@ -1,4 +1,5 @@
 #pragma once
+#include "Vec2.h"
 
 const int MAP_SIZE = 32;
 
@@ -40,6 +41,12 @@ struct Map{
 
 	int blockCount;
 	int blockNum[50][50];
+
+	struct BlockStruct {
+		Vec2 pos;
+	};
 	
+	BlockStruct Block[50][50];
+
 };
 

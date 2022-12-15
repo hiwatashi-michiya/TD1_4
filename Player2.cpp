@@ -62,13 +62,13 @@ void Player2::Update(Map map)
 	}
 
 	if (map.map[UpGrid][RightGrid - 1] == map.CANTBLOCK) {
-		//moveVector.y = 0;
+		moveVector.y = 1;
 		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}
 
 	if (map.map[UpGrid][LeftGrid + 1] == map.CANTBLOCK) {
-		//moveVector.y = 0;
+		moveVector.y = 1;
 		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}

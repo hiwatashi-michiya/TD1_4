@@ -2,6 +2,7 @@
 #include <Novice.h>
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
 #include "Player.h"
 #include "Player2.h"
 #include "TestEnemy.h"
@@ -31,6 +32,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
+
+	clock_t offset;
+	offset = clock();
+	int FPS = 0;
 
 	int* pMouseX = 0;
 	int* pMouseY = 0;
@@ -1318,6 +1323,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//Novice::DrawBox(0, 0, 1280, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			Novice::DrawEllipse(expPos.x, expPos.y, expRad, expRad, 0, GREEN, kFillModeSolid);
 		}
+
+		Novice::DrawBox(0, 480, 100, 40, 0, BLACK, kFillModeSolid);
+		Novice::ScreenPrintf(0, 500, "FPS:%0.1f", 1.0f / ((double)(clock() - offset) / CLOCKS_PER_SEC));
+		offset = clock();
 
 		///
 		/// ↑描画処理ここまで
