@@ -15,6 +15,22 @@ private:
 	Quad playerColQuad;
 	Quad nextPlayerColQuad;
 
+	int bombStickPositionX;
+	int bombStickPositionY;
+
+	int preBombStickPositionX;
+	int preBombStickPositionY;
+
+	int stickPositionX;
+	int stickPositionY;
+
+	Vec2 bombVelocity;
+
+	Vec2 knockBackVelocity;
+
+	Vec2 BombPos;
+	int BombRad = 0;
+
 	float speed;
 	
 	char keys[256] = { 0 };

@@ -9,6 +9,7 @@
 #include "TestEnemy2.h"
 #include "Key.h"
 #include "Collision.h"
+#include "ControllerInput.h"
 #include "Circle.h"
 #include "Quad.h"
 
@@ -174,6 +175,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::GetMousePosition(pMouseX, pMouseY);
 
 		Key::Update();
+		Controller::SetState();
 
 		///
 		/// ↓更新処理ここから
@@ -1249,10 +1251,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		
 
-		Novice::DrawBox(20, 700, 10 * (kslowTimeMax - slowTime), 10, 0, GREEN, kFillModeSolid);
+		//Novice::DrawBox(20, 700, 10 * (kslowTimeMax - slowTime), 10, 0, GREEN, kFillModeSolid);
 		//Novice::DrawBox(20, 680, 40 * map.blockCount, 10, 0, GREEN, kFillModeSolid);
 
-		player.Draw(isColorReverse);
+		//player.Draw(isColorReverse);
 		if (Map == 1) {
 			/*for (int i = 0; i < kTestEnemy2; i++) {
 				testEnemy2[i].Draw();
