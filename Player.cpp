@@ -5,6 +5,7 @@
 #include"Key.h"
 #include"Collision.h"
 #include"Circle.h"
+#include "ControllerInput.h"
 
 Player::Player() {
 	Init();
@@ -52,24 +53,26 @@ void Player::BombInit() {
 	bombCollision.pos.y = -10000;
 	bombCollision.radius = bombLength;
 	blockCollision = { blockLeftTop, blockRightTop, blockLeftBottom, blockRightBottom };
+	ExplosionCount = 10;
 
+	isExplosion = false;
 	isThrowMotion = false;
 	isAfterThrow = false;
 
 }
 
 void Player::SetLeft() {
-	LeftTop.x = 32;
-	RightTop.x = 64;
-	LeftBottom.x = 32;
-	RightBottom.x = 64;
+	LeftTop.x = -16;
+	RightTop.x = 16;
+	LeftBottom.x = -16;
+	RightBottom.x = 16;
 }
 
 void Player::SetRight() {
-	LeftTop.x = 1280;
-	RightTop.x = 1312;
-	LeftBottom.x = 1280;
-	RightBottom.x = 1312;
+	LeftTop.x = 1264;
+	RightTop.x = 1296;
+	LeftBottom.x = 1264;
+	RightBottom.x = 1296;
 }
 
 void Player::Update(Map map,float slow) {
@@ -88,14 +91,14 @@ void Player::Update(Map map,float slow) {
 	}*/
 
 	//R2で爆弾を投げる
-	if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
+	/*if (Controller::IsTriggerButton(0, Controller::rTrigger) && isAfterThrow == false) {
 		isAfterThrow = true;
 		bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 		bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 		bombPosition.x = LeftTop.x + bombLength;
 		bombPosition.y = LeftTop.y + bombLength;
 		isThrowMotion = false;
-	}
+	}*/
 
 	//R2で爆弾を投げる状態に遷移
 	/*if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
@@ -103,56 +106,76 @@ void Player::Update(Map map,float slow) {
 	}*/
 
 	//ボムが投げられた状態の時にボムを動かす
-	if (isAfterThrow == true) {
+	//if (isAfterThrow == true) {
 
-		bombVelocity.y += 0.1f;
-		bombPosition.x += bombVelocity.x;
-		bombPosition.y += bombVelocity.y;
-		//ボムの当たり判定更新
-		bombCollision.pos.x = bombPosition.x;
-		bombCollision.pos.y = bombPosition.y;
+	//	bombVelocity.y += 0.1f;
+	//	bombPosition.x += bombVelocity.x;
+	//	bombPosition.y += bombVelocity.y;
+	//	//ボムの当たり判定更新
+	//	bombCollision.pos.x = bombPosition.x;
+	//	bombCollision.pos.y = bombPosition.y;
 
-		for (int y = 0; y < 50; y++) {
+	//	for (int y = 0; y < 50; y++) {
 
-			for (int x = 0; x < 50; x++) {
+	//		for (int x = 0; x < 50; x++) {
 
-				//ブロックの当たり判定の更新
-				blockLeftTop.x = x * MAP_SIZE;
-				blockLeftTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
-				blockRightTop.x = x * MAP_SIZE + MAP_SIZE;
-				blockRightTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
-				blockLeftBottom.x = x * MAP_SIZE;
-				blockLeftBottom.y = y * MAP_SIZE + MAP_SIZE;
-				blockRightBottom.x = x * MAP_SIZE + MAP_SIZE;
-				blockRightBottom.y = y * MAP_SIZE + MAP_SIZE;
-				blockCollision.LeftTop = blockLeftTop;
-				blockCollision.RightTop = blockRightTop;
-				blockCollision.LeftBottom = blockLeftBottom;
-				blockCollision.RightBottom = blockRightBottom;
+	//			//ブロックの当たり判定の更新
+	//			blockLeftTop.x = x * MAP_SIZE;
+	//			blockLeftTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
+	//			blockRightTop.x = x * MAP_SIZE + MAP_SIZE;
+	//			blockRightTop.y = y * MAP_SIZE + MAP_SIZE - MAP_SIZE / 2;
+	//			blockLeftBottom.x = x * MAP_SIZE;
+	//			blockLeftBottom.y = y * MAP_SIZE + MAP_SIZE;
+	//			blockRightBottom.x = x * MAP_SIZE + MAP_SIZE;
+	//			blockRightBottom.y = y * MAP_SIZE + MAP_SIZE;
+	//			blockCollision.LeftTop = blockLeftTop;
+	//			blockCollision.RightTop = blockRightTop;
+	//			blockCollision.LeftBottom = blockLeftBottom;
+	//			blockCollision.RightBottom = blockRightBottom;
 
-				if (Collision::CircleToQuad(bombCollision, blockCollision) == true) {
+	//			if (Collision::CircleToQuad(bombCollision, blockCollision) == true) {
 
-					//ブロックだったらボムを消す
-					if (map.AnyNone(map.map[y][x]) == false) {
-						BombInit();
-					}
+	//				//ブロックだったらボムを爆破させる
+	//				if (map.AnyNone(map.map[y][x]) == false) {
 
-				}
+	//					isAfterThrow = false;
+	//					isExplosion = true;
 
-			}
+	//				}
 
-		}
+	//			}
 
-		//画面外に出たら消滅
-		if (bombPosition.x - bombLength > 1280 || bombPosition.x + bombLength < 0) {
-			BombInit();
-		}
+	//		}
 
-		if (bombPosition.y - bombLength > 720 || bombPosition.y + bombLength < 0) {
-			BombInit();
-		}
+	//	}
 
-	}
+	//	//画面外に出たら消滅
+	//	if (bombPosition.x - bombLength > 1280 || bombPosition.x + bombLength < 0) {
+	//		BombInit();
+	//	}
+
+	//	if (bombPosition.y - bombLength > 720 || bombPosition.y + bombLength < 0) {
+	//		BombInit();
+	//	}
+
+	//}
+
+	//爆破した時
+	//if (isExplosion == true) {
+
+	//	//カウントを減らす。0になったら爆破の当たり判定を消す
+	//	ExplosionCount--;
+
+	//	if (ExplosionCount == 0) {
+	//		BombInit();
+	//	}
+
+	//	if (sqrtf((LeftTop.x + 16 - bombPosition.x) * (LeftTop.x + 16 - bombPosition.x) +
+	//		(LeftTop.y + 16 - bombPosition.y) * (LeftTop.y + 16 - bombPosition.y)) < 64 && isBombHit == false) {
+	//		
+	//	}
+
+	//}
 
 	//スティックの入力追加
 	if (Key::IsPress(DIK_A) || stickPositionX < 0) {
@@ -256,7 +279,7 @@ void Player::Update(Map map,float slow) {
 			RightBottom.x = num + MAP_SIZE;
 		}
 	}
-	if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
+	if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE) || Controller::IsTriggerButton(0, Controller::bA)) && jumpFlag) {
 		jumpFlag = false;
 		gravityVector = { 0,-1 };
 		gravityVelocity.y = gravityVector.y * jumpSpeed;
@@ -468,6 +491,10 @@ void Player::Draw(float isColorReverse) {
 
 	int PlayerColor = (BaseColorR << 24) + (BaseColorG << 16) + (BaseColorB << 8) + 255;
 
+	if (isBombHit == true) {
+		PlayerColor = BLUE;
+	}
+
 	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
 
 	//ボムを投げている状態の時ボムを表示
@@ -477,6 +504,10 @@ void Player::Draw(float isColorReverse) {
 			bombPosition.x - bombLength, bombPosition.y + bombLength,
 			bombPosition.x + bombLength, bombPosition.y + bombLength,
 			0, 0, 32, 32, bombTexture, 0xFFFFFFFF);
+	}
+
+	if (isExplosion == true) {
+		Novice::DrawEllipse(bombPosition.x, bombPosition.y, bombLength * 4, bombLength * 4, 0.0f, 0xFFFF00FF, kFillModeWireFrame);
 	}
 
 	Novice::DrawQuad(LeftTop.x, LeftTop.y /**-1 + Mapchip::kWindowHeight*/, RightTop.x, RightTop.y /** -1 + Mapchip::kWindowHeight*/,LeftBottom.x, LeftBottom.y  /** -1 + Mapchip::kWindowHeight*/,RightBottom.x, RightBottom.y  /** -1 + Mapchip::kWindowHeight*/,0, 0, MAP_SIZE, MAP_SIZE, texture, PlayerColor);

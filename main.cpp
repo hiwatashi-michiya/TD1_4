@@ -11,6 +11,7 @@
 #include "Collision.h"
 #include "Circle.h"
 #include "Quad.h"
+#include "ControllerInput.h"
 
 const char kWindowTitle[] = "map";
 
@@ -173,7 +174,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Novice::GetMousePosition(pMouseX, pMouseY);
 
+		//キー入力の受付
 		Key::Update();
+
+		//コントローラー入力の受付
+		Controller::SetState();
 
 		///
 		/// ↓更新処理ここから
@@ -373,7 +378,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}*/
 		}
 
-		if (player.LeftBottom.x < 32) {
+		if (player.RightBottom.x < 32 - MAP_SIZE / 2) {
 
 			player.SetRight();
 
@@ -447,7 +452,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		if (player.LeftBottom.x > 1280) {
+		if (player.LeftBottom.x > 1280 - MAP_SIZE / 2) {
 
 			player.SetLeft();
 

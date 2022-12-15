@@ -41,6 +41,12 @@ public:
 	//爆破したかどうか
 	bool isExplosion;
 
+	//爆破している時のカウント
+	int ExplosionCount;
+
+	//ボムが当たったかどうか
+	bool isBombHit;
+
 	//投げるモーションに入っているかどうか
 	bool isThrowMotion;
 
@@ -76,6 +82,9 @@ public:
 	int prekey;
 
 	int texture;
+
+	//色
+	int color;
 
 	void Update(Map map, float slow);
 	void Draw(float isColorReverse);
