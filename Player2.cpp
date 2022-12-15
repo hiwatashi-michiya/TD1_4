@@ -9,7 +9,7 @@ Player2::Player2()
 	size = { 32,32};
 	playerColQuad = { position , int(size.x),int(size.y)};
 
-	speed = 3;
+	speed = 5.0f;
 	
 	
 
@@ -25,23 +25,23 @@ void Player2::Update(Map map)
 	Novice::GetHitKeyStateAll(keys);
 
 	moveVector.x = 0;
-	moveVector.y = 0;
+	//moveVector.y = 0;
 
-	if (keys[DIK_W]/* && preKeys[DIK_W] == 0*/) {
-		//moveVector.y -= 14;
-		moveVector.y -= speed;
+	if (keys[DIK_W] && preKeys[DIK_W] == 0) {
+		moveVector.y -= 14;
+		//moveVector.y -= speed;
 	}
 	if (keys[DIK_A]) {
 		moveVector.x -= speed;
 	}
-	if (keys[DIK_S]) {
+	/*if (keys[DIK_S]) {
 		moveVector.y += speed;
-	}
+	}*/
 	if (keys[DIK_D]) {
 		moveVector.x += speed;
 	}
 
-	//moveVector.y += G * Weight;
+	moveVector.y += G * Weight;
 
 	nextPosition.x = position.x + moveVector.x;
 	nextPosition.y = position.y + moveVector.y;
@@ -62,13 +62,13 @@ void Player2::Update(Map map)
 	}
 
 	if (map.map[UpGrid][RightGrid - 1] == map.CANTBLOCK) {
-		moveVector.y = 0;
+		//moveVector.y = 0;
 		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}
 
 	if (map.map[UpGrid][LeftGrid + 1] == map.CANTBLOCK) {
-		moveVector.y = 0;
+		//moveVector.y = 0;
 		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}
