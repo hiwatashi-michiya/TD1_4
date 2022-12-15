@@ -51,30 +51,43 @@ void Player2::Update(Map map)
 	
 	if (map.map[PosYGrid][RightGrid] == map.CANTBLOCK) {
 		moveVector.x = 0;
-		nextPosition.x = RightGrid * MAP_SIZE;
+		nextPosition.x = RightGrid * MAP_SIZE - MAP_SIZE / 2;
 		GridInit();
 	}
 
 	if (map.map[PosYGrid][LeftGrid] == map.CANTBLOCK) {
 		moveVector.x = 0;
-		nextPosition.x = LeftGrid * MAP_SIZE;
+		nextPosition.x = (LeftGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}
 
-	if (map.map[UpGrid][PosXGrid] == map.CANTBLOCK) {
+	if (map.map[UpGrid][RightGrid - 1] == map.CANTBLOCK) {
 		moveVector.y = 0;
-		nextPosition.y = UpGrid * MAP_SIZE;
+		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}
 
-	if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
+	if (map.map[UpGrid][LeftGrid + 1] == map.CANTBLOCK) {
 		moveVector.y = 0;
-		nextPosition.y = DownGrid * MAP_SIZE;
+		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
 		GridInit();
 	}
 
-	position.x += moveVector.x;
-	position.y += moveVector.y;
+	if (map.map[DownGrid][RightGrid - 1] == map.CANTBLOCK) {
+		moveVector.y = 0;
+		nextPosition.y = DownGrid * MAP_SIZE - MAP_SIZE / 2;
+		GridInit();
+	}
+
+	if (map.map[DownGrid][LeftGrid + 1] == map.CANTBLOCK) {
+		moveVector.y = 0;
+		nextPosition.y = DownGrid * MAP_SIZE - MAP_SIZE / 2;
+		GridInit();
+	}
+
+
+	position.x = nextPosition.x;
+	position.y = nextPosition.y;
 
 }
 
@@ -109,9 +122,9 @@ void Player2::Draw()
 void Player2::GridInit()
 {
 
-	Left = nextPosition.x - size.x / 2;
+	Left = nextPosition.x - size.x / 2 - 1;
 	Right = nextPosition.x + size.x / 2;
-	Up = nextPosition.y - size.y / 2;
+	Up = nextPosition.y - size.y / 2 - 1;
 	Down = nextPosition.y + size.y / 2;
 
 	LeftGrid = Left / MAP_SIZE;
