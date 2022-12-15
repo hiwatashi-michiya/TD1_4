@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "Player.h"
+#include "Player2.h"
 #include "TestEnemy.h"
 #include "TestEnemy2.h"
 #include "Key.h"
@@ -136,6 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	map.blockCount = 25;
 	//mapEasy.blockCount = 25;
 	Player player;
+	Player2 player2;
 
 	//const int kTestEnemy = 6;
 	//TestEnemy testEnemy[kTestEnemy];
@@ -1038,6 +1040,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		else {
 			player.Update(map, slow);
 		}
+
+		player2.Update(map);
 		
 		//testEnemy.Update(player, map, slow);
 
@@ -1174,7 +1178,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//もの運び
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
-		Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+		//Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
 		//if (Map == 1) {
 			for (int y = 0; y < 50; y++) {
 
@@ -1290,6 +1294,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			break;
 		}
+
+		player2.Draw();
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
