@@ -15,9 +15,13 @@ public:
 	//ボムの初期化
 	void BombInit();
 
-	//ボムを投げる向き
+	//十字キーの動き
 	int stickPositionX;
 	int stickPositionY;
+
+	//ボムを投げる方向
+	int bombStickPositionX;
+	int bombStickPositionY;
 
 	//爆弾の情報
 	Vec2 bombPosition;

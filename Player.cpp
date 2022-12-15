@@ -32,6 +32,9 @@ void Player::Init() {
 	stickPositionX = 0;
 	stickPositionY = 0;
 
+	bombStickPositionX = 0;
+	bombStickPositionY = 0;
+
 	BombInit();
 
 	texture = Novice::LoadTexture("white1x1.png");
@@ -75,26 +78,29 @@ void Player::Update(Map map,float slow) {
 
 	//パッドのスティック入力受付
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
+	Novice::GetAnalogInputRight(0, &bombStickPositionX, &bombStickPositionY);
 
 	//爆弾を投げようとしている状態か
-	if (isThrowMotion == true) {
+	/*if (isThrowMotion == true) {
 
-		//R2で爆弾を投げる
-		if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
-			isAfterThrow = true;
-			bombVelocity.x = cosf((stickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f;
-			bombVelocity.y = sinf(stickPositionY * M_PI / powf(2, 16)) * 5.0f;
-			bombPosition.x = LeftTop.x + bombLength;
-			bombPosition.y = LeftTop.y + bombLength;
-			isThrowMotion = false;
-		}
+		
 
+	}*/
+
+	//R2で爆弾を投げる
+	if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
+		isAfterThrow = true;
+		bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+		bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+		bombPosition.x = LeftTop.x + bombLength;
+		bombPosition.y = LeftTop.y + bombLength;
+		isThrowMotion = false;
 	}
 
 	//R2で爆弾を投げる状態に遷移
-	if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
+	/*if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
 		isThrowMotion = true;
-	}
+	}*/
 
 	//ボムが投げられた状態の時にボムを動かす
 	if (isAfterThrow == true) {
@@ -148,159 +154,155 @@ void Player::Update(Map map,float slow) {
 
 	}
 
-	if (isThrowMotion == false) {
+	//スティックの入力追加
+	if (Key::IsPress(DIK_A) || stickPositionX < 0) {
+		vector = { -1,0 };
+		velocity = vector * speed /** slow*/;
 
-		//スティックの入力追加
-		if (Key::IsPress(DIK_A) || stickPositionX < 0) {
-			vector = { -1,0 };
-			velocity = vector * speed /** slow*/;
+		////////////////////////当たり判定/////////////////////////
+		Vec2 tmpLeftTop, tmpLeftBottom;
+		int LeftTopX, LeftBottomX;
+		int LeftTopY, LeftBottomY;
+		tmpLeftTop = LeftTop + velocity;
+		tmpLeftBottom.x = LeftBottom.x + velocity.x;
+		tmpLeftBottom.y = (LeftBottom.y - 1) + velocity.y;
 
-			////////////////////////当たり判定/////////////////////////
-			Vec2 tmpLeftTop, tmpLeftBottom;
-			int LeftTopX, LeftBottomX;
-			int LeftTopY, LeftBottomY;
-			tmpLeftTop = LeftTop + velocity;
-			tmpLeftBottom.x = LeftBottom.x + velocity.x;
-			tmpLeftBottom.y = (LeftBottom.y - 1) + velocity.y;
+		LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+		LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
 
-			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
-			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+		LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
+		LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
 
-			LeftBottomX = (int)(tmpLeftBottom.x / (MAP_SIZE));
-			LeftBottomY = (int)(tmpLeftBottom.y / (MAP_SIZE));
-
-			if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
-				(map.map[LeftBottomY][LeftBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
-				Init();
-				/*LeftTop += velocity * slow;
-				RightTop += velocity * slow;
-				LeftBottom += velocity * slow;
-				RightBottom += velocity * slow;*/
-			}
-			/*else {
-				float num = (LeftBottomX + 1) * MAP_SIZE;
-				LeftTop.x = num;
-				RightTop.x = num + MAP_SIZE;
-				LeftBottom.x = num;
-				RightBottom.x = num + MAP_SIZE;
-			}*/
-
-			if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
-				map.AnyNone(map.map[LeftBottomY][LeftBottomX]) == true) {
-				LeftTop += velocity * slow;
-				RightTop += velocity * slow;
-				LeftBottom += velocity * slow;
-				RightBottom += velocity * slow;
-			}
-			else {
-				float num = (LeftBottomX + 1) * MAP_SIZE;
-				LeftTop.x = num;
-				RightTop.x = num + MAP_SIZE;
-				LeftBottom.x = num;
-				RightBottom.x = num + MAP_SIZE;
-			}
+		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[LeftBottomY][LeftBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
 		}
-		//スティックの入力追加
-		if (Key::IsPress(DIK_D) || stickPositionX > 0) {
-			vector = { 1,0 };
-			velocity = vector * speed /** slow*/;
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
 
-			////////////////////////当たり判定/////////////////////////
-			Vec2 tmpRightTop, tmpRightBottom;
-			int RightTopX, RightBottomX;
-			int RightTopY, RightBottomY;
-			tmpRightTop.x = (RightTop.x - 1) + velocity.x;
-			tmpRightTop.y = (RightTop.y) + velocity.y;
-			tmpRightBottom.x = RightBottom.x - 1 + velocity.x;
-			tmpRightBottom.y = RightBottom.y - 1 + velocity.y;
-
-			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
-			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
-
-			RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
-			RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
-
-			if ((map.map[RightTopY][RightTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
-				(map.map[RightBottomY][RightBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
-				Init();
-				/*LeftTop += velocity * slow;
-				RightTop += velocity * slow;
-				LeftBottom += velocity * slow;
-				RightBottom += velocity * slow;*/
-			}
-			/*else {
-				float num = (LeftBottomX + 1) * MAP_SIZE;
-				LeftTop.x = num;
-				RightTop.x = num + MAP_SIZE;
-				LeftBottom.x = num;
-				RightBottom.x = num + MAP_SIZE;
-			}*/
-
-
-			if (map.AnyNone(map.map[RightTopY][RightTopX]) == true &&
-				map.AnyNone(map.map[RightBottomY][RightBottomX]) == true) {
-				LeftTop += velocity * slow;
-				RightTop += velocity * slow;
-				LeftBottom += velocity * slow;
-				RightBottom += velocity * slow;
-			}
-			else {
-				float num = (RightBottomX - 1) * MAP_SIZE;
-				LeftTop.x = num;
-				RightTop.x = num + MAP_SIZE;
-				LeftBottom.x = num;
-				RightBottom.x = num + MAP_SIZE;
-			}
+		if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
+			map.AnyNone(map.map[LeftBottomY][LeftBottomX]) == true) {
+			LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;
 		}
-		if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
-			jumpFlag = false;
-			gravityVector = { 0,-1 };
-			gravityVelocity.y = gravityVector.y * jumpSpeed;
-			////////////////////////当たり判定/////////////////////////
-			Vec2 tmpLeftTop, tmpRightTop;
-			int LeftTopX, RightTopX;
-			int LeftTopY, RightTopY;
-			tmpLeftTop = LeftTop + gravityVelocity;
-			tmpRightTop.x = (RightTop.x - 1) + gravityVelocity.x;
-			tmpRightTop.y = (RightTop.y) + gravityVelocity.y;
+		else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}
+	}
+	//スティックの入力追加
+	if (Key::IsPress(DIK_D) || stickPositionX > 0) {
+		vector = { 1,0 };
+		velocity = vector * speed /** slow*/;
 
-			LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
-			LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+		////////////////////////当たり判定/////////////////////////
+		Vec2 tmpRightTop, tmpRightBottom;
+		int RightTopX, RightBottomX;
+		int RightTopY, RightBottomY;
+		tmpRightTop.x = (RightTop.x - 1) + velocity.x;
+		tmpRightTop.y = (RightTop.y) + velocity.y;
+		tmpRightBottom.x = RightBottom.x - 1 + velocity.x;
+		tmpRightBottom.y = RightBottom.y - 1 + velocity.y;
 
-			RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
-			RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
 
-			if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
-				(map.map[RightTopY][RightTopX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
-				Init();
-				/*LeftTop += velocity * slow;
-				RightTop += velocity * slow;
-				LeftBottom += velocity * slow;
-				RightBottom += velocity * slow;*/
-			}
-			/*else {
-				float num = (LeftBottomX + 1) * MAP_SIZE;
-				LeftTop.x = num;
-				RightTop.x = num + MAP_SIZE;
-				LeftBottom.x = num;
-				RightBottom.x = num + MAP_SIZE;
-			}*/
+		RightBottomX = (int)(tmpRightBottom.x / (MAP_SIZE));
+		RightBottomY = (int)(tmpRightBottom.y / (MAP_SIZE));
 
-			if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
-				map.AnyNone(map.map[RightTopY][RightTopX]) == true) {
-				LeftTop += gravityVelocity;
-				RightTop += gravityVelocity;
-				LeftBottom += gravityVelocity;
-				RightBottom += gravityVelocity;
-			}
-			else {
-				float num = (LeftTopY + 1) * MAP_SIZE;
-				LeftTop.y = num;
-				RightTop.y = num;
-				LeftBottom.y = num + MAP_SIZE;
-				RightBottom.y = num + MAP_SIZE;
-			}
+		if ((map.map[RightTopY][RightTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[RightBottomY][RightBottomX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
+		}
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
 
+
+		if (map.AnyNone(map.map[RightTopY][RightTopX]) == true &&
+			map.AnyNone(map.map[RightBottomY][RightBottomX]) == true) {
+			LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;
+		}
+		else {
+			float num = (RightBottomX - 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}
+	}
+	if ((Key::IsPress(DIK_W) || Key::IsPress(DIK_SPACE)) && jumpFlag) {
+		jumpFlag = false;
+		gravityVector = { 0,-1 };
+		gravityVelocity.y = gravityVector.y * jumpSpeed;
+		////////////////////////当たり判定/////////////////////////
+		Vec2 tmpLeftTop, tmpRightTop;
+		int LeftTopX, RightTopX;
+		int LeftTopY, RightTopY;
+		tmpLeftTop = LeftTop + gravityVelocity;
+		tmpRightTop.x = (RightTop.x - 1) + gravityVelocity.x;
+		tmpRightTop.y = (RightTop.y) + gravityVelocity.y;
+
+		LeftTopX = (int)(tmpLeftTop.x / (MAP_SIZE));
+		LeftTopY = (int)(tmpLeftTop.y / (MAP_SIZE));
+
+		RightTopX = (int)(tmpRightTop.x / (MAP_SIZE));
+		RightTopY = (int)(tmpRightTop.y / (MAP_SIZE));
+
+		if ((map.map[LeftTopY][LeftTopX] == map.NEEDLE /*|| map.map[LeftTopY][LeftTopX] == map.NEEDLE*/) &&
+			(map.map[RightTopY][RightTopX] == map.NEEDLE/* || map.map[LeftBottomY][LeftBottomX] == map.NEEDLE)*/)) {
+			Init();
+			/*LeftTop += velocity * slow;
+			RightTop += velocity * slow;
+			LeftBottom += velocity * slow;
+			RightBottom += velocity * slow;*/
+		}
+		/*else {
+			float num = (LeftBottomX + 1) * MAP_SIZE;
+			LeftTop.x = num;
+			RightTop.x = num + MAP_SIZE;
+			LeftBottom.x = num;
+			RightBottom.x = num + MAP_SIZE;
+		}*/
+
+		if (map.AnyNone(map.map[LeftTopY][LeftTopX]) == true &&
+			map.AnyNone(map.map[RightTopY][RightTopX]) == true) {
+			LeftTop += gravityVelocity;
+			RightTop += gravityVelocity;
+			LeftBottom += gravityVelocity;
+			RightBottom += gravityVelocity;
+		}
+		else {
+			float num = (LeftTopY + 1) * MAP_SIZE;
+			LeftTop.y = num;
+			RightTop.y = num;
+			LeftBottom.y = num + MAP_SIZE;
+			RightBottom.y = num + MAP_SIZE;
 		}
 
 	}
