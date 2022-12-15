@@ -23,6 +23,9 @@ public:
 	int bombStickPositionX;
 	int bombStickPositionY;
 
+	int preBombStickPositionX;
+	int preBombStickPositionY;
+
 	//îöíeÇÃèÓïÒ
 	Vec2 bombPosition;
 	Vec2 bombVelocity;
@@ -63,7 +66,7 @@ public:
 	Vec2 RightBottom;
 	Vec2 vector;
 	Vec2 velocity;
-	Vec2 knockBackVelocity= {0,0};
+	Vec2 knockBackVelocity;
 
 	Quad playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
 	

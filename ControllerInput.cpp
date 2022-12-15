@@ -33,6 +33,7 @@ bool Controller::IsUse() {
 				(state[number].Gamepad.sThumbRY <  rightStickDeadZone[number] && state[number].Gamepad.sThumbRY > -rightStickDeadZone[number]) ||
 				(state[number].Gamepad.sThumbLX <  rightStickDeadZone[number] && state[number].Gamepad.sThumbLX > -rightStickDeadZone[number]) ||
 				(state[number].Gamepad.sThumbLY <  rightStickDeadZone[number] && state[number].Gamepad.sThumbLY > -rightStickDeadZone[number])){
+				
 				return true;								   
 				}
 		}
@@ -66,6 +67,8 @@ bool Controller::SetLeftStickDeadZone(int number, int deadzone) {
 	}
 	return false;
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -154,6 +157,12 @@ bool Controller::IsStickDirection(int number, StickDirection direction) {
 	}
 	return false;
 }
+
+
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -2,6 +2,7 @@
 #include <math.h>
 #include "Player.h"
 #include <Novice.h>
+#include <math.h>
 #include"Key.h"
 #include"Collision.h"
 #include"Circle.h"
@@ -26,6 +27,8 @@ void Player::Init() {
 	gravityVector = { 0,0 };
 	gravityVelocity = { 0,0 };
 	gravitySpeed = 0.5;
+
+	knockBackVelocity = {0,0};
 
 	jumpFlag = false;
 	jumpSpeed = 15.0f;
@@ -91,14 +94,28 @@ void Player::Update(Map map,float slow) {
 	}*/
 
 	//R2Ç≈îöíeÇìäÇ∞ÇÈ
-	/*if (Controller::IsTriggerButton(0, Controller::rTrigger) && isAfterThrow == false) {
+	/*if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
 		isAfterThrow = true;
 		bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 		bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 		bombPosition.x = LeftTop.x + bombLength;
 		bombPosition.y = LeftTop.y + bombLength;
 		isThrowMotion = false;
+
+		knockBackVelocity = { -bombVelocity.x, 0 };
 	}*/
+
+	/*if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
+		bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+		bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+
+		gravityVelocity = { 0,0 };
+
+		knockBackVelocity = { -bombVelocity.x ,  -bombVelocity.y  };
+	}*/
+
+	preBombStickPositionX = bombStickPositionX;
+	preBombStickPositionY = bombStickPositionY;
 
 	//R2Ç≈îöíeÇìäÇ∞ÇÈèÛë‘Ç…ëJà⁄
 	/*if (Novice::IsTriggerButton(0, kPadButton11) && isAfterThrow == false) {
@@ -331,23 +348,28 @@ void Player::Update(Map map,float slow) {
 	}
 
 	{
-		///*if (knockBackVelocity.x > 0) {
-		//	knockBackVelocity.x -= 1;
-		//}
-		//if (knockBackVelocity.x < 0) {
-		//	knockBackVelocity.x += 1;
-		//}*/
+		if (knockBackVelocity.x > 0) {
+			knockBackVelocity.x -= 0.1;
+		}
+		if (knockBackVelocity.x < 0) {
+			knockBackVelocity.x += 0.1;
+		}
+
+		if (knockBackVelocity.x < 0.1 && knockBackVelocity.x > 0.1) {
+			knockBackVelocity.x = 0;
+		}
+
+		
 		//knockBackVelocity.y += 1;
+		
 
-
-		//LeftTop += knockBackVelocity;
-		//RightTop += knockBackVelocity;
-		//LeftBottom += knockBackVelocity;
-		//RightBottom += knockBackVelocity;
+		LeftTop += knockBackVelocity;
+		RightTop += knockBackVelocity;
+		LeftBottom += knockBackVelocity;
+		RightBottom += knockBackVelocity;
 	}
 
 
-	
 	//èdóÕ
 	{
 
@@ -464,6 +486,7 @@ void Player::Update(Map map,float slow) {
 			LeftBottom.y = num + MAP_SIZE;
 			RightBottom.y = num + MAP_SIZE;
 			gravityVelocity = { 0,0 };
+			knockBackVelocity.y = 0;
 			jumpFlag = true;
 		}
 	}
