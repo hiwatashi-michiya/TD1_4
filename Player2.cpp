@@ -43,7 +43,7 @@ void Player2::Update(Map map)
 
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
 
-	if (/*(keys[DIK_W] && preKeys[DIK_W] == 0) || */Controller::IsTriggerButton(0, Controller::bA) == 1) {
+	if ((keys[DIK_W] && preKeys[DIK_W] == 0) || Controller::IsTriggerButton(0, Controller::bA) == 1) {
 		moveVector.y -= 13;
 		//moveVector.y -= speed;
 	}
@@ -89,44 +89,116 @@ void Player2::Update(Map map)
 	
 	if (map.map[PosYGrid][RightGrid] == map.CANTBLOCK) {
 		moveVector.x = 0;
-		nextPosition.x = RightGrid * MAP_SIZE - MAP_SIZE / 2;
+		nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 		GridInit();
 	}
 
 	if (map.map[PosYGrid][LeftGrid] == map.CANTBLOCK) {
 		moveVector.x = 0;
-		nextPosition.x = (LeftGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
+		nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 		GridInit();
 	}
 
-	if (map.map[UpGrid][RightGrid - 1] == map.CANTBLOCK) {
+	if (map.map[UpGrid][PosXGrid] == map.CANTBLOCK) {
 		moveVector.y = 1;
 		knockBackVelocity.y = 0;
-		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
+		nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
 		GridInit();
 	}
 
-	if (map.map[UpGrid][LeftGrid + 1] == map.CANTBLOCK) {
-		moveVector.y = 1;
-		knockBackVelocity.y = 0;
-		nextPosition.y = (UpGrid + 1) * MAP_SIZE + MAP_SIZE / 2;
-		GridInit();
-	}
-
-	if (map.map[DownGrid][RightGrid - 1] == map.CANTBLOCK) {
+	if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
 		moveVector.y = 0;
 		knockBackVelocity.y = 0;
-		nextPosition.y = DownGrid * MAP_SIZE - MAP_SIZE / 2;
+		nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 		GridInit();
 	}
 
-	if (map.map[DownGrid][LeftGrid + 1] == map.CANTBLOCK) {
-		moveVector.y = 0;
-		knockBackVelocity.y = 0;
-		nextPosition.y = DownGrid * MAP_SIZE - MAP_SIZE / 2;
-		GridInit();
+	if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
+		if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
+
+
+			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
+				moveVector.x = 0;
+				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+				GridInit();
+
+
+			}
+			else {
+
+				if (Up < (UpGrid + 1) * MAP_SIZE) {
+					moveVector.y = 0;
+					knockBackVelocity.y = 0;
+					nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
+					GridInit();
+				}
+			}
+		}
 	}
 
+	if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
+		if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
+
+
+			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
+				moveVector.x = 0;
+				nextPosition.x = (LeftGrid + 2) * MAP_SIZE - size.x / 2;
+				GridInit();
+
+
+			}
+			else {
+
+				if (Up < (UpGrid + 1) * MAP_SIZE) {
+					moveVector.y = 0;
+					knockBackVelocity.y = 0;
+					nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
+					GridInit();
+				}
+			}
+		}
+	}
+
+	if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
+		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
+			
+
+			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0) {
+				moveVector.x = 0;
+				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+				GridInit();
+
+
+			}
+			else {
+
+				if (Down > DownGrid * MAP_SIZE) {
+					moveVector.y = 0;
+					knockBackVelocity.y = 0;
+					nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+					GridInit();
+				}
+			}
+		}
+	}
+
+	if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
+		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
+			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0) {
+				moveVector.x = 0;
+				nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
+				GridInit();
+			}
+			else {
+				if (Down > DownGrid * MAP_SIZE) {
+					moveVector.y = 0;
+					knockBackVelocity.y = 0;
+					nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+					GridInit();
+				}
+			}
+		}
+	}
 
 	position.x = nextPosition.x;
 	position.y = nextPosition.y;
@@ -146,12 +218,12 @@ void Player2::Draw()
 	);
 //	Novice::DrawEllipse(Left, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 //	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
-	//Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RED, kFillModeSolid);
+	//Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RErD, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Down, 3, 3, 0, RED, kFillModeSolid);
-	//Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
-	//Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
-	//Novice::DrawEllipse(nextPosition.x, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
-	//Novice::DrawEllipse(nextPosition.x, DownGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(nextPosition.x, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(nextPosition.x, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 
 	Novice::DrawEllipse(BombPos.x,BombPos.y, BombRad, BombRad,0,RED,kFillModeSolid
 	
@@ -174,10 +246,10 @@ void Player2::Draw()
 void Player2::GridInit()
 {
 
-	Left = nextPosition.x - size.x / 2 - 1;
-	Right = nextPosition.x + size.x / 2;
-	Up = nextPosition.y - size.y / 2 - 1;
-	Down = nextPosition.y + size.y / 2;
+	Left = nextPosition.x - size.x / 2 ;
+	Right = nextPosition.x + size.x / 2 - 1;
+	Up = nextPosition.y - size.y / 2  ;
+	Down = nextPosition.y + size.y / 2 - 1;
 
 	LeftGrid = Left / MAP_SIZE;
 	RightGrid = Right / MAP_SIZE;
