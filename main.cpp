@@ -14,6 +14,7 @@
 #include "Quad.h"
 #include "ControllerInput.h"
 #include "Candle.h"
+#include "WindMill.h"
 
 const char kWindowTitle[] = "map";
 
@@ -170,6 +171,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float slow = 1.0f;
 
 	Novice::SetMouseCursorVisibility(0);
+
+	WindMill windMill;
+
+	windMill.Set({ 1000,300 }, scrollX);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -1060,6 +1065,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		player2.Update(map, &scrollX);
+
+		windMill.Hit(player2.GetBombCircle());
+		windMill.Update(scrollX);
+		
 		if (Key::IsTrigger(DIK_C)) {
 			candle.isAlive = false;
 		}
@@ -1317,6 +1326,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			break;
 		}
+
+		windMill.Draw();
 
 		player2.Draw(&scrollX);
 

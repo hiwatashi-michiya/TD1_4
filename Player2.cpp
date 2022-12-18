@@ -12,7 +12,9 @@ Player2::Player2()
 
 	speed = 5.0f;
 	
-	
+	BombPos = { 9999,9999 };
+	BombRad = 0;
+	BombCircle = {BombPos,BombRad};
 
 }
 
@@ -60,6 +62,9 @@ void Player2::Update(Map map, float* scrollX)
 	if (BombRad > 0) {
 		BombRad-= 3;
 	}
+	else {
+		BombPos = { 9999,9999};
+	}
 
 	Novice::GetAnalogInputRight(0, &bombStickPositionX, &bombStickPositionY);
 	
@@ -72,9 +77,63 @@ void Player2::Update(Map map, float* scrollX)
 
 		knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 	
-		BombPos = { position.x + bombVelocity.x , position.y + bombVelocity.y };
+		BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
 		BombRad = 60;
 	}
+
+	//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
+	{
+		if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0) {
+			bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+			bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+
+			moveVector.y = 0;
+
+			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+			BombRad = 60;
+		}
+
+		if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
+			bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+			bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+
+			moveVector.y = 0;
+
+			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+			BombRad = 60;
+		}
+
+		if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
+			bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+			bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
+
+			moveVector.y = 0;
+
+			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+			BombRad = 60;
+		}
+
+		if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
+			bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+			bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
+
+			moveVector.y = 0;
+
+			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+			BombRad = 60;
+		}
+
+	}
+
+	BombCircle = { BombPos,BombRad };
 
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
@@ -84,168 +143,170 @@ void Player2::Update(Map map, float* scrollX)
 	nextPosition.x = position.x + moveVector.x + knockBackVelocity.x;
 	nextPosition.y = position.y + moveVector.y + knockBackVelocity.y;
 
-	GridInit();
-	
-	if (position.y - nextPosition.y < 0) {
-		if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-			GridInit();
-		}
+	//当たり判定
+	{
+		GridInit();
 
-		if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
-			GridInit();
-		}
-	}
-	else {
-		if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-			GridInit();
-		}
-
-		if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
-			GridInit();
-		}
-	}
-
-	
-
-	if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
-		if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
-
-
-			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
-				moveVector.x = 0;
-				//スクロール値調整
-				*scrollX -= knockBackVelocity.x;
-				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-				GridInit();
-
-
-			}
-			else {
-
-				if (Up < (UpGrid + 1) * MAP_SIZE ) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
-					GridInit();
-				}
-			}
-		}
-	}
-
-	if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
-		if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
-
-
-			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
-				moveVector.x = 0;
-				//スクロール値調整
-				*scrollX -= knockBackVelocity.x;
-				nextPosition.x = (LeftGrid + 2) * MAP_SIZE - size.x / 2;
-				GridInit();
-
-
-			}
-			else {
-
-				if (Up < (UpGrid + 1) * MAP_SIZE) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
-					GridInit();
-				}
-			}
-		}
-	}
-
-	if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
-		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
-			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
+		if (position.y - nextPosition.y < 0) {
+			if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 				GridInit();
 			}
-			else {
-				if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
-					GridInit();
-				}
-				else {
-					moveVector.x = 0;
-					//スクロール値調整
-					*scrollX -= knockBackVelocity.x;
-					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-					GridInit();
-				}
-			}
-		}
-	}
 
-	
-
-	else if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
-		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
-			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
+			if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 				GridInit();
 			}
-			else {
-				if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+		}
+		else {
+			if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
+				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
+				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+				GridInit();
+			}
+
+			if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
+				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
+				nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
+				GridInit();
+			}
+		}
+
+
+
+		if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
+			if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
+
+
+				if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
+					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
+					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+					GridInit();
+
+
+				}
+				else {
+
+					if (Up < (UpGrid + 1) * MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+				}
+			}
+		}
+
+		if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
+			if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
+
+
+				if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
+					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
+					nextPosition.x = (LeftGrid + 2) * MAP_SIZE - size.x / 2;
+					GridInit();
+
+
+				}
+				else {
+
+					if (Up < (UpGrid + 1) * MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+				}
+			}
+		}
+
+		if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
+			if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
+				if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
+					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
+					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 					GridInit();
 				}
 				else {
+					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+					else {
+						moveVector.x = 0;
+						//スクロール値調整
+						*scrollX -= knockBackVelocity.x;
+						nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+						GridInit();
+					}
+				}
+			}
+		}
+
+
+
+		else if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
+			if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
+				if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
 					moveVector.x = 0;
 					//スクロール値調整
 					*scrollX -= knockBackVelocity.x;
 					nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 					GridInit();
 				}
+				else {
+					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+					else {
+						moveVector.x = 0;
+						//スクロール値調整
+						*scrollX -= knockBackVelocity.x;
+						nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
+						GridInit();
+					}
+				}
 			}
 		}
+
+		Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
+		Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
+
+		if (map.map[UpGrid][PosXGrid] == map.CANTBLOCK) {
+			moveVector.y = 1;
+			knockBackVelocity.y = 0;
+			nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
+			GridInit();
+		}
+
+		if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
+			moveVector.y = 0;
+			knockBackVelocity.y = 0;
+			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+			GridInit();
+		}
 	}
-
-	Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
-	Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
-
-	if (map.map[UpGrid][PosXGrid] == map.CANTBLOCK) {
-		moveVector.y = 1;
-		knockBackVelocity.y = 0;
-		nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
-		GridInit();
-	}
-
-	if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
-		moveVector.y = 0;
-		knockBackVelocity.y = 0;
-		nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
-		GridInit();
-	}
-
 	Novice::ScreenPrintf(400, 400, "%0.2f", position.y - nextPosition.y);
 
 	position.x = nextPosition.x;
@@ -288,7 +349,7 @@ void Player2::Draw(float* scrollX)
 	Novice::DrawEllipse(nextPosition.x - *scrollX, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 
-	Novice::DrawEllipse(BombPos.x - *scrollX, BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
+	Novice::DrawEllipse(BombPos.x , BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
 
 
 

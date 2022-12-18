@@ -28,8 +28,9 @@ public:
 
 	Vec2 knockBackVelocity;
 
-	Vec2 BombPos;
-	int BombRad = 0;
+	Vec2 BombPos = {9999,9999};
+	float BombRad = 0;
+	Circle BombCircle;
 
 	float speed;
 	
@@ -64,6 +65,7 @@ public:
 	void Draw(float* scrollX);
 
 	Quad GetPlayerQuad() { return playerColQuad; };
+	Circle GetBombCircle() { return BombCircle; };
 };
 
 

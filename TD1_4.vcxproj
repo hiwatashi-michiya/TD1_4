@@ -110,6 +110,7 @@
     <ClCompile Include="TestEnemy.cpp" />
     <ClCompile Include="TestEnemy2.cpp" />
     <ClCompile Include="Vec2.cpp" />
+    <ClCompile Include="WindMill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectXGame\math\MathUtility.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="TestEnemy.h" />
     <ClInclude Include="TestEnemy2.h" />
     <ClInclude Include="Vec2.h" />
+    <ClInclude Include="WindMill.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
