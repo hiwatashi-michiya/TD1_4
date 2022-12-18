@@ -6,7 +6,7 @@
 
 class Player2
 {
-private:
+public:
 
 	Vec2 position;
 	Vec2 nextPosition;

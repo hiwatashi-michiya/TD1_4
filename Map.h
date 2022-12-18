@@ -3,7 +3,7 @@
 
 const int MAP_SIZE = 32;
 
-const int kMaxBlock = 12;
+const int kMaxBlock = 14;
 
 struct Map{
 	enum TILE {
@@ -18,8 +18,9 @@ struct Map{
 		BLUENONE,
 		REDBLOCK,
 		GREENBLOCK,
-		BLUEBLOCK
-		
+		BLUEBLOCK,
+		CANDLE_SWHITCH,
+		CANDLE_BLOCK,
 	};
 
 	int map[50][50];

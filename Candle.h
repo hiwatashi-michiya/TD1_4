@@ -1,0 +1,20 @@
+#pragma once
+//#include "Vec2.h"
+#include "Map.h"
+#include "Player2.h"
+#include"Quad.h"
+class Candle
+{
+public:
+	//•Ï”
+	bool isAlive;
+	int candleMap[50][50];
+	//ŠÖ”
+	Candle(Map& map);
+	void Init(Map& map);
+	void Collision(Map& map,Player2& player);
+	void Move(Map& map);
+	void Update(Map& map, Player2& player);
+
+};
+

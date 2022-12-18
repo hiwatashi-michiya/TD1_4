@@ -13,6 +13,7 @@
 #include "Circle.h"
 #include "Quad.h"
 #include "ControllerInput.h"
+#include "Candle.h"
 
 const char kWindowTitle[] = "map";
 
@@ -148,6 +149,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//mapEasy.blockCount = 25;
 	Player player;
 	Player2 player2;
+
+	//ギミック
+	Candle candle(map);
 
 	//const int kTestEnemy = 6;
 	//TestEnemy testEnemy[kTestEnemy];
@@ -1056,7 +1060,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		player2.Update(map, &scrollX);
-		
+		if (Key::IsTrigger(DIK_C)) {
+			candle.isAlive = false;
+		}
+		candle.Update(map, player2);
 		//testEnemy.Update(player, map, slow);
 
 		preMouseX = mouseX;
@@ -1102,8 +1109,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					map.blockCount = 25;
 				}
 			}
-
-			player.Init();
+			//俺が変えたぜ
+			player2.Init();
 			FILE* fp = NULL;
 
 			Map++;
@@ -1214,7 +1221,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
-					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK) {
+					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK || map.map[y][x] == map.CANDLE_SWHITCH || map.map[y][x] == map.CANDLE_BLOCK) {
 
 						Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
 							x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
