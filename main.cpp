@@ -61,6 +61,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	bool isHit = false;
 
+	//スクロール値
+	float scrollX = 0;
+
 	int TILE = Novice::LoadTexture("./Resources/tile.png");
 	int COLORTILE = Novice::LoadTexture("./Resources/colortile.png");
 	int COLORNONE = Novice::LoadTexture("./Resources/colornone.png");
@@ -546,9 +549,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//
 		//if (Map == 1) {
 		int mouseYGrid = mouseY / MAP_SIZE;
-		int mouseXGrid = mouseX / MAP_SIZE;
+		int mouseXGrid = (mouseX + scrollX) / MAP_SIZE;
 		int premouseYGrid = preMouseY / MAP_SIZE;
-		int premouseXGrid = preMouseX / MAP_SIZE;
+		int premouseXGrid = (preMouseX + scrollX) / MAP_SIZE;
 		int setMouseYGrid = premouseYGrid;
 		int setMouseXGrid = premouseXGrid;
 
@@ -1053,7 +1056,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Update(map, slow);
 		}
 
-		player2.Update(map);
+		player2.Update(map, &scrollX);
 		
 		//testEnemy.Update(player, map, slow);
 
@@ -1198,24 +1201,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					if (map.map[y][x] == map.BLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
 
-						Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
-							x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
+						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
 							0, 0, 32, 32, TILE, map.blockColor[y][x]);
 
 					}
 
 					if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.GREENNONE || map.map[y][x] == map.BLUENONE) {
 
-						Novice::DrawQuad(x* MAP_SIZE, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE,
-							x* MAP_SIZE, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE + MAP_SIZE,
+						Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
+							x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
 							0, 0, 32, 32, COLORNONE, map.blockColor[y][x]);
 
 					}
 
 					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK) {
 
-						Novice::DrawQuad(x* MAP_SIZE, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE,
-							x* MAP_SIZE, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE, y* MAP_SIZE + MAP_SIZE,
+						Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
+							x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
 							0, 0, 32, 32, COLORTILE, map.blockColor[y][x]);
 
 					}
@@ -1225,11 +1228,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			if (isShowBorder == true) {
-				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
 			}
 
 			if (isEdit == true) {
-				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
 			}
 
 		//}
@@ -1307,7 +1312,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		player2.Draw();
+		player2.Draw(&scrollX);
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);

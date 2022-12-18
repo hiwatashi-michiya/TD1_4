@@ -20,7 +20,7 @@ void Player2::Init()
 {
 }
 
-void Player2::Update(Map map)
+void Player2::Update(Map map, float* scrollX)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
@@ -89,12 +89,16 @@ void Player2::Update(Map map)
 	if (position.y - nextPosition.y < 0) {
 		if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
 			moveVector.x = 0;
+			//スクロール値調整
+			*scrollX -= knockBackVelocity.x;
 			nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 			GridInit();
 		}
 
 		if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
 			moveVector.x = 0;
+			//スクロール値調整
+			*scrollX -= knockBackVelocity.x;
 			nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 			GridInit();
 		}
@@ -102,12 +106,16 @@ void Player2::Update(Map map)
 	else {
 		if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
 			moveVector.x = 0;
+			//スクロール値調整
+			*scrollX -= knockBackVelocity.x;
 			nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 			GridInit();
 		}
 
 		if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
 			moveVector.x = 0;
+			//スクロール値調整
+			*scrollX -= knockBackVelocity.x;
 			nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 			GridInit();
 		}
@@ -121,6 +129,8 @@ void Player2::Update(Map map)
 
 			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
 				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 				GridInit();
 
@@ -144,6 +154,8 @@ void Player2::Update(Map map)
 
 			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
 				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = (LeftGrid + 2) * MAP_SIZE - size.x / 2;
 				GridInit();
 
@@ -165,6 +177,8 @@ void Player2::Update(Map map)
 		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
 			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
 				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 				GridInit();
 			}
@@ -177,6 +191,8 @@ void Player2::Update(Map map)
 				}
 				else {
 					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
 					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 					GridInit();
 				}
@@ -190,6 +206,8 @@ void Player2::Update(Map map)
 		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
 			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
 				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 				GridInit();
 			}
@@ -202,6 +220,8 @@ void Player2::Update(Map map)
 				}
 				else {
 					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
 					nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 					GridInit();
 				}
@@ -231,15 +251,30 @@ void Player2::Update(Map map)
 	position.x = nextPosition.x;
 	position.y = nextPosition.y;
 
+	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * 30) {
+		*scrollX += moveVector.x + knockBackVelocity.x;
+	}
+	else {
+
+		if (position.x <= MAP_SIZE * 20) {
+			*scrollX = 0;
+		}
+
+		if (position.x >= MAP_SIZE * 30) {
+			*scrollX = MAP_SIZE * 10;
+		}
+
+	}
+
 }
 
-void Player2::Draw()
+void Player2::Draw(float* scrollX)
 {
 	Novice::DrawQuad(
-		position.x - size.x / 2, position.y - size.y / 2,
-		position.x + size.x / 2, position.y - size.y / 2,
-		position.x - size.x / 2, position.y + size.y / 2,
-		position.x + size.x / 2, position.y + size.y / 2,
+		position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
+		position.x + size.x / 2 - *scrollX, position.y - size.y / 2,
+		position.x - size.x / 2 - *scrollX, position.y + size.y / 2,
+		position.x + size.x / 2 - *scrollX, position.y + size.y / 2,
 		0, 0,
 		size.x, size.y,
 		0, WHITE
@@ -248,12 +283,12 @@ void Player2::Draw()
 //	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RErD, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Down, 3, 3, 0, RED, kFillModeSolid);
-	Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
-	Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
-	Novice::DrawEllipse(nextPosition.x, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
-	Novice::DrawEllipse(nextPosition.x, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(nextPosition.x - *scrollX, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 
-	Novice::DrawEllipse(BombPos.x, BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
+	Novice::DrawEllipse(BombPos.x - *scrollX, BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
 
 
 

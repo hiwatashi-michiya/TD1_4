@@ -59,9 +59,9 @@ public:
 
 	void GridInit();
 
-	void Update(Map map);
+	void Update(Map map, float* scrollX);
 
-	void Draw();
+	void Draw(float* scrollX);
 
 	Quad GetPlayerQuad() { return playerColQuad; };
 };
