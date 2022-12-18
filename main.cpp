@@ -383,81 +383,81 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}*/
 		}
 
-		if (player.RightBottom.x < 32 - MAP_SIZE / 2) {
+		//if (player.RightBottom.x < 32 - MAP_SIZE / 2) {
 
-			player.SetRight();
+		//	player.SetRight();
 
-			Map--;
+		//	Map--;
 
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
-					map.blockNum[y][x] = 0;
-					map.map[y][x] == map.NONE;
-					map.blockCount = 25;
-				}
-			}
+		//	for (int y = 0; y < 50; y++) {
+		//		for (int x = 0; x < 50; x++) {
+		//			map.blockNum[y][x] = 0;
+		//			map.map[y][x] == map.NONE;
+		//			map.blockCount = 25;
+		//		}
+		//	}
 
-			FILE* fp = NULL;
+		//	FILE* fp = NULL;
 
-			switch (Map)
-			{
-			case 0:
+		//	switch (Map)
+		//	{
+		//	case 0:
 
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+		//		fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
 
-				break;
-			case 1:
+		//		break;
+		//	case 1:
 
-				fopen_s(&fp, "./Resources/test.csv", "rt");
+		//		fopen_s(&fp, "./Resources/test.csv", "rt");
 
-				break;
-			}
+		//		break;
+		//	}
 
-			if (fp == NULL) {
-				return 0;
-			}
+		//	if (fp == NULL) {
+		//		return 0;
+		//	}
 
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
-					fscanf_s(fp, "%d,", &map.map[y][x]);
-				}
-			}
+		//	for (int y = 0; y < 50; y++) {
+		//		for (int x = 0; x < 50; x++) {
+		//			fscanf_s(fp, "%d,", &map.map[y][x]);
+		//		}
+		//	}
 
-			fclose(fp);
-			map.blockCount = 25;
+		//	fclose(fp);
+		//	map.blockCount = 25;
 
-			/*if (Map == 1) {
-				FILE* fp = NULL;
-				fopen_s(&fp, "./Resources/test.csv", "rt");
-				if (fp == NULL) {
-					return 0;
-				}
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
-					}
-				}
-				fclose(fp);
-				map.blockCount = 25;
-			}
-			else {
-				FILE* fp = NULL;
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
-				if (fp == NULL) {
-					return 0;
-				}
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
-						fscanf_s(fp, "%d,", &map.map[y][x]);
-					}
-				}
-				fclose(fp);
-				map.blockCount = 25;
-			}*/
+		//	/*if (Map == 1) {
+		//		FILE* fp = NULL;
+		//		fopen_s(&fp, "./Resources/test.csv", "rt");
+		//		if (fp == NULL) {
+		//			return 0;
+		//		}
+		//		for (int y = 0; y < 50; y++) {
+		//			for (int x = 0; x < 50; x++) {
+		//				fscanf_s(fp, "%d,", &map.map[y][x]);
+		//			}
+		//		}
+		//		fclose(fp);
+		//		map.blockCount = 25;
+		//	}
+		//	else {
+		//		FILE* fp = NULL;
+		//		fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+		//		if (fp == NULL) {
+		//			return 0;
+		//		}
+		//		for (int y = 0; y < 50; y++) {
+		//			for (int x = 0; x < 50; x++) {
+		//				fscanf_s(fp, "%d,", &map.map[y][x]);
+		//			}
+		//		}
+		//		fclose(fp);
+		//		map.blockCount = 25;
+		//	}*/
 
-		}
+		//}
 
-		if (player.LeftBottom.x > 1280 - MAP_SIZE / 2) {
+		/*if (player.LeftBottom.x > 1280 - MAP_SIZE / 2) {
 
 			player.SetLeft();
 
@@ -500,7 +500,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fclose(fp);
 			map.blockCount = 25;
 
-		}
+		}*/
 
 		if (isEdit == true) {
 
@@ -1050,10 +1050,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < kTestEnemy2; i++) {
 				testEnemy2[i].Update(player, map, slow);
 			}*/
-			player.Update(map, slow);
 		}
 		else {
-			player.Update(map, slow);
+
 		}
 
 		player2.Update(map, &scrollX);
