@@ -126,8 +126,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		for (int x = 0; x < 50; x++) {
 
-			map.tmpTime[y][x] = 0;
-
 			map.blockColor[y][x] = 0xFFFFFFFF;
 
 			//mapEasy.tmpTime[y][x] = 0;
@@ -1066,6 +1064,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}*/
 		}
 		else {
+
+		}
+
+		//着色
+		for (int y = 0; y < kMapBlockHeight; y++) {
+
+			for (int x = 0; x < kMapBlockWidth; x++) {
+
+				if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.REDBLOCK) {
+					map.blockColor[y][x] = 0xFF0000FF;
+				}
+
+				if (map.map[y][x] == map.GREENNONE || map.map[y][x] == map.GREENBLOCK) {
+					map.blockColor[y][x] = 0x00FF00FF;
+				}
+
+				if (map.map[y][x] == map.BLUENONE || map.map[y][x] == map.BLUEBLOCK) {
+					map.blockColor[y][x] = 0x0000FFFF;
+				}
+
+			}
 
 		}
 

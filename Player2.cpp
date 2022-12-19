@@ -164,7 +164,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 		GridInit();
 
 		if (position.y - nextPosition.y < 0) {
-			if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
+			if (map.AnyNone(map.map[UpGrid][RightGrid]) == false) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
@@ -172,7 +172,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 				GridInit();
 			}
 
-			if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
+			if (map.AnyNone(map.map[UpGrid][LeftGrid]) == false) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
@@ -181,7 +181,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			}
 		}
 		else {
-			if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
+			if (map.AnyNone(map.map[DownGrid][RightGrid]) == false) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
@@ -189,7 +189,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 				GridInit();
 			}
 
-			if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
+			if (map.AnyNone(map.map[DownGrid][LeftGrid]) == false) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
@@ -200,8 +200,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 
 
-		if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
-			if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
+		if (map.AnyNone(map.map[UpGrid][RightGrid]) == false) {
+			if (map.AnyNone(map.map[UpGrid][PosXGrid]) == true) {
 
 
 				if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
@@ -225,8 +225,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			}
 		}
 
-		if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
-			if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
+		if (map.AnyNone(map.map[UpGrid][LeftGrid]) == false) {
+			if (map.AnyNone(map.map[UpGrid][PosXGrid]) == true) {
 
 
 				if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
@@ -250,8 +250,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			}
 		}
 
-		if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
-			if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
+		if (map.AnyNone(map.map[DownGrid][RightGrid]) == false) {
+			if (map.AnyNone(map.map[DownGrid][PosXGrid]) == true) {
 				if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
 					moveVector.x = 0;
 					//スクロール値調整
@@ -279,8 +279,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 
 
-		else if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
-			if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
+		else if (map.AnyNone(map.map[DownGrid][LeftGrid]) == false) {
+			if (map.AnyNone(map.map[DownGrid][PosXGrid]) == true) {
 				if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
 					moveVector.x = 0;
 					//スクロール値調整
@@ -309,14 +309,14 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 		Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
 		Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
 
-		if (map.map[UpGrid][PosXGrid] == map.CANTBLOCK) {
+		if (map.AnyNone(map.map[UpGrid][PosXGrid]) == false) {
 			moveVector.y = 1;
 			knockBackVelocity.y = 0;
 			nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
 			GridInit();
 		}
 
-		if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
+		if (map.AnyNone(map.map[DownGrid][PosXGrid]) == false) {
 			moveVector.y = 0;
 			knockBackVelocity.y = 0;
 			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
@@ -329,6 +329,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 	position.x = nextPosition.x;
 	position.y = nextPosition.y;
 
+	//スクロール
 	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * 30) {
 		*scrollX += moveVector.x + knockBackVelocity.x;
 	}
