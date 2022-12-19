@@ -13,7 +13,9 @@ private:
 	bool isExpHit;
 
 	float Charge;
-	const int MAXCHARGE = 300;
+	bool isCharged;
+
+	const int MAXCHARGE = 200;
 
 public:
 
@@ -24,6 +26,8 @@ public:
 	void Update(float ScrollX);
 
 	void Hit(Circle TargetCircle);
+
+	bool GetisCharged() { return isCharged; };
 
 	void Draw();
 };

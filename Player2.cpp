@@ -1,5 +1,6 @@
 #include "Player2.h"
 #include "ControllerInput.h"
+#include "Collision.h"
 #include <Novice.h>
 
 Player2::Player2()
@@ -9,7 +10,7 @@ Player2::Player2()
 	moveVector = { 0,0 };
 	size = { 32,32};
 	playerColQuad = { position , int(size.x),int(size.y)};
-
+	nextPlayerColQuad = playerColQuad;
 	speed = 5.0f;
 	
 	BombPos = { 9999,9999 };
@@ -22,7 +23,7 @@ void Player2::Init()
 {
 }
 
-void Player2::Update(Map map, float* scrollX)
+void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
@@ -142,6 +143,21 @@ void Player2::Update(Map map, float* scrollX)
 
 	nextPosition.x = position.x + moveVector.x + knockBackVelocity.x;
 	nextPosition.y = position.y + moveVector.y + knockBackVelocity.y;
+
+	nextPlayerColQuad = { {nextPosition.x ,nextPosition.y}, int(size.x), int(size.y) };
+
+	if (Collision::QuadToQuad(nextPlayerColQuad, GateQuad)) {
+		moveVector.x = 0;
+		*scrollX -= knockBackVelocity.x;
+
+		if (position.x < GateQuad.GetCenter().x) {
+			nextPosition.x = GateQuad.LeftTop.x - size.x / 2;
+		}
+		else {
+			nextPosition.x = GateQuad.RightTop.x + size.x / 2;
+		}
+
+	}
 
 	//“–‚½‚è”»’è
 	{
@@ -307,7 +323,8 @@ void Player2::Update(Map map, float* scrollX)
 			GridInit();
 		}
 	}
-	Novice::ScreenPrintf(400, 400, "%0.2f", position.y - nextPosition.y);
+
+	
 
 	position.x = nextPosition.x;
 	position.y = nextPosition.y;

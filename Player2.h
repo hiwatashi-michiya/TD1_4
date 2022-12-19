@@ -60,7 +60,7 @@ public:
 
 	void GridInit();
 
-	void Update(Map map, float* scrollX);
+	void Update(Map map, float* scrollX, Quad GateQuad);
 
 	void Draw(float* scrollX);
 

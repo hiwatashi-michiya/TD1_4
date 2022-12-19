@@ -15,6 +15,7 @@
 #include "ControllerInput.h"
 #include "Candle.h"
 #include "WindMill.h"
+#include "Gate.h"
 
 const char kWindowTitle[] = "map";
 
@@ -175,6 +176,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WindMill windMill;
 
 	windMill.Set({ 1000,300 }, scrollX);
+
+	Gate gate;
+
+	gate.Set({ 1168,288}, { 32, 160 } , scrollX);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -1064,10 +1069,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		player2.Update(map, &scrollX);
+		player2.Update(map, &scrollX,gate.GetGateQuad());
 
 		windMill.Hit(player2.GetBombCircle());
 		windMill.Update(scrollX);
+
+		gate.Update(scrollX, windMill.GetisCharged());
 		
 		if (Key::IsTrigger(DIK_C)) {
 			candle.isAlive = false;
@@ -1328,6 +1335,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		windMill.Draw();
+
+		gate.Draw();
 
 		player2.Draw(&scrollX);
 

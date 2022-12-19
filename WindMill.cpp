@@ -10,6 +10,7 @@ WindMill::WindMill()
 	circle = { LocalPos,Radius};
 
 	isExpHit = false;
+	isCharged = false;
 
 	Charge = 0;
 }
@@ -34,7 +35,7 @@ void WindMill::Update(float ScrollX)
 
 	if (isExpHit == true) {
 		if (Charge < MAXCHARGE) {
-			Charge+= 3;
+			Charge += 1;
 		}
 
 		if (Charge > MAXCHARGE) {
@@ -43,7 +44,7 @@ void WindMill::Update(float ScrollX)
 	}
 	else {
 		if (Charge > 0) {
-			Charge--;
+			Charge-= 2;
 		}
 
 		if (Charge < 0) {
@@ -51,15 +52,20 @@ void WindMill::Update(float ScrollX)
 		}
 	}
 
+	if (Charge > 0) {
+		isCharged = true;
+	}
+	else {
+		isCharged = false;
+	}
+
 }
 
 void WindMill::Hit(Circle TargetCircle)
 {
+	isExpHit = false;
 	if (Collision::CircleToCirlce(TargetCircle, circle)) {
 		isExpHit = true;
-	}
-	else {
-		isExpHit = false;
 	}
 }
 
