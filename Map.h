@@ -4,7 +4,7 @@
 const int MAP_SIZE = 32;
 
 //ブロックの種類
-const int kMaxBlock = 14;
+const int kMaxBlock = 15;
 
 //マップチップの横最大数
 const int kMapBlockWidth = 50;

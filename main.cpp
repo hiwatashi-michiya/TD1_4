@@ -143,7 +143,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//書き込み時の文字列、最大数はブロックの種類に依存。
 	char string[kMaxBlock][4] = { 
 		"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-		"20", "21", "22", "23"/*, "24", "25", "26", "27", "28", "29"*/
+		"20", "21", "22", "23", "24"/*, "25", "26", "27", "28", "29"*/
 	};
 
 	
@@ -524,7 +524,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				if (map.map[y][x] == map.ICEBLOCK) {
 
-
+					Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
+					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
+					///爆弾の範囲がスイッチと接触しているか
+					if (Collision::CircleToQuad(a, b)) {
+						map.map[y][x] = map.NONE;
+					}
 
 				}
 
@@ -721,7 +726,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
-					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK || map.map[y][x] == map.CANDLE_SWHITCH || map.map[y][x] == map.CANDLE_BLOCK) {
+					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK ||
+						map.map[y][x] == map.CANDLE_SWHITCH || map.map[y][x] == map.CANDLE_BLOCK || map.map[y][x] == map.ICEBLOCK) {
 
 						Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
 							x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
