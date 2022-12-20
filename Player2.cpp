@@ -103,7 +103,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			moveVector.y = 0;
 
 			//爆発ゲージを加算
-			overHeatGage += 30;
+			overHeatGage += 20;
 
 			//ゲージが最大値に収まるよう調整
 			if (overHeatGage > maxOverHeatGage) {
@@ -452,8 +452,6 @@ void Player2::Draw(float* scrollX)
 	);
 
 	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10, 32, 5, 0.0f, BLUE, kFillModeWireFrame);
-
-	//クールタイムゲージ
 
 	Novice::DrawQuad(
 		position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
