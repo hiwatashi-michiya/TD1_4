@@ -17,6 +17,10 @@ Player2::Player2()
 	BombRad = 0;
 	BombCircle = {BombPos,BombRad};
 
+	overHeatGage = 0;
+	maxOverHeatGage = 300;
+	coolTimeGage = 0;
+
 }
 
 void Player2::Init()
@@ -69,26 +73,42 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	Novice::GetAnalogInputRight(0, &bombStickPositionX, &bombStickPositionY);
 	
-	
-	if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
-		bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-		bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+	//クールタイム
+	if (coolTimeGage > 0) {
+		coolTimeGage--;
 
-		moveVector.y = 0;
+		//ゼロになったらオーバーヒートゲージをリセット
+		if (coolTimeGage == 0) {
+			overHeatGage = 0;
+		}
 
-		knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
-	
-		BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-		BombRad = 60;
 	}
 
-	//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
-	{
-		if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0) {
-			bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-			bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+	//クールタイムに入っていなければ少しずつオーバーヒートゲージを下げる
+	if (coolTimeGage == 0) {
+
+		if (overHeatGage > 0) {
+			overHeatGage--;
+		}
+
+	}
+	
+	//オーバーヒートゲージが満タンでない時爆発可能
+	if (overHeatGage < maxOverHeatGage) {
+
+		if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
+			bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+			bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 			moveVector.y = 0;
+
+			//爆発ゲージを加算
+			overHeatGage += 30;
+
+			//ゲージが最大値に収まるよう調整
+			if (overHeatGage > maxOverHeatGage) {
+				overHeatGage = maxOverHeatGage;
+			}
 
 			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 
@@ -96,41 +116,97 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			BombRad = 60;
 		}
 
-		if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
-			bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-			bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
+		{
+			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0) {
+				bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
-			moveVector.y = 0;
+				moveVector.y = 0;
 
-			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				//爆発ゲージを加算
+				overHeatGage += 30;
 
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+				BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+				BombRad = 60;
+			}
+
+			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
+				bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+				BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+				BombRad = 60;
+			}
+
+			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
+				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+				BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+				BombRad = 60;
+			}
+
+			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
+				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+				BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
+				BombRad = 60;
+			}
+
 		}
 
-		if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
-			bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-			bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
+	}
 
-			moveVector.y = 0;
+	//クールタイムが0でオーバーヒートした場合、クールタイムを設定
+	if (overHeatGage == maxOverHeatGage && coolTimeGage == 0) {
 
-			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
-
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
-		}
-
-		if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
-			bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-			bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
-
-			moveVector.y = 0;
-
-			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
-
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
-		}
+		//クールタイムを設定
+		coolTimeGage = 180;
 
 	}
 
@@ -349,6 +425,36 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 void Player2::Draw(float* scrollX)
 {
+
+	//オーバーヒートゲージ
+	Novice::DrawQuad(
+		position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 20,
+		position.x - size.x / 2 + (overHeatGage * 32 / maxOverHeatGage) - *scrollX, position.y - size.y / 2 - 20,
+		position.x - size.x / 2 - *scrollX, position.y + size.y / 2 - 47,
+		position.x - size.x / 2 + (overHeatGage * 32 / maxOverHeatGage) - *scrollX, position.y + size.y / 2 - 47,
+		0, 0,
+		size.x, size.y,
+		0, RED
+	);
+
+	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 20, 32, 5, 0.0f, RED, kFillModeWireFrame);
+
+	//クールタイムゲージ
+
+	Novice::DrawQuad(
+		position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10,
+		position.x - size.x / 2 + (coolTimeGage * 32 / 180) - *scrollX, position.y - size.y / 2 - 10,
+		position.x - size.x / 2 - *scrollX, position.y + size.y / 2 - 37,
+		position.x - size.x / 2 + (coolTimeGage * 32 / 180) - *scrollX, position.y + size.y / 2 - 37,
+		0, 0,
+		size.x, size.y,
+		0, BLUE
+	);
+
+	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10, 32, 5, 0.0f, BLUE, kFillModeWireFrame);
+
+	//クールタイムゲージ
+
 	Novice::DrawQuad(
 		position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
 		position.x + size.x / 2 - *scrollX, position.y - size.y / 2,

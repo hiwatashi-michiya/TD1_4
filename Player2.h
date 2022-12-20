@@ -53,6 +53,10 @@ private:
 
 	bool onGround = false;
 
+	int overHeatGage;
+	int maxOverHeatGage;
+	int coolTimeGage;
+
 public:
 
 	Vec2 BombPos = { 9999,9999 };
