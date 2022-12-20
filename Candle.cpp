@@ -25,7 +25,7 @@ void Candle::Update(Map& map, Player2& player)
 void Candle::Collision(Map& map, Player2& player)
 {
 	//ボムの半径がリセットされたとき
-	if (player.BombRad == 60) {
+	if (player.BombRad == 96) {
 		for (int x = 0; x < 50; x++) {
 			for (int y = 0; y < 50; y++) {
 				///スイッチ捜索
