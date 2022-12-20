@@ -17,6 +17,9 @@ private:
 
 	bool isAlive;
 	bool isShield;
+
+	float HP;
+	float MAXHP;
 	
 	int Speed;
 
