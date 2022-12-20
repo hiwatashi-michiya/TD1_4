@@ -109,6 +109,7 @@
     <ClCompile Include="Player2.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="TestEnemy.cpp" />
+    <ClCompile Include="TestEnemy04.cpp" />
     <ClCompile Include="TestEnemy2.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="WindMill.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Player2.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="TestEnemy.h" />
+    <ClInclude Include="TestEnemy04.h" />
     <ClInclude Include="TestEnemy2.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="WindMill.h" />

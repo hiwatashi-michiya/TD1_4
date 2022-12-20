@@ -6,7 +6,7 @@
 
 class Player2
 {
-public:
+private:
 
 	Vec2 position;
 	Vec2 nextPosition;
@@ -28,8 +28,8 @@ public:
 
 	Vec2 knockBackVelocity;
 
-	Vec2 BombPos = {9999,9999};
-	float BombRad = 0;
+	
+	
 	Circle BombCircle;
 
 	float speed;
@@ -54,6 +54,9 @@ public:
 	bool onGround = false;
 
 public:
+
+	Vec2 BombPos = { 9999,9999 };
+	float BombRad = 0;
 
 	Player2();
 	void Init();

@@ -74,6 +74,9 @@
     <ClCompile Include="Gate.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="TestEnemy04.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -168,5 +171,6 @@
     <ClInclude Include="WindMill.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Gate.h" />
+    <ClInclude Include="TestEnemy04.h" />
   </ItemGroup>
 </Project>
