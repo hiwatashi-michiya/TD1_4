@@ -16,6 +16,8 @@ private:
 
 	float OpenPos;
 
+	bool isExist;
+
 public:
 	Gate();
 
@@ -24,6 +26,8 @@ public:
 	void Update(float ScrollX,bool isOpen);
 
 	void Hit(Quad TargetQuad);
+
+	void Delete();
 
 	Quad GetGateQuad() { return quad; };
 

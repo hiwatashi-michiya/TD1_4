@@ -28,9 +28,11 @@ private:
 
 	Vec2 knockBackVelocity;
 
-	
+	float BombPosMisal;
 	
 	Circle BombCircle;
+
+	int MAXEXPSIZE = 96;
 
 	float speed;
 	
@@ -69,9 +71,13 @@ public:
 
 	void Update(Map map, float* scrollX, Quad GateQuad);
 
+	void HitTE4(Circle TargetQuad);
+
 	void Draw(float* scrollX);
 
 	Quad GetPlayerQuad() { return playerColQuad; };
+	Vec2 GetPlayerPos() { return position;};
+	Vec2 GetPlayerKnockbackVelocity() { return knockBackVelocity; };
 	Circle GetBombCircle() { return BombCircle; };
 };
 
