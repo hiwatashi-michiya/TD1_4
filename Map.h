@@ -16,7 +16,7 @@ struct Map{
 	enum TILE {
 		NONE = 10,
 		CANTBLOCK,
-		BLOCK,
+		BREAKBLOCK,
 		TMPNONE,
 		TMPBLOCK,
 		NEEDLE,
@@ -28,6 +28,7 @@ struct Map{
 		BLUEBLOCK,
 		CANDLE_SWHITCH,
 		CANDLE_BLOCK,
+		ICEBLOCK,
 	};
 
 	int map[kMapBlockHeight][kMapBlockWidth];
