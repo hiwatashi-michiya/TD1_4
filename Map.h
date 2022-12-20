@@ -3,6 +3,7 @@
 
 const int MAP_SIZE = 32;
 
+//ブロックの種類
 const int kMaxBlock = 14;
 
 //マップチップの横最大数
@@ -31,7 +32,7 @@ struct Map{
 
 	int map[kMapBlockHeight][kMapBlockWidth];
 
-	//当たり判定のないブロックかどうかを調べる
+	//当たり判定のないブロックかどうかを調べる。trueならNONE、falseならBLOCK
 	bool AnyNone(int map) {
 
 		if (map == NONE || map == TMPNONE || map == REDNONE || map == GREENNONE || map == BLUENONE || map == CANDLE_SWHITCH) {

@@ -139,9 +139,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int setNumber = 0;
 
+	//書き込み時の文字列、最大数はブロックの種類に依存。
 	char string[kMaxBlock][4] = { 
 		"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-		"20", "21"/*, "22", "23", "24", "25", "26", "27", "28", "29"*/
+		"20", "21", "22", "23"/*, "24", "25", "26", "27", "28", "29"*/
 	};
 
 	
@@ -311,11 +312,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///再度Eキーを押すと通常のゲームプレイに戻る
 		/// 
 		///デバッグ中の操作
-		///数字キーを押すと設置するブロックを変えることができる
-		///0:NONE(ブロックなし)
-		///1:CANTBLOCK(壊せないブロック)
-		///2:BLOCK(消せるブロック)
-		///配置は通常プレイと同じでなぞって配置できる
+		///矢印キーで配置するブロックの変更。数字毎のブロックの割り振りはMap.hのTILE参照
+		///上キー...数字を一つ上げる
+		///下キー...数字を一つ下げる
+		///右キー...数字を十個上げる
+		///左キー...数字を十個下げる
+		///配置はマウスでなぞって配置できる
 		/// 
 		if (Key::IsTrigger(DIK_E)) {
 			
@@ -519,8 +521,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//書き込む数字の設定
 			if (setNumber < kMaxBlock - 1) {
 
+				//一単位での切り替え
 				if (Key::IsTrigger(DIK_UP)) {
 					setNumber++;
+				}
+
+				//十単位での切り替え
+				if (Key::IsTrigger(DIK_RIGHT)) {
+					
+					//最大数を超えなければそのまま加算
+					if (setNumber + 10 < kMaxBlock - 1) {
+						setNumber += 10;
+					}
+					//最大数を超えたら最大値に変換
+					else {
+						setNumber = kMaxBlock - 1;
+					}
+
 				}
 
 			}
@@ -529,6 +546,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				if (Key::IsTrigger(DIK_DOWN)) {
 					setNumber--;
+				}
+
+				//十単位での切り替え
+				if (Key::IsTrigger(DIK_LEFT)) {
+
+					//最小値を超えなければそのまま減算
+					if (setNumber - 10 > 0) {
+						setNumber -= 10;
+					}
+					//最小値を超えたら最小値に変換
+					else {
+						setNumber = 0;
+					}
+
 				}
 
 			}
@@ -1088,7 +1119,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		player2.Update(map, &scrollX,gate.GetGateQuad());
+		//エディット中邪魔なので動けないようにした
+		if (isEdit == false) {
+			player2.Update(map, &scrollX, gate.GetGateQuad());
+		}
+	
 
 		windMill.Hit(player2.GetBombCircle());
 		windMill.Update(scrollX);
