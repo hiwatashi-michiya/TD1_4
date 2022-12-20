@@ -104,11 +104,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			moveVector.y = 0;
 
-		knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
-	
-		BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
-		BombRad = MAXEXPSIZE;
-	}
+
+
 			//爆発ゲージを加算
 			overHeatGage += 30;
 
@@ -119,8 +116,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
+			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
 		}
 
 		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
