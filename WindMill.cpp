@@ -13,6 +13,8 @@ WindMill::WindMill()
 	isCharged = false;
 
 	Charge = 0;
+	isExist = false;
+
 }
 
 void WindMill::Set(Vec2 pos, float ScrollX)
@@ -23,6 +25,8 @@ void WindMill::Set(Vec2 pos, float ScrollX)
 	LocalPos.y = WorldPos.y;
 	
 	circle = { LocalPos,Radius };
+
+	isExist = true;
 }
 
 void WindMill::Update(float ScrollX)
@@ -69,6 +73,21 @@ void WindMill::Hit(Circle TargetCircle)
 	}
 }
 
+void WindMill::Delete()
+{
+	WorldPos = { 9999,9999 };
+	LocalPos = { 9999,9999 };
+	Radius = 100;
+	circle = { LocalPos,Radius };
+
+	isExpHit = false;
+	isCharged = false;
+
+	Charge = 0;
+
+	isExist = false;
+}
+
 void WindMill::Draw()
 {
 	int Color = GREEN;
@@ -77,9 +96,10 @@ void WindMill::Draw()
 		Color = RED;
 	}
 
-	Novice::DrawEllipse(LocalPos.x, LocalPos.y, Radius, Radius, 0, Color, kFillModeSolid);
+	if (isExist == true) {
+		Novice::DrawEllipse(LocalPos.x, LocalPos.y, Radius, Radius, 0, Color, kFillModeSolid);
 
-	Novice::DrawBox(LocalPos.x - 100, LocalPos.y - 120, 200, 10, 0, GREEN, kFillModeWireFrame);
-	Novice::DrawBox(LocalPos.x - 100, LocalPos.y - 120, Charge / MAXCHARGE * 200, 10, 0, GREEN, kFillModeSolid);
-	
+		Novice::DrawBox(LocalPos.x - 100, LocalPos.y - 120, 200, 10, 0, GREEN, kFillModeWireFrame);
+		Novice::DrawBox(LocalPos.x - 100, LocalPos.y - 120, Charge / MAXCHARGE * 200, 10, 0, GREEN, kFillModeSolid);
+	}
 }

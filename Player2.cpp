@@ -17,6 +17,8 @@ Player2::Player2()
 	BombRad = 0;
 	BombCircle = {BombPos,BombRad};
 
+	BombPosMisal = 16;
+
 }
 
 void Player2::Init()
@@ -78,8 +80,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 		knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 	
-		BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-		BombRad = 60;
+		BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
+		BombRad = MAXEXPSIZE;
 	}
 
 	//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
@@ -92,8 +94,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
+			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
 		}
 
 		if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
@@ -104,8 +106,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
+			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
 		}
 
 		if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
@@ -116,8 +118,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
+			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
 		}
 
 		if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
@@ -128,8 +130,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
 
-			BombPos = { position.x + bombVelocity.x - *scrollX, position.y + bombVelocity.y };
-			BombRad = 60;
+			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
 		}
 
 	}
@@ -345,6 +347,16 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	}
 
+	playerColQuad = { position , int(size.x),int(size.y) };
+
+}
+
+void Player2::HitTE4(Circle TargetCirle)
+{
+	if (Collision::CircleToQuad(TargetCirle,playerColQuad)) {
+		knockBackVelocity.x *= -1;
+		knockBackVelocity.y *= -1;
+	}
 }
 
 void Player2::Draw(float* scrollX)
@@ -367,7 +379,7 @@ void Player2::Draw(float* scrollX)
 	Novice::DrawEllipse(nextPosition.x - *scrollX, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
 
-	Novice::DrawEllipse(BombPos.x , BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
+	Novice::DrawEllipse(BombPos.x - *scrollX, BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
 
 
 

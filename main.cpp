@@ -16,6 +16,7 @@
 #include "Candle.h"
 #include "WindMill.h"
 #include "Gate.h"
+#include "TestEnemy04.h"
 
 const char kWindowTitle[] = "map";
 
@@ -179,6 +180,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Gate gate;
 
 	gate.Set({ 1168,288}, { 32, 160 } , scrollX);
+
+	TestEnemy04 TE4;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -534,6 +537,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		gate.Update(scrollX, windMill.GetisCharged());
 		
+		TE4.HitBomb(player2.GetBombCircle());
+		TE4.HitPlayer(player2.GetPlayerQuad(), player2.GetPlayerKnockbackVelocity());
+		player2.HitTE4(TE4.GetCircle());
+		TE4.Update(scrollX, player2.GetPlayerPos());
+
 		if (Key::IsTrigger(DIK_C)) {
 			candle.isAlive = false;
 		}
@@ -600,11 +608,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				fopen_s(&fp, "./Resources/test.csv", "rt");
 
+				TE4.Set({ 1000,100},scrollX);
+				windMill.Delete();
+				gate.Delete();
 				break;
 			
 			default:
 
 				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				
+				TE4.Delete();
+				windMill.Set({ 1000,300 }, scrollX);
+				gate.Set({ 1168,288 }, { 32, 160 }, scrollX);
+
 				Map = 0;
 				break;
 			}
@@ -795,6 +811,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		windMill.Draw();
 
 		gate.Draw();
+
+		TE4.Draw();
 
 		player2.Draw(&scrollX);
 

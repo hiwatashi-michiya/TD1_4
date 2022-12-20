@@ -17,6 +17,8 @@ private:
 
 	const int MAXCHARGE = 200;
 
+	bool isExist;
+
 public:
 
 	WindMill();
@@ -26,6 +28,8 @@ public:
 	void Update(float ScrollX);
 
 	void Hit(Circle TargetCircle);
+		
+	void Delete();
 
 	bool GetisCharged() { return isCharged; };
 
