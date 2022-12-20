@@ -24,7 +24,7 @@ void WindMill::Set(Vec2 pos, float ScrollX)
 	LocalPos.x = WorldPos.x - ScrollX;
 	LocalPos.y = WorldPos.y;
 	
-	circle = { LocalPos,Radius };
+	circle = { WorldPos,Radius };
 
 	isExist = true;
 }
@@ -35,7 +35,7 @@ void WindMill::Update(float ScrollX)
 	LocalPos.x = WorldPos.x - ScrollX;
 	LocalPos.y = WorldPos.y;
 
-	circle = { LocalPos,Radius };
+	circle = { WorldPos,Radius };
 
 	if (isExpHit == true) {
 		if (Charge < MAXCHARGE) {
