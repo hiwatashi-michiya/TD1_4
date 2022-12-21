@@ -51,6 +51,8 @@ private:
 	int PosXGrid;
 	int PosYGrid;
 
+	bool canJump;
+
 	bool onGround = false;
 
 	int overHeatGage;
@@ -76,7 +78,7 @@ public:
 
 	void GridInit();
 
-	void Update(Map map, float* scrollX, Quad GateQuad);
+	void Update(float slow,Map map, float* scrollX, Quad GateQuad);
 
 	void HitTE4(Circle TargetQuad);
 

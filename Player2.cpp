@@ -23,6 +23,8 @@ Player2::Player2()
 	maxOverHeatGage = 300;
 	coolTimeGage = 0;
 
+	canJump = true;
+
 	isCharge = false;
 	chargeTime = 0;
 	chargeMag = 1;
@@ -58,7 +60,7 @@ void Player2::Charge() {
 
 }
 
-void Player2::Update(Map map, float* scrollX, Quad GateQuad)
+void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
@@ -69,20 +71,21 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 	float minusSpeed = 0.5f;
 
 	if (knockBackVelocity.x > 0) {
-		knockBackVelocity.x -= minusSpeed;
+		knockBackVelocity.x -= minusSpeed * slow;
 	}
 	if (knockBackVelocity.x < 0) {
-		knockBackVelocity.x += minusSpeed;
+		knockBackVelocity.x += minusSpeed * slow;
 	}
 
-	if (knockBackVelocity.x <= minusSpeed && knockBackVelocity.x >= -minusSpeed) {
+	if (knockBackVelocity.x <= minusSpeed * slow && knockBackVelocity.x >= -minusSpeed * slow) {
 		knockBackVelocity.x = 0;
 	}
 
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
 
-	if ((keys[DIK_W] && preKeys[DIK_W] == 0) || Controller::IsTriggerButton(0, Controller::bA) == 1) {
+	if (((keys[DIK_W] && preKeys[DIK_W] == 0) || Controller::IsTriggerButton(0, Controller::bA) == 1) && canJump == true) {
 		moveVector.y -= 13;
+		canJump = false;
 		//moveVector.y -= speed;
 	}
 	if (keys[DIK_A] || stickPositionX < 0) {
@@ -162,6 +165,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
@@ -197,6 +201,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0 && isCharge == false) {
@@ -230,6 +235,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0 && isCharge == false) {
@@ -263,6 +269,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0 && isCharge == false) {
@@ -296,6 +303,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 		}
@@ -321,10 +329,10 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
 
-	moveVector.y += G * Weight;
+	moveVector.y += G * Weight * slow;
 
-	nextPosition.x = position.x + moveVector.x + knockBackVelocity.x;
-	nextPosition.y = position.y + moveVector.y + knockBackVelocity.y;
+	nextPosition.x = position.x + (moveVector.x + knockBackVelocity.x) * slow;
+	nextPosition.y = position.y + (moveVector.y + knockBackVelocity.y) * slow;
 
 	nextPlayerColQuad = { {nextPosition.x ,nextPosition.y}, int(size.x), int(size.y) };
 
@@ -445,6 +453,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
 						moveVector.y = 0;
 						knockBackVelocity.y = 0;
+						canJump = true;
 						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 						GridInit();
 					}
@@ -474,6 +483,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
 						moveVector.y = 0;
 						knockBackVelocity.y = 0;
+						canJump = true;
 						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 						GridInit();
 					}
@@ -488,8 +498,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			}
 		}
 
-		Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
-		Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
+		//Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
+		//Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
 
 		if (map.AnyNone(map.map[UpGrid][PosXGrid]) == false) {
 			moveVector.y = 1;
@@ -501,6 +511,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 		if (map.AnyNone(map.map[DownGrid][PosXGrid]) == false) {
 			moveVector.y = 0;
 			knockBackVelocity.y = 0;
+			canJump = true;
 			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 			GridInit();
 		}
@@ -513,7 +524,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	//スクロール
 	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * 30) {
-		*scrollX += moveVector.x + knockBackVelocity.x;
+		*scrollX +=( moveVector.x + knockBackVelocity.x) * slow;
 	}
 	else {
 
@@ -582,10 +593,10 @@ void Player2::Draw(float* scrollX)
 //	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RErD, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Down, 3, 3, 0, RED, kFillModeSolid);
-	Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
+	/*Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x - *scrollX, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
-	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);*/
 
 	Novice::DrawEllipse(BombPos.x - *scrollX, BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
 

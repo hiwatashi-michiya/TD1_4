@@ -9,7 +9,6 @@
 #include "TestEnemy2.h"
 #include "Key.h"
 #include "Collision.h"
-#include "ControllerInput.h"
 #include "Circle.h"
 #include "Quad.h"
 #include "ControllerInput.h"
@@ -61,7 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ellipseRadius = 50;
 
 	int color = 0x000000FF;
-	unsigned int backgroundColor = 0x555555FF;
+	unsigned int backgroundColor = 0x9977AAFF;
 	
 	bool isHit = false;
 
@@ -183,6 +182,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	TestEnemy04 TE4;
 
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -196,7 +196,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//キー入力の受付
 		Key::Update();
-		Controller::SetState();
 
 		//コントローラー入力の受付
 		Controller::SetState();
@@ -256,36 +255,42 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::ScreenPrintf(600, 200, "%0.2f", ecpPowF);
 		}
 
-		if (( Novice::IsPressMouse(0)) && mouseActionMode == putBlockMode) {
-			slowFlag = true;
+		//if (keys[DIK_SPACE] != 0) {
+		//	slowFlag = true;
+		//}
+		//else {
+		//	slowFlag = false;
+		//	/*if (preMousePush) {
+		//		canSlow = false;
+		//	}*/
+		//}
+
+		//if (slowFlag == true) {
+		//	if (canSlow == true) {
+		//		slowTime++;
+		//		slow /= 1.1;
+		//	}
+		//	if (slowTime > kslowTimeMax) {
+		//		canSlow = false;
+		//	}
+		//}
+
+		//if (canSlow == false || slowFlag == false) {
+		//	slow *= 1.1;
+		//	if (slowTime > 0) {
+		//		slowTime--;
+		//	}
+		//	else {
+		//		canSlow = true;
+		//	}
+		//}
+		
+		if (keys[DIK_SPACE] != 0) {
+			slow /= 1.1;
 		}
 		else {
-			slowFlag = false;
-			/*if (preMousePush) {
-				canSlow = false;
-			}*/
-		}
-
-		if (slowFlag == true) {
-			if (canSlow == true) {
-				slowTime++;
-				slow /= 1.1;
-			}
-			if (slowTime > kslowTimeMax) {
-				canSlow = false;
-			}
-		}
-
-		if (canSlow == false || slowFlag == false) {
 			slow *= 1.1;
-			if (slowTime > 0) {
-				slowTime--;
-			}
-			else {
-				canSlow = true;
-			}
 		}
-		
 
 		if (slow > 1.0) {
 			slow = 1.0f;
@@ -544,7 +549,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//エディット中邪魔なので動けないようにした
 		if (isEdit == false) {
-			player2.Update(map, &scrollX, gate.GetGateQuad());
+			player2.Update(slow,map, &scrollX, gate.GetGateQuad());
 		}
 	
 
@@ -556,7 +561,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		TE4.HitBomb(player2.GetBombCircle(), player2);
 		TE4.HitPlayer(player2.GetPlayerQuad(), player2.GetPlayerKnockbackVelocity());
 		player2.HitTE4(TE4.GetCircle());
-		TE4.Update(scrollX, player2.GetPlayerPos());
+		TE4.Update(slow,scrollX, player2.GetPlayerPos());
 
 		if (Key::IsTrigger(DIK_C)) {
 			candle.isAlive = false;
@@ -705,11 +710,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//もの運び
 		/*Novice::DrawEllipse(ellipseX, ellipseY, ellipseRadius, ellipseRadius, 0.0f, 0xFFFFFFFF, kFillModeSolid);*/
 
-		//Novice::DrawBox(0, 0, 1280, 720,0, ColorReverse(backgroundColor), kFillModeSolid);
+		
 		//if (Map == 1) {
 
 		//背景
-		Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1, 1, 0, 0x9977AAFF);
+		//Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1, 1, 0, 0x9977AAFF);
+		Novice::DrawBox(0, 0, 1280, 720, 0, ColorReverse(backgroundColor), kFillModeSolid);
 
 			for (int y = 0; y < 50; y++) {
 
