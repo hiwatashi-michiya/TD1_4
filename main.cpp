@@ -527,6 +527,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					map.blockColor[y][x] = 0x0000FFFF;
 				}
 
+				if (map.map[y][x] == map.CANDLE_BLOCK) {
+					map.blockColor[y][x] = 0xdd50edFF;
+				}
 				if (map.map[y][x] == map.ICEBLOCK) {
 
 					map.blockColor[y][x] = 0xAAAAFFFF;

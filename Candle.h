@@ -1,8 +1,6 @@
 #pragma once
-//#include "Vec2.h"
 #include "Map.h"
 #include "Player2.h"
-#include"Quad.h"
 class Candle
 {
 public:
@@ -15,6 +13,6 @@ public:
 	void Collision(Map& map,Player2& player);
 	void Move(Map& map);
 	void Update(Map& map, Player2& player);
-
+	void LoadMap(Map& map);
 };
 
