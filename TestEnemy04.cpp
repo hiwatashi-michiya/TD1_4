@@ -40,7 +40,7 @@ void TestEnemy04::Set(Vec2 Pos, float scrollX)
 	isShield = true;
 }
 
-void TestEnemy04::Update(float scrollX,Vec2 PlayerPos)
+void TestEnemy04::Update(float slow,float scrollX,Vec2 PlayerPos)
 {
 
 	if (HP <= 0) {
@@ -52,22 +52,22 @@ void TestEnemy04::Update(float scrollX,Vec2 PlayerPos)
 		float MinusSpeed = 1;
 
 		if (KnockBackVelocity.x > 0) {
-			KnockBackVelocity.x -= MinusSpeed;
+			KnockBackVelocity.x -= MinusSpeed * slow;
 		}
 		else if (KnockBackVelocity.x < 0) {
-			KnockBackVelocity.x += MinusSpeed;
+			KnockBackVelocity.x += MinusSpeed * slow;
 		}
-		if (KnockBackVelocity.x < MinusSpeed && KnockBackVelocity.x > -MinusSpeed) {
+		if (KnockBackVelocity.x < MinusSpeed * slow && KnockBackVelocity.x > -MinusSpeed * slow) {
 			KnockBackVelocity.x = 0;
 		}
 
 		if (KnockBackVelocity.y > 0) {
-			KnockBackVelocity.y -= MinusSpeed;
+			KnockBackVelocity.y -= MinusSpeed * slow;
 		}
 		else if (KnockBackVelocity.y < 0) {
-			KnockBackVelocity.y += MinusSpeed;
+			KnockBackVelocity.y += MinusSpeed * slow;
 		}
-		if (KnockBackVelocity.y < MinusSpeed && KnockBackVelocity.y > -MinusSpeed) {
+		if (KnockBackVelocity.y < MinusSpeed * slow && KnockBackVelocity.y > -MinusSpeed * slow) {
 			KnockBackVelocity.y = 0;
 		}
 
@@ -81,7 +81,7 @@ void TestEnemy04::Update(float scrollX,Vec2 PlayerPos)
 		MoveVector.x = PlayerDistanceX / PlayerDistanceR * Speed;
 		MoveVector.y = PlayerDistanceY / PlayerDistanceR * Speed;
 
-		WorldPos += MoveVector + KnockBackVelocity;
+		WorldPos += (MoveVector + KnockBackVelocity )* slow;
 
 		LocalPos.x = WorldPos.x - scrollX;
 		LocalPos.y = WorldPos.y;

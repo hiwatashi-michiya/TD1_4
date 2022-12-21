@@ -29,7 +29,7 @@ public:
 
 	void Set(Vec2 Pos,float scrollX);
 
-	void Update(float scrollX, Vec2 PlayerPos);
+	void Update(float slow, float scrollX, Vec2 PlayerPos);
 
 	void HitBomb(Circle BombCircle);
 

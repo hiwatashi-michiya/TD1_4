@@ -498,7 +498,7 @@ void Player::Update(Map map,float slow) {
 
 	playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
 
-	Novice::ScreenPrintf(0, 400, "slow:%0.2f", slow);
+	//Novice::ScreenPrintf(0, 400, "slow:%0.2f", slow);
 }
 
 
@@ -518,7 +518,7 @@ void Player::Draw(float isColorReverse) {
 		PlayerColor = BLUE;
 	}
 
-	Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
+	//Novice::ScreenPrintf(200, 40, "gravityVelocity:%f", gravityVelocity.y);
 
 	//ƒ{ƒ€‚ğ“Š‚°‚Ä‚¢‚éó‘Ô‚Ìƒ{ƒ€‚ğ•\¦
 	if (isAfterThrow == true) {
