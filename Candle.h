@@ -13,6 +13,6 @@ public:
 	void Collision(Map& map,Player2& player);
 	void Move(Map& map);
 	void Update(Map& map, Player2& player);
-
+	void LoadMap(Map& map);
 };
 
