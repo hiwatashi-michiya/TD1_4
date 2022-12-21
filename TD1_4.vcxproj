@@ -104,6 +104,7 @@
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Missile.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player2.cpp" />
     <ClCompile Include="Quad.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="ControllerInput.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Player2.h" />
     <ClInclude Include="Quad.h" />

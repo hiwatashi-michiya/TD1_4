@@ -1,8 +1,6 @@
 #pragma once
-//#include "Vec2.h"
 #include "Map.h"
 #include "Player2.h"
-#include"Quad.h"
 class Candle
 {
 public:
