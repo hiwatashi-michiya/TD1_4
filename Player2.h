@@ -6,7 +6,7 @@
 
 class Player2
 {
-public:
+private:
 
 	Vec2 position;
 	Vec2 nextPosition;
@@ -28,8 +28,11 @@ public:
 
 	Vec2 knockBackVelocity;
 
-	Vec2 BombPos;
-	int BombRad = 0;
+	float BombPosMisal;
+	
+	Circle BombCircle;
+
+	int MAXEXPSIZE = 96;
 
 	float speed;
 	
@@ -52,18 +55,30 @@ public:
 
 	bool onGround = false;
 
+	int overHeatGage;
+	int maxOverHeatGage;
+	int coolTimeGage;
+
 public:
+
+	Vec2 BombPos = { 9999,9999 };
+	float BombRad = 0;
 
 	Player2();
 	void Init();
 
 	void GridInit();
 
-	void Update(Map map, float* scrollX);
+	void Update(Map map, float* scrollX, Quad GateQuad);
+
+	void HitTE4(Circle TargetQuad);
 
 	void Draw(float* scrollX);
 
 	Quad GetPlayerQuad() { return playerColQuad; };
+	Vec2 GetPlayerPos() { return position;};
+	Vec2 GetPlayerKnockbackVelocity() { return knockBackVelocity; };
+	Circle GetBombCircle() { return BombCircle; };
 };
 
 

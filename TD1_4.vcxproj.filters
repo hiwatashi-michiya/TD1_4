@@ -68,7 +68,13 @@
     <ClCompile Include="Candle.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Missile.cpp">
+    <ClCompile Include="WindMill.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Gate.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="TestEnemy04.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -162,7 +168,9 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Player2.h" />
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="WindMill.h" />
     <ClInclude Include="Candle.h" />
-    <ClInclude Include="Missile.h" />
+    <ClInclude Include="Gate.h" />
+    <ClInclude Include="TestEnemy04.h" />
   </ItemGroup>
 </Project>

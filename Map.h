@@ -3,13 +3,20 @@
 
 const int MAP_SIZE = 32;
 
-const int kMaxBlock = 14;
+//ブロックの種類
+const int kMaxBlock = 15;
+
+//マップチップの横最大数
+const int kMapBlockWidth = 50;
+
+//マップチップの縦最大数
+const int kMapBlockHeight = 50;
 
 struct Map{
 	enum TILE {
 		NONE = 10,
 		CANTBLOCK,
-		BLOCK,
+		BREAKBLOCK,
 		TMPNONE,
 		TMPBLOCK,
 		NEEDLE,
@@ -21,22 +28,21 @@ struct Map{
 		BLUEBLOCK,
 		CANDLE_SWHITCH,
 		CANDLE_BLOCK,
+		ICEBLOCK,
 	};
 
-	int map[50][50];
+	int map[kMapBlockHeight][kMapBlockWidth];
 
-	//当たり判定のないブロックかどうかを調べる
+	//当たり判定のないブロックかどうかを調べる。trueならNONE、falseならBLOCK
 	bool AnyNone(int map) {
 
-		if (map == NONE || map == TMPNONE || map == REDNONE || map == GREENNONE || map == BLUENONE) {
+		if (map == NONE || map == TMPNONE || map == REDNONE || map == GREENNONE || map == BLUENONE || map == CANDLE_SWHITCH) {
 			return true;
 		}
 
 		return false;
 
 	}
-
-	float tmpTime[50][50];
 
 	unsigned int blockColor[50][50];
 

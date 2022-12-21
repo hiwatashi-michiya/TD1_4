@@ -101,6 +101,7 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ControllerInput.cpp" />
+    <ClCompile Include="Gate.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -109,8 +110,10 @@
     <ClCompile Include="Player2.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="TestEnemy.cpp" />
+    <ClCompile Include="TestEnemy04.cpp" />
     <ClCompile Include="TestEnemy2.cpp" />
     <ClCompile Include="Vec2.cpp" />
+    <ClCompile Include="WindMill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectXGame\math\MathUtility.h" />
@@ -143,6 +146,7 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="Gate.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Missile.h" />
@@ -150,8 +154,10 @@
     <ClInclude Include="Player2.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="TestEnemy.h" />
+    <ClInclude Include="TestEnemy04.h" />
     <ClInclude Include="TestEnemy2.h" />
     <ClInclude Include="Vec2.h" />
+    <ClInclude Include="WindMill.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

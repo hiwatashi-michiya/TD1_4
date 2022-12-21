@@ -1,5 +1,6 @@
 #include "Player2.h"
 #include "ControllerInput.h"
+#include "Collision.h"
 #include <Novice.h>
 
 Player2::Player2()
@@ -9,10 +10,18 @@ Player2::Player2()
 	moveVector = { 0,0 };
 	size = { 32,32};
 	playerColQuad = { position , int(size.x),int(size.y)};
-
+	nextPlayerColQuad = playerColQuad;
 	speed = 5.0f;
 	
-	
+	BombPos = { 9999,9999 };
+	BombRad = 0;
+	BombCircle = {BombPos,BombRad};
+
+	BombPosMisal = 16;
+
+	overHeatGage = 0;
+	maxOverHeatGage = 300;
+	coolTimeGage = 0;
 
 }
 
@@ -20,7 +29,7 @@ void Player2::Init()
 {
 }
 
-void Player2::Update(Map map, float* scrollX)
+void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
@@ -60,21 +69,152 @@ void Player2::Update(Map map, float* scrollX)
 	if (BombRad > 0) {
 		BombRad-= 3;
 	}
+	else {
+		BombPos = { 9999,9999};
+	}
 
 	Novice::GetAnalogInputRight(0, &bombStickPositionX, &bombStickPositionY);
 	
-	
-	if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
-		bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-		bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+	//クールタイム
+	if (coolTimeGage > 0) {
+		coolTimeGage--;
 
-		moveVector.y = 0;
+		//ゼロになったらオーバーヒートゲージをリセット
+		if (coolTimeGage == 0) {
+			overHeatGage = 0;
+		}
 
-		knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
-	
-		BombPos = { position.x + bombVelocity.x , position.y + bombVelocity.y };
-		BombRad = 60;
 	}
+
+	//クールタイムに入っていなければ少しずつオーバーヒートゲージを下げる
+	if (coolTimeGage == 0) {
+
+		if (overHeatGage > 0) {
+			overHeatGage--;
+		}
+
+	}
+	
+	//オーバーヒートゲージが満タンでない時爆発可能
+	if (overHeatGage < maxOverHeatGage) {
+
+		if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
+			bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+			bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+
+			moveVector.y = 0;
+
+
+
+			//爆発ゲージを加算
+			overHeatGage += 20;
+
+			//ゲージが最大値に収まるよう調整
+			if (overHeatGage > maxOverHeatGage) {
+				overHeatGage = maxOverHeatGage;
+			}
+
+			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
+		}
+
+		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
+		{
+			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0) {
+				bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
+		}
+
+			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
+				bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
+		}
+
+			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
+				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
+		}
+
+			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
+				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
+
+				moveVector.y = 0;
+
+				//爆発ゲージを加算
+				overHeatGage += 30;
+
+				//ゲージが最大値に収まるよう調整
+				if (overHeatGage > maxOverHeatGage) {
+					overHeatGage = maxOverHeatGage;
+				}
+
+				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+
+			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
+			BombRad = MAXEXPSIZE;
+		}
+
+		}
+
+	}
+
+	//クールタイムが0でオーバーヒートした場合、クールタイムを設定
+	if (overHeatGage == maxOverHeatGage && coolTimeGage == 0) {
+
+		//クールタイムを設定
+		coolTimeGage = 180;
+
+	}
+
+	BombCircle = { BombPos,BombRad };
 
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
@@ -84,173 +224,192 @@ void Player2::Update(Map map, float* scrollX)
 	nextPosition.x = position.x + moveVector.x + knockBackVelocity.x;
 	nextPosition.y = position.y + moveVector.y + knockBackVelocity.y;
 
-	GridInit();
-	
-	if (position.y - nextPosition.y < 0) {
-		if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-			GridInit();
+	nextPlayerColQuad = { {nextPosition.x ,nextPosition.y}, int(size.x), int(size.y) };
+
+	if (Collision::QuadToQuad(nextPlayerColQuad, GateQuad)) {
+		moveVector.x = 0;
+		*scrollX -= knockBackVelocity.x;
+
+		if (position.x < GateQuad.GetCenter().x) {
+			nextPosition.x = GateQuad.LeftTop.x - size.x / 2;
+		}
+		else {
+			nextPosition.x = GateQuad.RightTop.x + size.x / 2;
 		}
 
-		if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
-			GridInit();
-		}
-	}
-	else {
-		if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-			GridInit();
-		}
-
-		if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
-			moveVector.x = 0;
-			//スクロール値調整
-			*scrollX -= knockBackVelocity.x;
-			nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
-			GridInit();
-		}
 	}
 
-	
+	//当たり判定
+	{
+		GridInit();
 
-	if (map.map[UpGrid][RightGrid] == map.CANTBLOCK) {
-		if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
-
-
-			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
-				moveVector.x = 0;
-				//スクロール値調整
-				*scrollX -= knockBackVelocity.x;
-				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-				GridInit();
-
-
-			}
-			else {
-
-				if (Up < (UpGrid + 1) * MAP_SIZE ) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
-					GridInit();
-				}
-			}
-		}
-	}
-
-	if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK) {
-		if (map.map[UpGrid][PosXGrid] != map.CANTBLOCK) {
-
-
-			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
-				moveVector.x = 0;
-				//スクロール値調整
-				*scrollX -= knockBackVelocity.x;
-				nextPosition.x = (LeftGrid + 2) * MAP_SIZE - size.x / 2;
-				GridInit();
-
-
-			}
-			else {
-
-				if (Up < (UpGrid + 1) * MAP_SIZE) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
-					GridInit();
-				}
-			}
-		}
-	}
-
-	if (map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
-		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
-			if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
+		if (position.y - nextPosition.y < 0) {
+			if (map.AnyNone(map.map[UpGrid][RightGrid]) == false) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 				GridInit();
 			}
-			else {
-				if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
-					GridInit();
-				}
-				else {
-					moveVector.x = 0;
-					//スクロール値調整
-					*scrollX -= knockBackVelocity.x;
-					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
-					GridInit();
-				}
-			}
-		}
-	}
 
-	
-
-	else if (map.map[DownGrid][LeftGrid] == map.CANTBLOCK) {
-		if (map.map[DownGrid][PosXGrid] != map.CANTBLOCK) {
-			if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
+			if (map.AnyNone(map.map[UpGrid][LeftGrid]) == false) {
 				moveVector.x = 0;
 				//スクロール値調整
 				*scrollX -= knockBackVelocity.x;
 				nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 				GridInit();
 			}
-			else {
-				if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
-					moveVector.y = 0;
-					knockBackVelocity.y = 0;
-					nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+		}
+		else {
+			if (map.AnyNone(map.map[DownGrid][RightGrid]) == false) {
+				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
+				nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+				GridInit();
+			}
+
+			if (map.AnyNone(map.map[DownGrid][LeftGrid]) == false) {
+				moveVector.x = 0;
+				//スクロール値調整
+				*scrollX -= knockBackVelocity.x;
+				nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
+				GridInit();
+			}
+		}
+
+
+
+		if (map.AnyNone(map.map[UpGrid][RightGrid]) == false) {
+			if (map.AnyNone(map.map[UpGrid][PosXGrid]) == true) {
+
+
+				if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y < 0) {
+					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
+					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+					GridInit();
+
+
+				}
+				else {
+
+					if (Up < (UpGrid + 1) * MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+				}
+			}
+		}
+
+		if (map.AnyNone(map.map[UpGrid][LeftGrid]) == false) {
+			if (map.AnyNone(map.map[UpGrid][PosXGrid]) == true) {
+
+
+				if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y < 0) {
+					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
+					nextPosition.x = (LeftGrid + 2) * MAP_SIZE - size.x / 2;
+					GridInit();
+
+
+				}
+				else {
+
+					if (Up < (UpGrid + 1) * MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = (UpGrid + 2) * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+				}
+			}
+		}
+
+		if (map.AnyNone(map.map[DownGrid][RightGrid]) == false) {
+			if (map.AnyNone(map.map[DownGrid][PosXGrid]) == true) {
+				if (Right > RightGrid * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
+					moveVector.x = 0;
+					//スクロール値調整
+					*scrollX -= knockBackVelocity.x;
+					nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
 					GridInit();
 				}
 				else {
+					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+					else {
+						moveVector.x = 0;
+						//スクロール値調整
+						*scrollX -= knockBackVelocity.x;
+						nextPosition.x = RightGrid * MAP_SIZE - size.x / 2;
+						GridInit();
+					}
+				}
+			}
+		}
+
+
+
+		else if (map.AnyNone(map.map[DownGrid][LeftGrid]) == false) {
+			if (map.AnyNone(map.map[DownGrid][PosXGrid]) == true) {
+				if (Left < (LeftGrid + 1) * MAP_SIZE && position.y - nextPosition.y > 0.0f) {
 					moveVector.x = 0;
 					//スクロール値調整
 					*scrollX -= knockBackVelocity.x;
 					nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
 					GridInit();
 				}
+				else {
+					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
+						moveVector.y = 0;
+						knockBackVelocity.y = 0;
+						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+						GridInit();
+					}
+					else {
+						moveVector.x = 0;
+						//スクロール値調整
+						*scrollX -= knockBackVelocity.x;
+						nextPosition.x = (LeftGrid + 1) * MAP_SIZE + size.x / 2;
+						GridInit();
+					}
+				}
 			}
+		}
+
+		Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
+		Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
+
+		if (map.AnyNone(map.map[UpGrid][PosXGrid]) == false) {
+			moveVector.y = 1;
+			knockBackVelocity.y = 0;
+			nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
+			GridInit();
+		}
+
+		if (map.AnyNone(map.map[DownGrid][PosXGrid]) == false) {
+			moveVector.y = 0;
+			knockBackVelocity.y = 0;
+			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
+			GridInit();
 		}
 	}
 
-	Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
-	Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
-
-	if (map.map[UpGrid][PosXGrid] == map.CANTBLOCK) {
-		moveVector.y = 1;
-		knockBackVelocity.y = 0;
-		nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
-		GridInit();
-	}
-
-	if (map.map[DownGrid][PosXGrid] == map.CANTBLOCK) {
-		moveVector.y = 0;
-		knockBackVelocity.y = 0;
-		nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
-		GridInit();
-	}
-
-	Novice::ScreenPrintf(400, 400, "%0.2f", position.y - nextPosition.y);
+	
 
 	position.x = nextPosition.x;
 	position.y = nextPosition.y;
 
+	//スクロール
 	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * 30) {
 		*scrollX += moveVector.x + knockBackVelocity.x;
 	}
@@ -266,10 +425,48 @@ void Player2::Update(Map map, float* scrollX)
 
 	}
 
+	playerColQuad = { position , int(size.x),int(size.y) };
+
+}
+
+void Player2::HitTE4(Circle TargetCirle)
+{
+	if (Collision::CircleToQuad(TargetCirle,playerColQuad)) {
+		knockBackVelocity.x *= -1;
+		knockBackVelocity.y *= -1;
+	}
 }
 
 void Player2::Draw(float* scrollX)
 {
+
+	//オーバーヒートゲージ
+	Novice::DrawQuad(
+		position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 20,
+		position.x - size.x / 2 + (overHeatGage * 32 / maxOverHeatGage) - *scrollX, position.y - size.y / 2 - 20,
+		position.x - size.x / 2 - *scrollX, position.y + size.y / 2 - 47,
+		position.x - size.x / 2 + (overHeatGage * 32 / maxOverHeatGage) - *scrollX, position.y + size.y / 2 - 47,
+		0, 0,
+		size.x, size.y,
+		0, RED
+	);
+
+	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 20, 32, 5, 0.0f, RED, kFillModeWireFrame);
+
+	//クールタイムゲージ
+
+	Novice::DrawQuad(
+		position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10,
+		position.x - size.x / 2 + (coolTimeGage * 32 / 180) - *scrollX, position.y - size.y / 2 - 10,
+		position.x - size.x / 2 - *scrollX, position.y + size.y / 2 - 37,
+		position.x - size.x / 2 + (coolTimeGage * 32 / 180) - *scrollX, position.y + size.y / 2 - 37,
+		0, 0,
+		size.x, size.y,
+		0, BLUE
+	);
+
+	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10, 32, 5, 0.0f, BLUE, kFillModeWireFrame);
+
 	Novice::DrawQuad(
 		position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
 		position.x + size.x / 2 - *scrollX, position.y - size.y / 2,
