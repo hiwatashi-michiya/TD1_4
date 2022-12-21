@@ -90,10 +90,10 @@ void TestEnemy04::Update(float scrollX,Vec2 PlayerPos)
 	}
 }
 
-void TestEnemy04::HitBomb(Circle BombCircle)
+void TestEnemy04::HitBomb(Circle BombCircle, Player2 player)
 {
 	if (isAlive == true) {
-		if (Collision::CircleToCirlce(circle, BombCircle) && BombCircle.radius == 96 && isShield == false) {
+		if (Collision::CircleToCirlce(circle, BombCircle) && BombCircle.radius == 96 && isShield == false && player.GetIsBig() == false) {
 
 			HP-= 30;
 
@@ -105,6 +105,20 @@ void TestEnemy04::HitBomb(Circle BombCircle)
 			KnockBackVelocity.x = BombDistanceX / BombDistanceR * -16;
 			KnockBackVelocity.y = BombDistanceY / BombDistanceR * -16;
 		}
+
+		if (Collision::CircleToCirlce(circle, BombCircle) && BombCircle.radius == 128 && isShield == false && player.GetIsBig() == true) {
+
+			HP -= 50;
+
+			float BombDistanceX = BombCircle.pos.x - WorldPos.x;
+			float BombDistanceY = BombCircle.pos.y - WorldPos.y;
+
+			float BombDistanceR = sqrtf(BombDistanceX * BombDistanceX + BombDistanceY * BombDistanceY);
+
+			KnockBackVelocity.x = BombDistanceX / BombDistanceR * -16;
+			KnockBackVelocity.y = BombDistanceY / BombDistanceR * -16;
+		}
+
 	}
 }
 

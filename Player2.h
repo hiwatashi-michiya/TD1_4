@@ -32,8 +32,6 @@ private:
 	
 	Circle BombCircle;
 
-	int MAXEXPSIZE = 96;
-
 	float speed;
 	
 	char keys[256] = { 0 };
@@ -59,6 +57,15 @@ private:
 	int maxOverHeatGage;
 	int coolTimeGage;
 
+	//チャージ
+	bool isCharge;
+	int chargeTime;
+	float chargeMag;
+	bool isBigExp;
+
+	void Charge();
+
+
 public:
 
 	Vec2 BombPos = { 9999,9999 };
@@ -74,6 +81,15 @@ public:
 	void HitTE4(Circle TargetQuad);
 
 	void Draw(float* scrollX);
+
+	//最大半径
+	int MAXEXPSIZE = 96;
+
+	//チャージタイムの取得
+	int GetChargeTime() { return chargeTime; }
+
+	//半径が大きいかどうかの取得
+	bool GetIsBig() { return isBigExp; }
 
 	Quad GetPlayerQuad() { return playerColQuad; };
 	Vec2 GetPlayerPos() { return position;};

@@ -23,10 +23,39 @@ Player2::Player2()
 	maxOverHeatGage = 300;
 	coolTimeGage = 0;
 
+	isCharge = false;
+	chargeTime = 0;
+	chargeMag = 1;
+	isBigExp = false;
+
 }
 
 void Player2::Init()
 {
+}
+
+void Player2::Charge() {
+
+	if (Controller::IsTriggerButton(0, Controller::rTrigger) || (keys[DIK_G] && preKeys[DIK_G] == 0)) {
+
+		//チャージしていないとき且つチャージ後でないとき
+		if (isCharge == false && chargeTime != 120) {
+			isCharge = true;
+		}
+
+	}
+
+	//チャージフラグが立ったらカウント開始
+	if (isCharge == true) {
+
+		chargeTime++;
+
+		if (chargeTime == 120) {
+			isCharge = false;
+		}
+
+	}
+
 }
 
 void Player2::Update(Map map, float* scrollX, Quad GateQuad)
@@ -75,6 +104,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	Novice::GetAnalogInputRight(0, &bombStickPositionX, &bombStickPositionY);
 	
+	Charge();
+
 	//クールタイム
 	if (coolTimeGage > 0) {
 		coolTimeGage--;
@@ -98,13 +129,26 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 	//オーバーヒートゲージが満タンでない時爆発可能
 	if (overHeatGage < maxOverHeatGage) {
 
-		if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
+		if ((fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 ||
+			fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) &&
+			isCharge == false) {
 			bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 			bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 			moveVector.y = 0;
 
-
+			//チャージされていたら飛距離を伸ばし、チャージリセット
+			if (chargeTime == 120) {
+				chargeMag = 1.5f;
+				MAXEXPSIZE = 128;
+				chargeTime = 0;
+				isBigExp = true;
+			}
+			else {
+				chargeMag = 1;
+				MAXEXPSIZE = 96;
+				isBigExp = false;
+			}
 
 			//爆発ゲージを加算
 			overHeatGage += 20;
@@ -114,7 +158,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 				overHeatGage = maxOverHeatGage;
 			}
 
-			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+			knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
@@ -122,12 +166,25 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
 		{
-			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0) {
+			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -136,18 +193,31 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
 		}
 
-			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
+			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -156,18 +226,31 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
 		}
 
-			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
+			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -176,17 +259,30 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
 		}
 
-			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
+			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
+
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
 
 				//爆発ゲージを加算
 				overHeatGage += 30;
@@ -196,7 +292,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
@@ -211,6 +307,12 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 		//クールタイムを設定
 		coolTimeGage = 180;
+
+	}
+
+	//チャージ中なら速度を下げる
+	if (isCharge == true) {
+		moveVector.x /= 2;
 
 	}
 

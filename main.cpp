@@ -553,7 +553,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		gate.Update(scrollX, windMill.GetisCharged());
 		
-		TE4.HitBomb(player2.GetBombCircle());
+		TE4.HitBomb(player2.GetBombCircle(), player2);
 		TE4.HitPlayer(player2.GetPlayerQuad(), player2.GetPlayerKnockbackVelocity());
 		player2.HitTE4(TE4.GetCircle());
 		TE4.Update(scrollX, player2.GetPlayerPos());
