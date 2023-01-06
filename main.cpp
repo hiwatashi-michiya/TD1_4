@@ -17,6 +17,7 @@
 #include "WindMill.h"
 #include "Gate.h"
 #include "TestEnemy04.h"
+#include "Lift.h"
 
 const char kWindowTitle[] = "map";
 
@@ -154,6 +155,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//ギミック
 	Candle candle(map);
+
+	Lift lift;
+	lift.Set({500,300},64,32);
 
 	//const int kTestEnemy = 6;
 	//TestEnemy testEnemy[kTestEnemy];
@@ -562,6 +566,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			candle.isAlive = false;
 		}
 		candle.Update(map, player2);
+		lift.Update(scrollX);
 		//testEnemy.Update(player, map, slow);
 
 		preMouseX = mouseX;
@@ -652,6 +657,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			fclose(fp);
+			candle.Init(map);
 			map.blockCount = 25;
 
 			//if (Map == 0) {
@@ -836,6 +842,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		TE4.Draw();
 
 		player2.Draw(&scrollX);
+
+		lift.Draw();
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
