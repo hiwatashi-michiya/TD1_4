@@ -23,13 +23,44 @@ Player2::Player2()
 	maxOverHeatGage = 300;
 	coolTimeGage = 0;
 
+	canJump = true;
+
+	isCharge = false;
+	chargeTime = 0;
+	chargeMag = 1;
+	isBigExp = false;
+
 }
 
 void Player2::Init()
 {
 }
 
-void Player2::Update(Map map, float* scrollX, Quad GateQuad)
+void Player2::Charge() {
+
+	if (Controller::IsTriggerButton(0, Controller::rTrigger) || (keys[DIK_G] && preKeys[DIK_G] == 0)) {
+
+		//チャージしていないとき且つチャージ後でないとき
+		if (isCharge == false && chargeTime != 120) {
+			isCharge = true;
+		}
+
+	}
+
+	//チャージフラグが立ったらカウント開始
+	if (isCharge == true) {
+
+		chargeTime++;
+
+		if (chargeTime == 120) {
+			isCharge = false;
+		}
+
+	}
+
+}
+
+void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
@@ -40,20 +71,21 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 	float minusSpeed = 0.5f;
 
 	if (knockBackVelocity.x > 0) {
-		knockBackVelocity.x -= minusSpeed;
+		knockBackVelocity.x -= minusSpeed * slow;
 	}
 	if (knockBackVelocity.x < 0) {
-		knockBackVelocity.x += minusSpeed;
+		knockBackVelocity.x += minusSpeed * slow;
 	}
 
-	if (knockBackVelocity.x <= minusSpeed && knockBackVelocity.x >= -minusSpeed) {
+	if (knockBackVelocity.x <= minusSpeed * slow && knockBackVelocity.x >= -minusSpeed * slow) {
 		knockBackVelocity.x = 0;
 	}
 
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
 
-	if ((keys[DIK_W] && preKeys[DIK_W] == 0) || Controller::IsTriggerButton(0, Controller::bA) == 1) {
+	if (((keys[DIK_W] && preKeys[DIK_W] == 0) || Controller::IsTriggerButton(0, Controller::bA) == 1) && canJump == true) {
 		moveVector.y -= 13;
+		canJump = false;
 		//moveVector.y -= speed;
 	}
 	if (keys[DIK_A] || stickPositionX < 0) {
@@ -75,6 +107,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	Novice::GetAnalogInputRight(0, &bombStickPositionX, &bombStickPositionY);
 	
+	Charge();
+
 	//クールタイム
 	if (coolTimeGage > 0) {
 		coolTimeGage--;
@@ -98,13 +132,26 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 	//オーバーヒートゲージが満タンでない時爆発可能
 	if (overHeatGage < maxOverHeatGage) {
 
-		if (fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 || fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) {
+		if ((fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 ||
+			fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) &&
+			isCharge == false) {
 			bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 			bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 			moveVector.y = 0;
 
-
+			//チャージされていたら飛距離を伸ばし、チャージリセット
+			if (chargeTime == 120) {
+				chargeMag = 1.5f;
+				MAXEXPSIZE = 128;
+				chargeTime = 0;
+				isBigExp = true;
+			}
+			else {
+				chargeMag = 1;
+				MAXEXPSIZE = 96;
+				isBigExp = false;
+			}
 
 			//爆発ゲージを加算
 			overHeatGage += 20;
@@ -114,20 +161,34 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 				overHeatGage = maxOverHeatGage;
 			}
 
-			knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+			knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
 		{
-			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0) {
+			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -136,18 +197,32 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
-			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0) {
+			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -156,18 +231,32 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
-			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0) {
+			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -176,18 +265,32 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
-			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0) {
+			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0 && isCharge == false) {
 				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
+				//チャージされていたら飛距離を伸ばす
+				if (chargeTime == 120) {
+					chargeMag = 1.5f;
+					chargeTime = 0;
+					MAXEXPSIZE = 128;
+					isBigExp = true;
+				}
+				else {
+					chargeMag = 1;
+					MAXEXPSIZE = 96;
+					isBigExp = false;
+				}
+
 				//爆発ゲージを加算
 				overHeatGage += 30;
 
@@ -196,10 +299,11 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					overHeatGage = maxOverHeatGage;
 				}
 
-				knockBackVelocity = { -bombVelocity.x * 3 ,  -bombVelocity.y * 3 };
+				knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal, position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;
+			canJump = false;
 		}
 
 		}
@@ -214,15 +318,21 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	}
 
+	//チャージ中なら速度を下げる
+	if (isCharge == true) {
+		moveVector.x /= 2;
+
+	}
+
 	BombCircle = { BombPos,BombRad };
 
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
 
-	moveVector.y += G * Weight;
+	moveVector.y += G * Weight * slow;
 
-	nextPosition.x = position.x + moveVector.x + knockBackVelocity.x;
-	nextPosition.y = position.y + moveVector.y + knockBackVelocity.y;
+	nextPosition.x = position.x + (moveVector.x + knockBackVelocity.x) * slow;
+	nextPosition.y = position.y + (moveVector.y + knockBackVelocity.y) * slow;
 
 	nextPlayerColQuad = { {nextPosition.x ,nextPosition.y}, int(size.x), int(size.y) };
 
@@ -343,6 +453,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
 						moveVector.y = 0;
 						knockBackVelocity.y = 0;
+						canJump = true;
 						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 						GridInit();
 					}
@@ -372,6 +483,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 					if (Down >= DownGrid * MAP_SIZE && position.y + size.y / 2 <= (DownGrid)*MAP_SIZE) {
 						moveVector.y = 0;
 						knockBackVelocity.y = 0;
+						canJump = true;
 						nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 						GridInit();
 					}
@@ -386,8 +498,8 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 			}
 		}
 
-		Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
-		Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
+		//Novice::ScreenPrintf(400, 420, "%0.2f", position.y + size.y / 2);
+		//Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
 
 		if (map.AnyNone(map.map[UpGrid][PosXGrid]) == false) {
 			moveVector.y = 1;
@@ -399,6 +511,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 		if (map.AnyNone(map.map[DownGrid][PosXGrid]) == false) {
 			moveVector.y = 0;
 			knockBackVelocity.y = 0;
+			canJump = true;
 			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 			GridInit();
 		}
@@ -411,7 +524,7 @@ void Player2::Update(Map map, float* scrollX, Quad GateQuad)
 
 	//スクロール
 	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * 30) {
-		*scrollX += moveVector.x + knockBackVelocity.x;
+		*scrollX +=( moveVector.x + knockBackVelocity.x) * slow;
 	}
 	else {
 
@@ -480,10 +593,10 @@ void Player2::Draw(float* scrollX)
 //	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RErD, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Down, 3, 3, 0, RED, kFillModeSolid);
-	Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
+	/*Novice::DrawEllipse(LeftGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, (DownGrid + 1) * MAP_SIZE, 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(RightGrid * MAP_SIZE + MAP_SIZE / 2 - *scrollX, nextPosition.y, 3, 3, 0, BLUE, kFillModeSolid);
 	Novice::DrawEllipse(nextPosition.x - *scrollX, UpGrid * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
-	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);
+	Novice::DrawEllipse(nextPosition.x - *scrollX, (DownGrid + 1) * MAP_SIZE , 3, 3, 0, BLUE, kFillModeSolid);*/
 
 	Novice::DrawEllipse(BombPos.x - *scrollX, BombPos.y, BombRad, BombRad, 0, RED, kFillModeSolid);
 
