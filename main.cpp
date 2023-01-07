@@ -357,6 +357,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				fopen_s(&fp, "./Resources/test.csv", "rt");
 
 				break;
+			case 2:
+
+				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+
+				break;
 			}
 
 			if (fp == NULL) {
@@ -466,6 +471,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					fopen_s(&fp, "./Resources/test.csv", "r+b");
 
 					break;
+				case 2:
+
+					fopen_s(&fp, "./Resources/stage3.csv", "r+b");
+
+					break;
 				}
 
 				if (fp == NULL) {
@@ -488,6 +498,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				case 1:
 
 					fopen_s(&fp, "./Resources/test.csv", "rt");
+
+					break;
+				case 2:
+
+					fopen_s(&fp, "./Resources/stage3.csv", "rt");
 
 					break;
 				}
@@ -515,6 +530,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < kMapBlockWidth; x++) {
 
+				if (map.map[y][x] == map.CANTBLOCK) {
+					map.blockColor[y][x] = 0xFFFFFFFF;
+				}
+
 				if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.REDBLOCK) {
 					map.blockColor[y][x] = 0xFF0000FF;
 				}
@@ -525,6 +544,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				if (map.map[y][x] == map.BLUENONE || map.map[y][x] == map.BLUEBLOCK) {
 					map.blockColor[y][x] = 0x0000FFFF;
+				}
+
+				if (map.map[y][x] == map.NEEDLE) {
+					map.blockColor[y][x] = 0x00FFFFFF;
 				}
 
 				if (map.map[y][x] == map.CANDLE_BLOCK) {
@@ -632,6 +655,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				TE4.Set({ 1000,100},scrollX);
 				windMill.Delete();
 				gate.Delete();
+				break;
+			case 2:
+
+				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+				TE4.Delete();
 				break;
 			
 			default:
