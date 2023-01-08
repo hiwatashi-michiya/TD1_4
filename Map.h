@@ -4,7 +4,7 @@
 const int MAP_SIZE = 32;
 
 //ブロックの種類
-const int kMaxBlock = 15;
+const int kMaxBlock = 18;
 
 //マップチップの横最大数
 const int kMapBlockWidth = 50;
@@ -20,15 +20,18 @@ struct Map{
 		TMPNONE,
 		TMPBLOCK,
 		NEEDLE,
-		REDNONE,
-		GREENNONE,
-		BLUENONE,
-		REDBLOCK,
-		GREENBLOCK,
-		BLUEBLOCK,
+		RED_NONE,
+		GREEN_NONE,
+		BLUE_NONE,
+		RED_BLOCK,
+		GREEN_BLOCK,
+		BLUE_BLOCK,
 		CANDLE_SWHITCH,
 		CANDLE_BLOCK,
-		ICEBLOCK,
+		ICE_BLOCK,
+		RED_SWITCH,
+		GREEN_SWITCH,
+		BLUE_SWITCH
 	};
 
 	int map[kMapBlockHeight][kMapBlockWidth];
@@ -36,7 +39,8 @@ struct Map{
 	//当たり判定のないブロックかどうかを調べる。trueならNONE、falseならBLOCK
 	bool AnyNone(int map) {
 
-		if (map == NONE || map == TMPNONE || map == REDNONE || map == GREENNONE || map == BLUENONE || map == CANDLE_SWHITCH) {
+		if (map == NONE || map == TMPNONE || map == RED_NONE || map == GREEN_NONE || map == BLUE_NONE || map == CANDLE_SWHITCH ||
+			map == RED_SWITCH || map == GREEN_SWITCH || map == BLUE_SWITCH) {
 			return true;
 		}
 

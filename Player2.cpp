@@ -34,6 +34,32 @@ Player2::Player2()
 
 void Player2::Init()
 {
+
+	position = { 64,600 };
+	nextPosition = { 64,600 };
+	moveVector = { 0,0 };
+	size = { 32,32 };
+	playerColQuad = { position , int(size.x),int(size.y) };
+	nextPlayerColQuad = playerColQuad;
+	speed = 5.0f;
+
+	BombPos = { 9999,9999 };
+	BombRad = 0;
+	BombCircle = { BombPos,BombRad };
+
+	BombPosMisal = 16;
+
+	overHeatGage = 0;
+	maxOverHeatGage = 300;
+	coolTimeGage = 0;
+
+	canJump = true;
+
+	isCharge = false;
+	chargeTime = 0;
+	chargeMag = 1;
+	isBigExp = false;
+
 }
 
 void Player2::Charge() {
