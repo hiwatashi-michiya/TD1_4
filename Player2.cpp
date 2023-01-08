@@ -34,7 +34,6 @@ Player2::Player2()
 
 void Player2::Init()
 {
-
 	position = { 64,600 };
 	nextPosition = { 64,600 };
 	moveVector = { 0,0 };
@@ -59,7 +58,6 @@ void Player2::Init()
 	chargeTime = 0;
 	chargeMag = 1;
 	isBigExp = false;
-
 }
 
 void Player2::Charge() {
@@ -379,6 +377,15 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 	{
 		GridInit();
 
+
+		if (map.map[UpGrid][LeftGrid] == map.NEEDLE ||
+			map.map[UpGrid][RightGrid] == map.NEEDLE ||
+			map.map[DownGrid][LeftGrid] == map.NEEDLE ||
+			map.map[DownGrid][RightGrid] == map.NEEDLE) {
+			Init();
+			GridInit();
+		}
+
 		if (position.y - nextPosition.y < 0) {
 			if (map.AnyNone(map.map[UpGrid][RightGrid]) == false) {
 				moveVector.x = 0;
@@ -541,6 +548,7 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 			GridInit();
 		}
+
 	}
 
 	

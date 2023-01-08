@@ -145,6 +145,8 @@ void TestEnemy04::Delete()
 	LocalPos = { 9999,9999 };
 	rad = 64;
 
+	circle = { WorldPos , rad };
+
 	isAlive = false;
 
 	Speed = 3;
