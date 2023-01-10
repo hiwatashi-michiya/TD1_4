@@ -90,7 +90,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Map map;
 
 	//マップ切り替え
-	int Map = 3;
+	int Map = 0;
+
+	//ボーダー表示個数
+	const int kBorderNum = 15;
 
 	enum {
 		putBlockMode, // ブロック設置
@@ -114,7 +117,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/test1.csv", "rt");
+	fopen_s(&fp, "./Resources/test2.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -131,9 +134,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			map.blockColor[y][x] = 0xFFFFFFFF;
 
-			//mapEasy.tmpTime[y][x] = 0;
+			//test2.tmpTime[y][x] = 0;
 
-			//mapEasy.blockColor[y][x] = 0xFFFFFFFF;
+			//test2.blockColor[y][x] = 0xFFFFFFFF;
 		}
 
 	}
@@ -148,9 +151,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		"20", "21", "22", "23", "24", "25", "26", "27"/*, "28", "29"*/
 	};
 
-	
-	map.blockCount = 25;
-	//mapEasy.blockCount = 25;
+	//test2.blockCount = 25;
 	Player player;
 	Player2 player2;
 
@@ -367,7 +368,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 				
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 				
 				break;
 			case 1:
@@ -400,8 +401,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			fclose(fp);
-			map.blockCount = 25;
-
+			
 
 			
 		}
@@ -488,7 +488,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/mapEasy.csv", "r+b");
+					fopen_s(&fp, "./Resources/test2.csv", "r+b");
 
 					break;
 				case 1:
@@ -524,7 +524,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+					fopen_s(&fp, "./Resources/test2.csv", "rt");
 
 					break;
 				case 1:
@@ -557,8 +557,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 				fclose(fp);
-				map.blockCount = 25;
-
+				
 			}
 
 		}
@@ -661,9 +660,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//エディット中邪魔なので動けないようにした
 		if (isEdit == false) {
-			player2.Update(slow,map, &scrollX, gate.GetGateQuad());
+			
 		}
 	
+		player2.Update(slow, map, &scrollX, gate.GetGateQuad());
+
 		if (Map == 0) {
 
 			windMill.Hit(player2.GetBombCircle());
@@ -716,7 +717,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else {
 				player.Init();
 				FILE* fp = NULL;
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 				if (fp == NULL) {
 					return 0;
 				}
@@ -732,9 +733,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (Key::IsTrigger(DIK_M)) {
 			for (int y = 0; y < kMapBlockHeight; y++) {
 				for (int x = 0; x < kMapBlockWidth; x++) {
-					map.blockNum[y][x] = 0;
 					map.map[y][x] == map.NONE;
-					map.blockCount = 25;
 				}
 			}
 			//俺が変えたぜ
@@ -747,7 +746,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 
 				break;
 			case 1:
@@ -773,7 +772,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			default:
 
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 				
 				TE4.Delete();
 				windMill.Set({ 1000,300 }, scrollX);
@@ -794,7 +793,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			fclose(fp);
-			map.blockCount = 25;
 
 			//if (Map == 0) {
 			//	player.Init();
@@ -822,7 +820,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//else {
 			//	player.Init();
 			//	FILE* fp = NULL;
-			//	fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+			//	fopen_s(&fp, "./Resources/test2.csv", "rt");
 			//	if (fp == NULL) {
 			//		return 0;
 			//	}
@@ -946,13 +944,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 			if (isShowBorder == true) {
-				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
-				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+
+				for (int i = 0; i < kBorderNum; i++) {
+					Novice::DrawQuad(1280 * i - scrollX, 0, 1280 * (i + 1) - scrollX, 0, 1280 * i - scrollX, 720, 1280 * (i + 1) - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+				}
+
+				/*Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);*/
 			}
 
 			if (isEdit == true) {
-				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
-				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+
+				for (int i = 0; i < kBorderNum; i++) {
+					Novice::DrawQuad(1280 * i - scrollX, 0, 1280 * (i + 1) - scrollX, 0, 1280 * i - scrollX, 720, 1280 * (i + 1) - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+				}
+
+				/*Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);*/
 			}
 
 		//}
@@ -961,11 +969,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				for (int x = 0; x < 50; x++) {
 
-					if (mapEasy.map[y][x] == mapEasy.BLOCK || mapEasy.map[y][x] == mapEasy.CANTBLOCK || mapEasy.map[y][x] == mapEasy.TMPBLOCK) {
+					if (test2.map[y][x] == test2.BLOCK || test2.map[y][x] == test2.CANTBLOCK || test2.map[y][x] == test2.TMPBLOCK) {
 
 						Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
 							x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
-							0, 0, 32, 32, TILE, mapEasy.blockColor[y][x]);
+							0, 0, 32, 32, TILE, test2.blockColor[y][x]);
 
 					}
 
@@ -1046,8 +1054,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		player2.Draw(&scrollX);
 
-		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
-		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
+		Novice::ScreenPrintf(60, 200, "%d", slowTime);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
