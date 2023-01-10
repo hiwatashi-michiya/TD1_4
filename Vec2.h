@@ -150,7 +150,6 @@ struct Vec2
 	/// <param name="s"> 1 / s”{</param>
 	/// <returns>Vec2Œ^</returns>
 	Vec2& operator /=(float s);
-
 };
 
 /// <summary>

@@ -5,6 +5,7 @@ class Lift
 public:
 	int texture;
 	Quad quad;
+	Quad localQuad;
 	int width;
 	int height;
 	unsigned int color;
@@ -17,7 +18,7 @@ public:
 	void Set(Vec2 Position, int Width, int Height);
 	void Move();
 	void Collision();
-	void Update(float Scroll);
-	void Draw();
+	void Update();
+	void Draw(float* scrollX);
 };
 

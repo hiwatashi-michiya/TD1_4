@@ -40,16 +40,16 @@ void Lift::Collision()
 
 }
 
-void Lift::Update(float Scroll)
+void Lift::Update()
 {
-	localPosition = { worldPosition.x - Scroll,worldPosition.y - Scroll };
 	Move();
 	Collision();
 }
 
-void Lift::Draw()
+void Lift::Draw(float* scrollX)
 {
+	localPosition = { worldPosition.x - *scrollX,worldPosition.y};
 	Matrix33 tmp = Matrix33::MakeAffine({1,1}, 0, {localPosition});
-	quad = quad * tmp;
-	Novice::DrawQuad(quad.LeftTop.x, quad.LeftTop.y, quad.RightTop.x, quad.RightTop.y, quad.LeftBottom.x, quad.LeftBottom.y, quad.RightBottom.x, quad.RightBottom.y,0,0,width,height,texture,color);
+	localQuad = quad * tmp;
+	Novice::DrawQuad(localQuad.LeftTop.x, localQuad.LeftTop.y, localQuad.RightTop.x, localQuad.RightTop.y, localQuad.LeftBottom.x, localQuad.LeftBottom.y, localQuad.RightBottom.x, localQuad.RightBottom.y,0,0,width,height,texture,color);
 }

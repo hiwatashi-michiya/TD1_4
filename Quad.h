@@ -2,6 +2,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Vec2.h"
+#include "Matrix33 .h"
 
 class Quad {
 public:
@@ -32,5 +33,6 @@ public:
 	Quad operator + (Vec2 s) const;
 	Quad operator - (Vec2 s) const;
 	Quad operator + (float s)const;
+	Quad operator * (Matrix33 mat)const;
 };
 

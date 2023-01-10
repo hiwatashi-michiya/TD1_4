@@ -156,7 +156,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Candle candle(map);
 
 	Lift lift;
-	lift.Set({500,300},64,32);
+	lift.Set({300,100},64,32);
 
 	//const int kTestEnemy = 6;
 	//TestEnemy testEnemy[kTestEnemy];
@@ -571,7 +571,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			candle.isAlive = false;
 		}
 		candle.Update(map, player2);
-		lift.Update(scrollX);
+		lift.Update();
 		//testEnemy.Update(player, map, slow);
 
 		preMouseX = mouseX;
@@ -849,7 +849,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		player2.Draw(&scrollX);
 
-		lift.Draw();
+		lift.Draw(&scrollX);
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
