@@ -28,7 +28,6 @@ void Gate::Set(Vec2 pos, Vec2 size, float ScrollX)
 }
 
 void Gate::Update(float ScrollX, bool isOpen)
-
 {
 
 	if (isOpen == true) {
@@ -41,7 +40,6 @@ void Gate::Update(float ScrollX, bool isOpen)
 			OpenPos -= 4;
 		}
 	}
-
 
 	if (OpenPos >= Size.y) {
 		OpenPos = Size.y;
@@ -65,6 +63,8 @@ void Gate::Delete()
 
 	WorldPos = { 9999,9999 };
 	LocalPos = { 9999,9999 };
+
+	quad = { {LocalPos.x,LocalPos.y + Size.y / 2 }, int(Size.x),int(Size.y) };
 
 	Size = { 1,1 };
 
