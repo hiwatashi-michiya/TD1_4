@@ -141,7 +141,7 @@ void TestEnemy05::Update(Map map, bool* redSwitch, bool* greenSwitch, bool* blue
 
 	}
 
-	if ((map.AnyNone(map.map[rightTopY][rightTopX]) == false || map.AnyNone(map.map[rightBottomY][rightBottomX]) == false) &&
+	else if ((map.AnyNone(map.map[rightTopY][rightTopX]) == false || map.AnyNone(map.map[rightBottomY][rightBottomX]) == false) &&
 		e5MoveDIrection == RIGHT) {
 
 		mPosition.x = (rightTopX - 1) * 32 + 16;
@@ -171,7 +171,7 @@ void TestEnemy05::Update(Map map, bool* redSwitch, bool* greenSwitch, bool* blue
 
 	}
 
-	if ((map.AnyNone(map.map[leftTopY][leftTopX]) == false || map.AnyNone(map.map[rightTopY][rightTopX]) == false) &&
+	else if ((map.AnyNone(map.map[leftTopY][leftTopX]) == false || map.AnyNone(map.map[rightTopY][rightTopX]) == false) &&
 		e5MoveDIrection == UP) {
 
 		mPosition.y = (leftTopY + 1) * 32 + 16;
@@ -201,7 +201,7 @@ void TestEnemy05::Update(Map map, bool* redSwitch, bool* greenSwitch, bool* blue
 
 	}
 
-	if ((map.AnyNone(map.map[leftBottomY][leftBottomX]) == false || map.AnyNone(map.map[rightBottomY][rightBottomX]) == false) &&
+	else if ((map.AnyNone(map.map[leftBottomY][leftBottomX]) == false || map.AnyNone(map.map[rightBottomY][rightBottomX]) == false) &&
 		e5MoveDIrection == DOWN) {
 
 		mPosition.y = (leftBottomY - 1) * 32 + 16;
