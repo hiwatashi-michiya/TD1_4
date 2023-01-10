@@ -557,7 +557,7 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 	position.y = nextPosition.y;
 
 	//ƒXƒNƒ[ƒ‹
-	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * 30) {
+	if (position.x > MAP_SIZE * 20 && position.x < MAP_SIZE * (kMapBlockWidth - 20)) {
 		*scrollX +=( moveVector.x + knockBackVelocity.x) * slow;
 	}
 	else {
@@ -566,8 +566,8 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 			*scrollX = 0;
 		}
 
-		if (position.x >= MAP_SIZE * 30) {
-			*scrollX = MAP_SIZE * 10;
+		if (position.x >= MAP_SIZE * (kMapBlockWidth - 20)) {
+			*scrollX = MAP_SIZE * (kMapBlockWidth - 40);
 		}
 
 	}

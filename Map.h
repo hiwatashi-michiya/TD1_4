@@ -7,7 +7,7 @@ const int MAP_SIZE = 32;
 const int kMaxBlock = 18;
 
 //マップチップの横最大数
-const int kMapBlockWidth = 50;
+const int kMapBlockWidth = 500;
 
 //マップチップの縦最大数
 const int kMapBlockHeight = 50;
@@ -48,16 +48,7 @@ struct Map{
 
 	}
 
-	unsigned int blockColor[50][50];
-
-	int blockCount;
-	int blockNum[50][50];
-
-	struct BlockStruct {
-		Vec2 pos;
-	};
-	
-	BlockStruct Block[50][50];
+	unsigned int blockColor[kMapBlockHeight][kMapBlockWidth];
 
 };
 

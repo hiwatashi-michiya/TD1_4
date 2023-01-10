@@ -6,7 +6,7 @@ class Candle
 public:
 	//•Ï”
 	bool isAlive;
-	int candleMap[50][50];
+	int candleMap[kMapBlockHeight][kMapBlockWidth];
 	//ŠÖ”
 	Candle(Map& map);
 	void Init(Map& map);
