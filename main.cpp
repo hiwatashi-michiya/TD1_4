@@ -107,8 +107,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	if (fp == NULL) {
 		return 0;
 	}
-	for (int y = 0; y < 50; y++) {
-		for (int x = 0; x < 50; x++) {
+	for (int y = 0; y < kMapBlockHeight; y++) {
+		for (int x = 0; x < kMapBlockWidth; x++) {
 			fscanf_s(fp, "%d,", &map.map[y][x]);
 		}
 	}
@@ -119,16 +119,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	if (fp == NULL) {
 		return 0;
 	}
-	for (int y = 0; y < 50; y++) {
-		for (int x = 0; x < 50; x++) {
+	for (int y = 0; y < kMapBlockHeight; y++) {
+		for (int x = 0; x < kMapBlockWidth; x++) {
 			fscanf_s(fp, "%d,", &map.map[y][x]);
 		}
 	}
 	fclose(fp);
 
-	for (int y = 0; y < 50; y++) {
+	for (int y = 0; y < kMapBlockHeight; y++) {
 
-		for (int x = 0; x < 50; x++) {
+		for (int x = 0; x < kMapBlockWidth; x++) {
 
 			map.blockColor[y][x] = 0xFFFFFFFF;
 
@@ -397,8 +397,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				return 0;
 			}
 
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
+			for (int y = 0; y < kMapBlockHeight; y++) {
+				for (int x = 0; x < kMapBlockWidth; x++) {
 					fscanf_s(fp, "%d,", &map.map[y][x]);
 				}
 			}
@@ -518,7 +518,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					return 0;
 				}
 
-				fseek(fp, (setMouseYGrid * 152) + (setMouseXGrid * 3), SEEK_SET);
+				fseek(fp, (setMouseYGrid * ((kMapBlockWidth * 3) + 2)) + (setMouseXGrid * 3), SEEK_SET);
 
 				fputs(string[setNumber], fp);
 
@@ -554,8 +554,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					return 0;
 				}
 
-				for (int y = 0; y < 50; y++) {
-					for (int x = 0; x < 50; x++) {
+				for (int y = 0; y < kMapBlockHeight; y++) {
+					for (int x = 0; x < kMapBlockWidth; x++) {
 						fscanf_s(fp, "%d,", &map.map[y][x]);
 					}
 				}
@@ -735,8 +735,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		if (Key::IsTrigger(DIK_M)) {
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
+			for (int y = 0; y < kMapBlockHeight; y++) {
+				for (int x = 0; x < kMapBlockWidth; x++) {
 					map.blockNum[y][x] = 0;
 					map.map[y][x] == map.NONE;
 					map.blockCount = 25;
@@ -792,8 +792,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				return 0;
 			}
 
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
+			for (int y = 0; y < kMapBlockHeight; y++) {
+				for (int x = 0; x < kMapBlockWidth; x++) {
 					fscanf_s(fp, "%d,", &map.map[y][x]);
 				}
 			}
@@ -860,9 +860,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1, 1, 0, 0x9977AAFF);
 		Novice::DrawBox(0, 0, 1280, 720, 0, ColorReverse(backgroundColor), kFillModeSolid);
 
-		for (int y = 0; y < 50; y++) {
+		for (int y = 0; y < kMapBlockHeight; y++) {
 
-			for (int x = 0; x < 50; x++) {
+			for (int x = 0; x < kMapBlockWidth; x++) {
 
 				if (scrollX + 1280 > x * MAP_SIZE && y < 23) {
 					if (map.map[y][x] == map.BREAKBLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
@@ -1007,8 +1007,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case explodeMode:
 			Novice::DrawBox(1280, 0, -64, 64, 0, GREEN, kFillModeSolid);
 			
-			for (int y = 0; y < 50; y++) {
-				for (int x = 0; x < 50; x++) {
+			for (int y = 0; y < kMapBlockHeight; y++) {
+				for (int x = 0; x < kMapBlockWidth; x++) {
 					if (y == mouseYGrid && x == mouseXGrid) {
 							for (int i = -1; i < 2; i++) {
 								for (int j = -1; j < 2; j++) {
