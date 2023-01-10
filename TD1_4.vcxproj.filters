@@ -80,6 +80,12 @@
     <ClCompile Include="Missile.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="TestEnemy05.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
     <ClCompile Include="Lift.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
@@ -181,5 +187,7 @@
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Lift.h" />
     <ClInclude Include="..\..\..\Desktop\Matrix33.h" />
+    <ClInclude Include="Missile.h" />
+    <ClInclude Include="TestEnemy05.h" />
   </ItemGroup>
 </Project>

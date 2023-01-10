@@ -16,6 +16,7 @@
 #include "WindMill.h"
 #include "Gate.h"
 #include "TestEnemy04.h"
+#include "TestEnemy05.h"
 #include "Lift.h"
 
 const char kWindowTitle[] = "map";
@@ -88,7 +89,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DRAWTYPE drawType = MAKE;
 
 	Map map;
-	int Map = 0;
+
+	//マップ切り替え
+	int Map = 3;
 
 	enum {
 		putBlockMode, // ブロック設置
@@ -112,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+	fopen_s(&fp, "./Resources/test1.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -143,7 +146,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//書き込み時の文字列、最大数はブロックの種類に依存。
 	char string[kMaxBlock][4] = { 
 		"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-		"20", "21", "22", "23", "24"/*, "25", "26", "27", "28", "29"*/
+		"20", "21", "22", "23", "24", "25", "26", "27"/*, "28", "29"*/
 	};
 
 	
@@ -186,6 +189,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	TestEnemy04 TE4;
 
+	//切り替え用のスイッチ
+	int SWITCH_ON = Novice::LoadTexture("./Resources/switch_on.png");
+	int SWITCH_OFF = Novice::LoadTexture("./Resources/switch_off.png");
+
+	bool isRedSwitchOn = false;
+	bool isGreenSwitchOn = false;
+	bool isBlueSwitchOn = false;
+
+	//スイッチに当たっているかどうかの判定
+	bool isHitRedSwitch = false;
+	bool isHitGreenSwitch = false;
+	bool isHitBlueSwitch = false;
+
+	//敵5
+	TestEnemy05 enemy5({ MAP_SIZE * 11 + 16,MAP_SIZE * 20 + 16 }, { 5,5 }, RIGHT);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -346,7 +364,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (Key::IsTrigger(DIK_R)) {
 
-			player.Init();
+			player2.Init();
 			FILE* fp = NULL;
 
 			switch (Map)
@@ -361,6 +379,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				fopen_s(&fp, "./Resources/test.csv", "rt");
 
 				break;
+			case 2:
+
+				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+
+				break;
+
+			case 3:
+
+				fopen_s(&fp, "./Resources/test1.csv", "rt");
+
+				break;
+
 			}
 
 			if (fp == NULL) {
@@ -470,6 +500,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					fopen_s(&fp, "./Resources/test.csv", "r+b");
 
 					break;
+				case 2:
+
+					fopen_s(&fp, "./Resources/stage3.csv", "r+b");
+
+					break;
+
+				case 3:
+
+					fopen_s(&fp, "./Resources/test1.csv", "r+b");
+
+					break;
+
 				}
 
 				if (fp == NULL) {
@@ -494,6 +536,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					fopen_s(&fp, "./Resources/test.csv", "rt");
 
 					break;
+				case 2:
+
+					fopen_s(&fp, "./Resources/stage3.csv", "rt");
+
+					break;
+
+				case 3:
+
+					fopen_s(&fp, "./Resources/test1.csv", "rt");
+
+					break;
+
 				}
 
 				if (fp == NULL) {
@@ -519,22 +573,80 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < kMapBlockWidth; x++) {
 
-				if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.REDBLOCK) {
+				if (map.map[y][x] == map.NONE || map.map[y][x] == map.CANTBLOCK) {
+					map.blockColor[y][x] = 0xFFFFFFFF;
+				}
+
+				//赤
+				if (map.map[y][x] == map.RED_NONE || map.map[y][x] == map.RED_BLOCK || map.map[y][x] == map.RED_SWITCH) {
 					map.blockColor[y][x] = 0xFF0000FF;
+
+					if (isRedSwitchOn == true) {
+						
+						if (map.map[y][x] == map.RED_NONE) {
+							map.map[y][x] = map.RED_BLOCK;
+						}
+
+					}
+					else {
+
+						if (map.map[y][x] == map.RED_BLOCK) {
+							map.map[y][x] = map.RED_NONE;
+						}
+
+					}
+
 				}
 
-				if (map.map[y][x] == map.GREENNONE || map.map[y][x] == map.GREENBLOCK) {
+				//緑
+				if (map.map[y][x] == map.GREEN_NONE || map.map[y][x] == map.GREEN_BLOCK || map.map[y][x] == map.GREEN_SWITCH) {
 					map.blockColor[y][x] = 0x00FF00FF;
+
+					if (isGreenSwitchOn == true) {
+
+						if (map.map[y][x] == map.GREEN_NONE) {
+							map.map[y][x] = map.GREEN_BLOCK;
+						}
+
+					}
+					else {
+
+						if (map.map[y][x] == map.GREEN_BLOCK) {
+							map.map[y][x] = map.GREEN_NONE;
+						}
+
+					}
+
 				}
 
-				if (map.map[y][x] == map.BLUENONE || map.map[y][x] == map.BLUEBLOCK) {
+				//青
+				if (map.map[y][x] == map.BLUE_NONE || map.map[y][x] == map.BLUE_BLOCK || map.map[y][x] == map.BLUE_SWITCH) {
 					map.blockColor[y][x] = 0x0000FFFF;
+
+					if (isBlueSwitchOn == true) {
+
+						if (map.map[y][x] == map.BLUE_NONE) {
+							map.map[y][x] = map.BLUE_BLOCK;
+						}
+
+					}
+					else {
+
+						if (map.map[y][x] == map.BLUE_BLOCK) {
+							map.map[y][x] = map.BLUE_NONE;
+						}
+					}
+
+				}
+
+				if (map.map[y][x] == map.NEEDLE) {
+					map.blockColor[y][x] = 0x00FFFFFF;
 				}
 
 				if (map.map[y][x] == map.CANDLE_BLOCK) {
 					map.blockColor[y][x] = 0xdd50edFF;
 				}
-				if (map.map[y][x] == map.ICEBLOCK) {
+				if (map.map[y][x] == map.ICE_BLOCK) {
 
 					map.blockColor[y][x] = 0xAAAAFFFF;
 
@@ -556,22 +668,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player2.Update(slow,map, &scrollX, gate.GetGateQuad());
 		}
 	
+		if (Map == 0) {
 
-		windMill.Hit(player2.GetBombCircle());
-		windMill.Update(scrollX);
+			windMill.Hit(player2.GetBombCircle());
+			windMill.Update(scrollX);
 
-		gate.Update(scrollX, windMill.GetisCharged());
+			gate.Update(scrollX, windMill.GetisCharged());
+
+			candle.Update(map, player2);
+
+			lift.Update(player2);
+		}
 		
-		TE4.HitBomb(player2.GetBombCircle(), player2);
-		TE4.HitPlayer(player2.GetPlayerQuad(), player2.GetPlayerKnockbackVelocity());
-		player2.HitTE4(TE4.GetCircle());
-		TE4.Update(slow,scrollX, player2.GetPlayerPos());
+		if (Map == 3) {
+			enemy5.Update(map, &isRedSwitchOn, &isGreenSwitchOn, &isBlueSwitchOn, &isHitRedSwitch, &isHitGreenSwitch, &isHitBlueSwitch);
+		}
+
+		if (Map == 1) {
+
+			TE4.HitBomb(player2.GetBombCircle(), player2);
+			TE4.HitPlayer(player2.GetPlayerQuad(), player2.GetPlayerKnockbackVelocity());
+			player2.HitTE4(TE4.GetCircle());
+			TE4.Update(slow, scrollX, player2.GetPlayerPos());
+
+		}
 
 		if (Key::IsTrigger(DIK_C)) {
 			candle.isAlive = false;
 		}
-		candle.Update(map, player2);
-		lift.Update();
+		/*candle.Update(map, player2);*/
 		//testEnemy.Update(player, map, slow);
 
 		preMouseX = mouseX;
@@ -638,7 +763,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				windMill.Delete();
 				gate.Delete();
 				break;
+			case 2:
+
+				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+				TE4.Delete();
+				break;
 			
+			
+			case 3:
+
+				fopen_s(&fp, "./Resources/test1.csv", "rt");
+
+				break;
+
 			default:
 
 				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
@@ -723,10 +860,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1, 1, 0, 0x9977AAFF);
 		Novice::DrawBox(0, 0, 1280, 720, 0, ColorReverse(backgroundColor), kFillModeSolid);
 
-			for (int y = 0; y < 50; y++) {
+		for (int y = 0; y < 50; y++) {
 
-				for (int x = 0; x < 50; x++) {
+			for (int x = 0; x < 50; x++) {
 
+				if (scrollX + 1280 > x * MAP_SIZE && y < 23) {
 					if (map.map[y][x] == map.BREAKBLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
@@ -735,27 +873,84 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
-					if (map.map[y][x] == map.REDNONE || map.map[y][x] == map.GREENNONE || map.map[y][x] == map.BLUENONE) {
+					if (map.map[y][x] == map.RED_NONE || map.map[y][x] == map.GREEN_NONE || map.map[y][x] == map.BLUE_NONE) {
 
-						Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
-							x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
+						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
 							0, 0, 32, 32, COLORNONE, map.blockColor[y][x]);
 
 					}
 
-					if (map.map[y][x] == map.REDBLOCK || map.map[y][x] == map.GREENBLOCK || map.map[y][x] == map.BLUEBLOCK ||
-						map.map[y][x] == map.CANDLE_SWHITCH || map.map[y][x] == map.CANDLE_BLOCK || map.map[y][x] == map.ICEBLOCK) {
+					if (map.map[y][x] == map.RED_BLOCK || map.map[y][x] == map.GREEN_BLOCK || map.map[y][x] == map.BLUE_BLOCK ||
+						map.map[y][x] == map.CANDLE_SWHITCH || map.map[y][x] == map.CANDLE_BLOCK || map.map[y][x] == map.ICE_BLOCK) {
 
-						Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
-							x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
+						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
 							0, 0, 32, 32, COLORTILE, map.blockColor[y][x]);
+
+					}
+
+					if (map.map[y][x] == map.RED_SWITCH) {
+
+						if (isRedSwitchOn == true) {
+
+							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+
+						}
+						else {
+
+							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+
+						}
+
+					}
+
+					if (map.map[y][x] == map.GREEN_SWITCH) {
+
+						if (isGreenSwitchOn == true) {
+
+							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+
+						}
+						else {
+
+							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+
+						}
+
+					}
+
+					if (map.map[y][x] == map.BLUE_SWITCH) {
+
+						if (isBlueSwitchOn == true) {
+
+							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+
+						}
+						else {
+
+							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
+								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+
+						}
 
 					}
 
 				}
 
 			}
-
+		}
 			if (isShowBorder == true) {
 				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
 				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
@@ -841,15 +1036,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		windMill.Draw();
+		if (Map == 0) {
 
-		gate.Draw();
+			windMill.Draw();
+
+			gate.Draw();
+
+			lift.Draw(&scrollX);
+		}
 
 		TE4.Draw();
 
+		if (Map == 3) {
+			enemy5.Draw(&scrollX);
+		}
+
 		player2.Draw(&scrollX);
 
-		lift.Draw(&scrollX);
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
 		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);

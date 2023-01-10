@@ -1,5 +1,6 @@
 #pragma once
 #include "Quad.h"
+#include "Player2.h"
 class Lift
 {
 public:
@@ -16,9 +17,9 @@ public:
 	Lift();
 	void Init();
 	void Set(Vec2 Position, int Width, int Height);
-	void Move();
-	void Collision();
-	void Update();
+	void Move(Player2& player);
+	void Collision(Player2& player);
+	void Update(Player2& player);
 	void Draw(float* scrollX);
 };
 

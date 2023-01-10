@@ -1,5 +1,6 @@
 #include "Lift.h"
 #include "Matrix33 .h"
+#include "Collision.h"
 #include <Novice.h>
 
 Lift::Lift()
@@ -27,23 +28,29 @@ void Lift::Set(Vec2 Position,int Width,int Height)
 	color = WHITE;
 	worldPosition = Position;
 	localPosition = Position;
+	localQuad;
 	velocity = 0;
 	quad = { worldPosition, width, height };
 }
 
-void Lift::Move()
+void Lift::Move(Player2& player)
 {
 }
 
-void Lift::Collision()
+void Lift::Update(Player2& player)
 {
-
+	Collision(player);
+	Move(player);
 }
 
-void Lift::Update()
+void Lift::Collision(Player2& player)
 {
-	Move();
-	Collision();
+	if (Collision::QuadToQuad(player.GetPlayerQuad(), quad)) {
+		//è„
+		if (quad.LeftTop.x < player.GetPlayerQuad().RightTop.x && quad.RightTop.x < player.GetPlayerQuad().RightTop.x && quad.LeftBottom.y > player.GetPlayerQuad().LeftBottom.y) {
+			int i;
+		}
+	}
 }
 
 void Lift::Draw(float* scrollX)
