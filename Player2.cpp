@@ -84,7 +84,7 @@ void Player2::Charge() {
 
 }
 
-void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
+void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
@@ -384,6 +384,7 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 			map.map[DownGrid][RightGrid] == map.NEEDLE) {
 			Init();
 			GridInit();
+			map.isHitNeedle = true;
 		}
 
 		if (position.y - nextPosition.y < 0) {

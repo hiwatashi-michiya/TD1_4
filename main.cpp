@@ -199,6 +199,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHitGreenSwitch = false;
 	bool isHitBlueSwitch = false;
 
+	//ゲート削除
+	gate.Delete();
+
 	//敵5
 	TestEnemy05 enemy5({ MAP_SIZE * 11 + 16,MAP_SIZE * 20 + 16 }, { 5,5 }, RIGHT);
 
@@ -359,7 +362,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Novice::ScreenPrintf(300,300,"%d", Map);
 
-		if (Key::IsTrigger(DIK_R)) {
+		if (Key::IsTrigger(DIK_R) || map.isHitNeedle == true) {
 
 			player2.Init();
 			FILE* fp = NULL;
@@ -402,7 +405,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			fclose(fp);
 			
-
+			map.isHitNeedle = false;
 			
 		}
 
@@ -664,17 +667,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	
 		player2.Update(slow, map, &scrollX, gate.GetGateQuad());
-
-		if (Map == 0) {
-
-			windMill.Hit(player2.GetBombCircle());
-			windMill.Update(scrollX);
-
-			gate.Update(scrollX, windMill.GetisCharged());
-
-			candle.Update(map, player2);
-
-		}
 		
 		if (Map == 3) {
 			enemy5.Update(map, &isRedSwitchOn, &isGreenSwitchOn, &isBlueSwitchOn, &isHitRedSwitch, &isHitGreenSwitch, &isHitBlueSwitch);
@@ -755,7 +747,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				TE4.Set({ 1000,100},scrollX);
 				windMill.Delete();
-				gate.Delete();
 				break;
 			case 2:
 
@@ -1036,14 +1027,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case handMode:
 			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			break;
-		}
-
-		if (Map == 0) {
-
-			windMill.Draw();
-
-			gate.Draw();
-
 		}
 
 		TE4.Draw();
