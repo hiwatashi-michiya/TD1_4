@@ -343,10 +343,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// 
 		///デバッグ中の操作
 		///矢印キーで配置するブロックの変更。数字毎のブロックの割り振りはMap.hのTILE参照
-		///上キー...数字を一つ上げる
-		///下キー...数字を一つ下げる
-		///右キー...数字を十個上げる
-		///左キー...数字を十個下げる
+		///Iキー...数字を一つ上げる
+		///Kキー...数字を一つ下げる
+		///Lキー...数字を十個上げる
+		///Jキー...数字を十個下げる
 		///配置はマウスでなぞって配置できる
 		/// 
 		if (Key::IsTrigger(DIK_E)) {
@@ -412,16 +412,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (isEdit == true) {
 
-			//書き込む数字の設定
+			//書き込む数字の設定 : 加算
 			if (setNumber < kMaxBlock - 1) {
 
 				//一単位での切り替え
-				if (Key::IsTrigger(DIK_UP)) {
+				if (Key::IsTrigger(DIK_I)) {
 					setNumber++;
 				}
 
 				//十単位での切り替え
-				if (Key::IsTrigger(DIK_RIGHT)) {
+				if (Key::IsTrigger(DIK_L)) {
 					
 					//最大数を超えなければそのまま加算
 					if (setNumber + 10 < kMaxBlock - 1) {
@@ -436,14 +436,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			}
 
+			//書き込む数字の設定 : 減算
 			if (setNumber > 0) {
 
-				if (Key::IsTrigger(DIK_DOWN)) {
+				if (Key::IsTrigger(DIK_K)) {
 					setNumber--;
 				}
 
 				//十単位での切り替え
-				if (Key::IsTrigger(DIK_LEFT)) {
+				if (Key::IsTrigger(DIK_J)) {
 
 					//最小値を超えなければそのまま減算
 					if (setNumber - 10 > 0) {
