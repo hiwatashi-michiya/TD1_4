@@ -66,6 +66,7 @@ private:
 	bool isBigExp;
 
 	float BombPow;
+	bool StickStetting = false;
 
 	void Charge();
 
