@@ -240,72 +240,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				mouseActionMode--;
 			}
 		}
-
-		expPos = { float(mouseX),float(mouseY) };
-		expCir = { expPos  , expRad };
-
-		if (expFlag == true) {
-
-			float pow = 0.5;
-
-			float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
-
-			float ecpPowF = 1 - (expPowDistance / expRad);
-
-			Vec2 PlayerPos = { player.GetPlayerQuad().LeftTop.x + 32 - expPos.x,
-				player.GetPlayerQuad().LeftTop.y + 32 - expPos.y };
-
-			Vec2 expPowVec =
-			{ PlayerPos.x * ecpPowF * pow,
-				PlayerPos.y * ecpPowF * pow };
-
-			/*if (expPowVec.y < 0) {
-				expPowVec.y = -pow - expPowVec.y;
-			}
-			else {
-				expPowVec.y = pow - expPowVec.y;
-			}
-
-			if (expPowVec.x < 0) {
-				expPowVec.x = -pow - expPowVec.x;
-			}
-			else {
-				expPowVec.x = pow - expPowVec.x;
-			}*/
-
-			player.hitCircle(expCir, expPowVec, 0);
-			Novice::ScreenPrintf(600, 200, "%0.2f", ecpPowF);
-		}
-
-		//if (keys[DIK_SPACE] != 0) {
-		//	slowFlag = true;
-		//}
-		//else {
-		//	slowFlag = false;
-		//	/*if (preMousePush) {
-		//		canSlow = false;
-		//	}*/
-		//}
-
-		//if (slowFlag == true) {
-		//	if (canSlow == true) {
-		//		slowTime++;
-		//		slow /= 1.1;
-		//	}
-		//	if (slowTime > kslowTimeMax) {
-		//		canSlow = false;
-		//	}
-		//}
-
-		//if (canSlow == false || slowFlag == false) {
-		//	slow *= 1.1;
-		//	if (slowTime > 0) {
-		//		slowTime--;
-		//	}
-		//	else {
-		//		canSlow = true;
-		//	}
-		//}
 		
 		if (keys[DIK_SPACE] != 0) {
 			slow /= 1.1;
@@ -650,7 +584,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					map.blockColor[y][x] = 0xAAAAFFFF;
 
 					Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
-					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
+					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},
+						{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},
+						{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},
+						{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
 					///爆弾の範囲がスイッチと接触しているか
 					if (Collision::CircleToQuad(a, b)) {
 						map.map[y][x] = map.NONE;

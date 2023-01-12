@@ -29,6 +29,8 @@ Player2::Player2()
 	chargeTime = 0;
 	chargeMag = 1;
 	isBigExp = false;
+	isHeat = 0;
+	color = 0xFFFFFFFF;
 
 }
 
@@ -58,6 +60,9 @@ void Player2::Init()
 	chargeTime = 0;
 	chargeMag = 1;
 	isBigExp = false;
+	isHeat = 0;
+	color = 0xFFFFFFFF;
+
 }
 
 void Player2::Charge() {
@@ -103,6 +108,14 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 
 	if (knockBackVelocity.x <= minusSpeed * slow && knockBackVelocity.x >= -minusSpeed * slow) {
 		knockBackVelocity.x = 0;
+	}
+
+	if (isHeat > 0) {
+		isHeat--;
+		color = 0xFF0000FF;
+	}
+	else {
+		color = 0xFFFFFFFF;
 	}
 
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
@@ -163,6 +176,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 			moveVector.y = 0;
+			isHeat = 30;
 
 			//チャージされていたら飛距離を伸ばし、チャージリセット
 			if (chargeTime == 120) {
@@ -199,6 +213,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
+				isHeat = 30;
 
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
@@ -233,6 +248,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
+				isHeat = 30;
 
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
@@ -267,6 +283,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
+				isHeat = 30;
 
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
@@ -301,6 +318,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
+				isHeat = 30;
 
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
@@ -385,6 +403,33 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			Init();
 			GridInit();
 			map.isHitNeedle = true;
+		}
+
+		if (map.map[UpGrid][LeftGrid] == map.ICE_BLOCK ||
+			map.map[UpGrid][RightGrid] == map.ICE_BLOCK ||
+			map.map[DownGrid][LeftGrid] == map.ICE_BLOCK ||
+			map.map[DownGrid][RightGrid] == map.ICE_BLOCK) {
+			
+			if (isHeat > 0) {
+				
+				if (map.map[UpGrid][LeftGrid] == map.ICE_BLOCK) {
+					map.map[UpGrid][LeftGrid] = map.NONE;
+				}
+
+				if (map.map[UpGrid][RightGrid] == map.ICE_BLOCK) {
+					map.map[UpGrid][RightGrid] = map.NONE;
+				}
+
+				if (map.map[DownGrid][LeftGrid] == map.ICE_BLOCK) {
+					map.map[DownGrid][LeftGrid] = map.NONE;
+				}
+
+				if (map.map[DownGrid][RightGrid] == map.ICE_BLOCK) {
+					map.map[DownGrid][RightGrid] = map.NONE;
+				}
+
+			}
+
 		}
 
 		if (position.y - nextPosition.y < 0) {
@@ -622,7 +667,7 @@ void Player2::Draw(float* scrollX)
 		position.x + size.x / 2 - *scrollX, position.y + size.y / 2,
 		0, 0,
 		size.x, size.y,
-		0, WHITE
+		0, color
 	);
 //	Novice::DrawEllipse(Left, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 //	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
