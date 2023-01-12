@@ -856,7 +856,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < kMapBlockWidth; x++) {
 
-				if (scrollX + 1280 > x * MAP_SIZE && y < 23) {
+				if (scrollX + 1280 > x * MAP_SIZE && y < 23 && x * MAP_SIZE > scrollX - MAP_SIZE) {
 					if (map.map[y][x] == map.BREAKBLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,

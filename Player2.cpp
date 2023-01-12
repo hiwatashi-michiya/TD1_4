@@ -30,6 +30,7 @@ Player2::Player2()
 	chargeMag = 1;
 	isBigExp = false;
 
+	BombPow = 3;
 }
 
 void Player2::Init()
@@ -92,7 +93,7 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 	moveVector.x = 0;
 	//moveVector.y = 0;
 
-	float minusSpeed = 0.5f;
+	float minusSpeed = 0.2f;
 
 	if (knockBackVelocity.x > 0) {
 		knockBackVelocity.x -= minusSpeed * slow;
@@ -185,7 +186,7 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 				overHeatGage = maxOverHeatGage;
 			}
 
-			knockBackVelocity = { -bombVelocity.x * 3 * chargeMag ,  -bombVelocity.y * 3 * chargeMag };
+			knockBackVelocity = { -bombVelocity.x * BombPow * chargeMag ,  -bombVelocity.y * BombPow * chargeMag };
 
 			BombPos = { position.x + bombVelocity.x * BombPosMisal , position.y + bombVelocity.y * BombPosMisal };
 			BombRad = MAXEXPSIZE;

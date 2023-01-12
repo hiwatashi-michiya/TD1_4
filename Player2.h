@@ -65,6 +65,8 @@ private:
 	float chargeMag;
 	bool isBigExp;
 
+	float BombPow;
+
 	void Charge();
 
 
