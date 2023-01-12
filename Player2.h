@@ -80,7 +80,7 @@ public:
 
 	void GridInit();
 
-	void Update(float slow,Map map, float* scrollX, Quad GateQuad);
+	void Update(float slow,Map& map, float* scrollX, Quad GateQuad);
 
 	void HitTE4(Circle TargetQuad);
 

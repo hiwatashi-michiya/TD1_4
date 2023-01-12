@@ -199,6 +199,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHitGreenSwitch = false;
 	bool isHitBlueSwitch = false;
 
+	//ゲート削除
+	gate.Delete();
+
 	//敵5
 	TestEnemy05 enemy5({ MAP_SIZE * 11 + 16,MAP_SIZE * 20 + 16 }, { 5,5 }, RIGHT);
 
@@ -340,10 +343,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// 
 		///デバッグ中の操作
 		///矢印キーで配置するブロックの変更。数字毎のブロックの割り振りはMap.hのTILE参照
-		///上キー...数字を一つ上げる
-		///下キー...数字を一つ下げる
-		///右キー...数字を十個上げる
-		///左キー...数字を十個下げる
+		///Iキー...数字を一つ上げる
+		///Kキー...数字を一つ下げる
+		///Lキー...数字を十個上げる
+		///Jキー...数字を十個下げる
 		///配置はマウスでなぞって配置できる
 		/// 
 		if (Key::IsTrigger(DIK_E)) {
@@ -359,7 +362,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Novice::ScreenPrintf(300,300,"%d", Map);
 
-		if (Key::IsTrigger(DIK_R)) {
+		if (Key::IsTrigger(DIK_R) || map.isHitNeedle == true) {
 
 			player2.Init();
 			FILE* fp = NULL;
@@ -402,23 +405,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			fclose(fp);
 			
-
+			map.isHitNeedle = false;
 			
 		}
 
 
 		if (isEdit == true) {
 
-			//書き込む数字の設定
+			//書き込む数字の設定 : 加算
 			if (setNumber < kMaxBlock - 1) {
 
 				//一単位での切り替え
-				if (Key::IsTrigger(DIK_UP)) {
+				if (Key::IsTrigger(DIK_I)) {
 					setNumber++;
 				}
 
 				//十単位での切り替え
-				if (Key::IsTrigger(DIK_RIGHT)) {
+				if (Key::IsTrigger(DIK_L)) {
 					
 					//最大数を超えなければそのまま加算
 					if (setNumber + 10 < kMaxBlock - 1) {
@@ -433,14 +436,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			}
 
+			//書き込む数字の設定 : 減算
 			if (setNumber > 0) {
 
-				if (Key::IsTrigger(DIK_DOWN)) {
+				if (Key::IsTrigger(DIK_K)) {
 					setNumber--;
 				}
 
 				//十単位での切り替え
-				if (Key::IsTrigger(DIK_LEFT)) {
+				if (Key::IsTrigger(DIK_J)) {
 
 					//最小値を超えなければそのまま減算
 					if (setNumber - 10 > 0) {
@@ -664,17 +668,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	
 		player2.Update(slow, map, &scrollX, gate.GetGateQuad());
-
-		if (Map == 0) {
-
-			windMill.Hit(player2.GetBombCircle());
-			windMill.Update(scrollX);
-
-			gate.Update(scrollX, windMill.GetisCharged());
-
-			candle.Update(map, player2);
-
-		}
 		
 		if (Map == 3) {
 			enemy5.Update(map, &isRedSwitchOn, &isGreenSwitchOn, &isBlueSwitchOn, &isHitRedSwitch, &isHitGreenSwitch, &isHitBlueSwitch);
@@ -755,7 +748,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				TE4.Set({ 1000,100},scrollX);
 				windMill.Delete();
-				gate.Delete();
 				break;
 			case 2:
 
@@ -1036,14 +1028,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case handMode:
 			Novice::DrawBox(1280, 0, -64, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			break;
-		}
-
-		if (Map == 0) {
-
-			windMill.Draw();
-
-			gate.Draw();
-
 		}
 
 		TE4.Draw();

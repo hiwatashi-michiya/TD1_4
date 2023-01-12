@@ -50,5 +50,8 @@ struct Map{
 
 	unsigned int blockColor[kMapBlockHeight][kMapBlockWidth];
 
+	//êjÇ…ìñÇΩÇ¡ÇΩÇ©Ç«Ç§Ç©
+	bool isHitNeedle;
+
 };
 
