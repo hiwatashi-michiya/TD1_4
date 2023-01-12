@@ -101,6 +101,8 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ControllerInput.cpp" />
+    <ClCompile Include="EnemyRR.cpp" />
+    <ClCompile Include="EnemyRRBullet.cpp" />
     <ClCompile Include="Gate.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="Lift.cpp" />
@@ -149,6 +151,8 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="EnemyRR.h" />
+    <ClInclude Include="EnemyRRBullet.h" />
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Lift.h" />

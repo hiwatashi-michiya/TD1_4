@@ -18,6 +18,7 @@
 #include "TestEnemy04.h"
 #include "TestEnemy05.h"
 #include "Lift.h"
+#include "EnemyRR.h"
 
 const char kWindowTitle[] = "map";
 
@@ -157,9 +158,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//ギミック
 	Candle candle(map);
-
 	Lift lift;
 	lift.Set({300,100},64,32);
+
+	//えねっみー
+	EnemyRR enemyRR;
+	enemyRR.Set({400,100},60,60,500);
 
 	//const int kTestEnemy = 6;
 	//TestEnemy testEnemy[kTestEnemy];
@@ -684,6 +688,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			enemy5.Update(map, &isRedSwitchOn, &isGreenSwitchOn, &isBlueSwitchOn, &isHitRedSwitch, &isHitGreenSwitch, &isHitBlueSwitch);
 		}
 
+		if (Map == 2) {
+			enemyRR.Update(player2,&scrollX);
+		}
+
 		if (Map == 1) {
 
 			TE4.HitBomb(player2.GetBombCircle(), player2);
@@ -1051,6 +1059,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			enemy5.Draw(&scrollX);
 		}
 
+		if (Map == 2) {
+			enemyRR.Draw(&scrollX);
+		}
 		player2.Draw(&scrollX);
 
 

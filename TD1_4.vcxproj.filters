@@ -89,6 +89,12 @@
     <ClCompile Include="Lift.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyRR.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRRBullet.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -189,5 +195,7 @@
     <ClInclude Include="..\..\..\Desktop\Matrix33.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="TestEnemy05.h" />
+    <ClInclude Include="EnemyRR.h" />
+    <ClInclude Include="EnemyRRBullet.h" />
   </ItemGroup>
 </Project>

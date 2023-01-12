@@ -335,12 +335,12 @@ void Player2::Update(float slow, Map map, float* scrollX, Quad GateQuad)
 	}
 
 	//クールタイムが0でオーバーヒートした場合、クールタイムを設定
-	if (overHeatGage == maxOverHeatGage && coolTimeGage == 0) {
+	//if (overHeatGage == maxOverHeatGage && coolTimeGage == 0) {
 
-		//クールタイムを設定
-		coolTimeGage = 180;
+	//	//クールタイムを設定
+	//	coolTimeGage = 180;
 
-	}
+	//}
 
 	//チャージ中なら速度を下げる
 	if (isCharge == true) {
