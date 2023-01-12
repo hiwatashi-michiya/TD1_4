@@ -10,8 +10,8 @@ Candle::Candle(Map& map) {
 void Candle::Init(Map& map)
 {
 	isAlive = false;
-	for (int x = 0; x < 50; x++) {
-		for (int y = 0; y < 50; y++) {
+	for (int y = 0; y < kMapBlockHeight; y++) {
+		for (int x = 0; x < kMapBlockWidth; x++) {
 			candleMap[y][x] = map.map[y][x];
 		}
 	}
@@ -26,8 +26,8 @@ void Candle::Collision(Map& map, Player2& player)
 {
 	//ボムの半径がリセットされたとき
 	if (player.BombRad == player.MAXEXPSIZE) {
-		for (int x = 0; x < 50; x++) {
-			for (int y = 0; y < 50; y++) {
+		for (int y = 0; y < kMapBlockHeight; y++) {
+			for (int x = 0; x < kMapBlockWidth; x++) {
 				///スイッチ捜索
 				if (candleMap[y][x] == Map::CANDLE_SWHITCH) {
 					Circle a = { { static_cast<float>(player.BombPos.x),static_cast<float>(player.BombPos.y) }, static_cast<float>(player.BombRad) };
@@ -48,8 +48,8 @@ void Candle::Collision(Map& map, Player2& player)
 void Candle::Move(Map& map)
 {
 	if (isAlive) {
-		for (int x = 0; x < 50; x++) {
-			for (int y = 0; y < 50; y++) {
+		for (int y = 0; y < kMapBlockHeight; y++) {
+			for (int x = 0; x < kMapBlockWidth; x++) {
 				if (candleMap[y][x] == Map::CANDLE_BLOCK) {
 					map.map[y][x] = Map::NONE;
 				}
@@ -57,8 +57,8 @@ void Candle::Move(Map& map)
 		}
 	}
 	else {
-		for (int x = 0; x < 50; x++) {
-			for (int y = 0; y < 50; y++) {
+		for (int y = 0; y < kMapBlockHeight; y++) {
+			for (int x = 0; x < kMapBlockWidth; x++) {
 				if (candleMap[y][x] == Map::CANDLE_BLOCK) {
 					map.map[y][x] = Map::CANTBLOCK;
 				}
@@ -69,8 +69,8 @@ void Candle::Move(Map& map)
 }
 
 void Candle::LoadMap(Map& map) {
-	for (int x = 0; x < 50; x++) {
-		for (int y = 0; y < 50; y++) {
+	for (int y = 0; y < kMapBlockHeight; y++) {
+		for (int x = 0; x < kMapBlockWidth; x++) {
 			candleMap[y][x] = map.map[y][x];
 		}
 	}

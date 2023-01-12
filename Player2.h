@@ -67,6 +67,11 @@ private:
 
 	void Charge();
 
+	//爆発した直後かどうか
+	int isHeat;
+
+	//プレイヤーの色
+	int color;
 
 public:
 
@@ -78,7 +83,7 @@ public:
 
 	void GridInit();
 
-	void Update(float slow,Map map, float* scrollX, Quad GateQuad);
+	void Update(float slow,Map& map, float* scrollX, Quad GateQuad);
 
 	void HitTE4(Circle TargetQuad);
 

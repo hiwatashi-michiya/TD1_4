@@ -92,7 +92,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Map map;
 
 	//マップ切り替え
-	int Map = 3;
+	int Map = 0;
+
+	//ボーダー表示個数
+	const int kBorderNum = 15;
 
 	enum {
 		putBlockMode, // ブロック設置
@@ -116,7 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/test1.csv", "rt");
+	fopen_s(&fp, "./Resources/test2.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -133,9 +136,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			map.blockColor[y][x] = 0xFFFFFFFF;
 
-			//mapEasy.tmpTime[y][x] = 0;
+			//test2.tmpTime[y][x] = 0;
 
-			//mapEasy.blockColor[y][x] = 0xFFFFFFFF;
+			//test2.blockColor[y][x] = 0xFFFFFFFF;
 		}
 
 	}
@@ -150,9 +153,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		"20", "21", "22", "23", "24", "25", "26", "27"/*, "28", "29"*/
 	};
 
-	
-	map.blockCount = 25;
-	//mapEasy.blockCount = 25;
+	//test2.blockCount = 25;
 	Player player;
 	Player2 player2;
 
@@ -206,6 +207,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isHitGreenSwitch = false;
 	bool isHitBlueSwitch = false;
 
+	//ゲート削除
+	gate.Delete();
+
 	//敵5
 	TestEnemy05 enemy5({ MAP_SIZE * 11 + 16,MAP_SIZE * 20 + 16 }, { 5,5 }, RIGHT);
 
@@ -244,72 +248,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				mouseActionMode--;
 			}
 		}
-
-		expPos = { float(mouseX),float(mouseY) };
-		expCir = { expPos  , expRad };
-
-		if (expFlag == true) {
-
-			float pow = 0.5;
-
-			float expPowDistance = sqrtf((player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) * (player.GetPlayerQuad().LeftTop.x + 32 - expPos.x) + (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y) * (player.GetPlayerQuad().LeftTop.y + 32 - expPos.y));
-
-			float ecpPowF = 1 - (expPowDistance / expRad);
-
-			Vec2 PlayerPos = { player.GetPlayerQuad().LeftTop.x + 32 - expPos.x,
-				player.GetPlayerQuad().LeftTop.y + 32 - expPos.y };
-
-			Vec2 expPowVec =
-			{ PlayerPos.x * ecpPowF * pow,
-				PlayerPos.y * ecpPowF * pow };
-
-			/*if (expPowVec.y < 0) {
-				expPowVec.y = -pow - expPowVec.y;
-			}
-			else {
-				expPowVec.y = pow - expPowVec.y;
-			}
-
-			if (expPowVec.x < 0) {
-				expPowVec.x = -pow - expPowVec.x;
-			}
-			else {
-				expPowVec.x = pow - expPowVec.x;
-			}*/
-
-			player.hitCircle(expCir, expPowVec, 0);
-			Novice::ScreenPrintf(600, 200, "%0.2f", ecpPowF);
-		}
-
-		//if (keys[DIK_SPACE] != 0) {
-		//	slowFlag = true;
-		//}
-		//else {
-		//	slowFlag = false;
-		//	/*if (preMousePush) {
-		//		canSlow = false;
-		//	}*/
-		//}
-
-		//if (slowFlag == true) {
-		//	if (canSlow == true) {
-		//		slowTime++;
-		//		slow /= 1.1;
-		//	}
-		//	if (slowTime > kslowTimeMax) {
-		//		canSlow = false;
-		//	}
-		//}
-
-		//if (canSlow == false || slowFlag == false) {
-		//	slow *= 1.1;
-		//	if (slowTime > 0) {
-		//		slowTime--;
-		//	}
-		//	else {
-		//		canSlow = true;
-		//	}
-		//}
 		
 		if (keys[DIK_SPACE] != 0) {
 			slow /= 1.1;
@@ -347,10 +285,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// 
 		///デバッグ中の操作
 		///矢印キーで配置するブロックの変更。数字毎のブロックの割り振りはMap.hのTILE参照
-		///上キー...数字を一つ上げる
-		///下キー...数字を一つ下げる
-		///右キー...数字を十個上げる
-		///左キー...数字を十個下げる
+		///Iキー...数字を一つ上げる
+		///Kキー...数字を一つ下げる
+		///Lキー...数字を十個上げる
+		///Jキー...数字を十個下げる
 		///配置はマウスでなぞって配置できる
 		/// 
 		if (Key::IsTrigger(DIK_E)) {
@@ -366,7 +304,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Novice::ScreenPrintf(300,300,"%d", Map);
 
-		if (Key::IsTrigger(DIK_R)) {
+		if (Key::IsTrigger(DIK_R) || map.isHitNeedle == true) {
 
 			player2.Init();
 			FILE* fp = NULL;
@@ -375,7 +313,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 				
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 				
 				break;
 			case 1:
@@ -408,25 +346,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			fclose(fp);
-			map.blockCount = 25;
-
-
+			
+			map.isHitNeedle = false;
 			
 		}
 
 
 		if (isEdit == true) {
 
-			//書き込む数字の設定
+			//書き込む数字の設定 : 加算
 			if (setNumber < kMaxBlock - 1) {
 
 				//一単位での切り替え
-				if (Key::IsTrigger(DIK_UP)) {
+				if (Key::IsTrigger(DIK_I)) {
 					setNumber++;
 				}
 
 				//十単位での切り替え
-				if (Key::IsTrigger(DIK_RIGHT)) {
+				if (Key::IsTrigger(DIK_L)) {
 					
 					//最大数を超えなければそのまま加算
 					if (setNumber + 10 < kMaxBlock - 1) {
@@ -441,14 +378,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			}
 
+			//書き込む数字の設定 : 減算
 			if (setNumber > 0) {
 
-				if (Key::IsTrigger(DIK_DOWN)) {
+				if (Key::IsTrigger(DIK_K)) {
 					setNumber--;
 				}
 
 				//十単位での切り替え
-				if (Key::IsTrigger(DIK_LEFT)) {
+				if (Key::IsTrigger(DIK_J)) {
 
 					//最小値を超えなければそのまま減算
 					if (setNumber - 10 > 0) {
@@ -496,7 +434,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/mapEasy.csv", "r+b");
+					fopen_s(&fp, "./Resources/test2.csv", "r+b");
 
 					break;
 				case 1:
@@ -532,7 +470,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+					fopen_s(&fp, "./Resources/test2.csv", "rt");
 
 					break;
 				case 1:
@@ -565,8 +503,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 				fclose(fp);
-				map.blockCount = 25;
-
+				
 			}
 
 		}
@@ -655,7 +592,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					map.blockColor[y][x] = 0xAAAAFFFF;
 
 					Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
-					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
+					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},
+						{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},
+						{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},
+						{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
 					///爆弾の範囲がスイッチと接触しているか
 					if (Collision::CircleToQuad(a, b)) {
 						map.map[y][x] = map.NONE;
@@ -669,20 +609,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//エディット中邪魔なので動けないようにした
 		if (isEdit == false) {
-			player2.Update(slow,map, &scrollX, gate.GetGateQuad());
+			
 		}
 	
-		if (Map == 0) {
-
-			windMill.Hit(player2.GetBombCircle());
-			windMill.Update(scrollX);
-
-			gate.Update(scrollX, windMill.GetisCharged());
-
-			candle.Update(map, player2);
-
-			lift.Update(player2);
-		}
+		player2.Update(slow, map, &scrollX, gate.GetGateQuad());
 		
 		if (Map == 3) {
 			enemy5.Update(map, &isRedSwitchOn, &isGreenSwitchOn, &isBlueSwitchOn, &isHitRedSwitch, &isHitGreenSwitch, &isHitBlueSwitch);
@@ -729,7 +659,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else {
 				player.Init();
 				FILE* fp = NULL;
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 				if (fp == NULL) {
 					return 0;
 				}
@@ -745,9 +675,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (Key::IsTrigger(DIK_M)) {
 			for (int y = 0; y < kMapBlockHeight; y++) {
 				for (int x = 0; x < kMapBlockWidth; x++) {
-					map.blockNum[y][x] = 0;
 					map.map[y][x] == map.NONE;
-					map.blockCount = 25;
 				}
 			}
 			//俺が変えたぜ
@@ -760,7 +688,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 
 				break;
 			case 1:
@@ -769,7 +697,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				TE4.Set({ 1000,100},scrollX);
 				windMill.Delete();
-				gate.Delete();
 				break;
 			case 2:
 
@@ -786,7 +713,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			default:
 
-				fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+				fopen_s(&fp, "./Resources/test2.csv", "rt");
 				
 				TE4.Delete();
 				windMill.Set({ 1000,300 }, scrollX);
@@ -807,8 +734,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			fclose(fp);
-			candle.Init(map);
-			map.blockCount = 25;
 
 			//if (Map == 0) {
 			//	player.Init();
@@ -836,7 +761,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//else {
 			//	player.Init();
 			//	FILE* fp = NULL;
-			//	fopen_s(&fp, "./Resources/mapEasy.csv", "rt");
+			//	fopen_s(&fp, "./Resources/test2.csv", "rt");
 			//	if (fp == NULL) {
 			//		return 0;
 			//	}
@@ -960,13 +885,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 			if (isShowBorder == true) {
-				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
-				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+
+				for (int i = 0; i < kBorderNum; i++) {
+					Novice::DrawQuad(1280 * i - scrollX, 0, 1280 * (i + 1) - scrollX, 0, 1280 * i - scrollX, 720, 1280 * (i + 1) - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+				}
+
+				/*Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);
+				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x00AA0088);*/
 			}
 
 			if (isEdit == true) {
-				Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
-				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+
+				for (int i = 0; i < kBorderNum; i++) {
+					Novice::DrawQuad(1280 * i - scrollX, 0, 1280 * (i + 1) - scrollX, 0, 1280 * i - scrollX, 720, 1280 * (i + 1) - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+				}
+
+				/*Novice::DrawQuad(0 - scrollX, 0, 1280 - scrollX, 0, 0 - scrollX, 720, 1280 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);
+				Novice::DrawQuad(1280 - scrollX, 0, 2560 - scrollX, 0, 1280 - scrollX, 720, 2560 - scrollX, 720, 0, 0, 1280, 720, FRAMEBORDER, 0x0000FF88);*/
 			}
 
 		//}
@@ -975,11 +910,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				for (int x = 0; x < 50; x++) {
 
-					if (mapEasy.map[y][x] == mapEasy.BLOCK || mapEasy.map[y][x] == mapEasy.CANTBLOCK || mapEasy.map[y][x] == mapEasy.TMPBLOCK) {
+					if (test2.map[y][x] == test2.BLOCK || test2.map[y][x] == test2.CANTBLOCK || test2.map[y][x] == test2.TMPBLOCK) {
 
 						Novice::DrawQuad(x * MAP_SIZE, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE,
 							x * MAP_SIZE, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE, y * MAP_SIZE + MAP_SIZE,
-							0, 0, 32, 32, TILE, mapEasy.blockColor[y][x]);
+							0, 0, 32, 32, TILE, test2.blockColor[y][x]);
 
 					}
 
@@ -1044,15 +979,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		if (Map == 0) {
-
-			windMill.Draw();
-
-			gate.Draw();
-
-			lift.Draw(&scrollX);
-		}
-
 		TE4.Draw();
 
 		if (Map == 3) {
@@ -1064,9 +990,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		player2.Draw(&scrollX);
 
-
-		Novice::ScreenPrintf(60, 200, "%d", slowTime); 
-		Novice::ScreenPrintf(10, 70, "ENERGY : %d", map.blockCount);
+		Novice::ScreenPrintf(60, 200, "%d", slowTime);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
