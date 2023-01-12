@@ -112,3 +112,14 @@ Quad Quad:: operator-(Vec2 s) const {
 Quad Quad:: operator+(float s) const {
 	return{ this->LeftTop * s,this->RightTop * s ,this->LeftBottom * s ,this->RightBottom * s };
 }
+
+Quad Quad::operator*(Matrix33 mat) const
+{
+	Quad tmp;
+	tmp.LeftTop = this->LeftTop * mat;
+	tmp.RightTop = this->RightTop * mat;
+	tmp.LeftBottom = this->LeftBottom * mat;
+	tmp.RightBottom = this->RightBottom * mat;
+	return tmp;
+}
+

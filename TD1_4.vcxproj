@@ -101,8 +101,11 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ControllerInput.cpp" />
+    <ClCompile Include="EnemyRR.cpp" />
+    <ClCompile Include="EnemyRRBullet.cpp" />
     <ClCompile Include="Gate.cpp" />
     <ClCompile Include="Key.cpp" />
+    <ClCompile Include="Lift.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Missile.cpp" />
@@ -117,6 +120,7 @@
     <ClCompile Include="WindMill.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Desktop\Matrix33.h" />
     <ClInclude Include="..\DirectXGame\math\MathUtility.h" />
     <ClInclude Include="..\DirectXGame\math\Matrix4.h" />
     <ClInclude Include="..\DirectXGame\math\Vector2.h" />
@@ -147,8 +151,11 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="EnemyRR.h" />
+    <ClInclude Include="EnemyRRBullet.h" />
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="Lift.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />

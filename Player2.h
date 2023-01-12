@@ -70,6 +70,11 @@ private:
 
 	void Charge();
 
+	//爆発した直後かどうか
+	int isHeat;
+
+	//プレイヤーの色
+	int color;
 
 public:
 

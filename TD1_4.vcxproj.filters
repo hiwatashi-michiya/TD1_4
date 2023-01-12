@@ -83,6 +83,18 @@
     <ClCompile Include="TestEnemy05.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Lift.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRR.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRRBullet.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -179,6 +191,11 @@
     <ClInclude Include="Gate.h" />
     <ClInclude Include="TestEnemy04.h" />
     <ClInclude Include="Missile.h" />
+    <ClInclude Include="Lift.h" />
+    <ClInclude Include="..\..\..\Desktop\Matrix33.h" />
+    <ClInclude Include="Missile.h" />
     <ClInclude Include="TestEnemy05.h" />
+    <ClInclude Include="EnemyRR.h" />
+    <ClInclude Include="EnemyRRBullet.h" />
   </ItemGroup>
 </Project>
