@@ -17,6 +17,7 @@
 #include "Gate.h"
 #include "TestEnemy04.h"
 #include "TestEnemy05.h"
+#include "TestEnemy06.h"
 
 const char kWindowTitle[] = "map";
 
@@ -38,6 +39,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
+
+	//乱数生成
+	unsigned int kCurrentTime = time(nullptr);
+
+	srand(kCurrentTime);
 
 	clock_t offset;
 	offset = clock();
@@ -205,6 +211,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//敵5
 	TestEnemy05 enemy5({ MAP_SIZE * 11 + 16,MAP_SIZE * 20 + 16 }, { 5,5 }, RIGHT);
 
+	//敵6
+	TestEnemy06* TE6[10];
+
+	for (int i = 0; i < 10; i++) {
+		TE6[i] = new TestEnemy06({ static_cast<float>(rand() % 1216 + 32),static_cast<float>(rand() % 656 + 32) });
+	}
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -299,6 +312,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (Key::IsTrigger(DIK_R) || map.isHitNeedle == true) {
 
 			player2.Init();
+
+			for (int i = 0; i < 10; i++) {
+				TE6[i]->Init({ static_cast<float>(rand() % 1216 + 32),static_cast<float>(rand() % 656 + 32) });
+			}
+
 			FILE* fp = NULL;
 
 			switch (Map)
@@ -617,6 +635,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player2.HitTE4(TE4.GetCircle());
 			TE4.Update(slow, scrollX, player2.GetPlayerPos());
 
+		}
+
+		for (int i = 0; i < 10; i++) {
+			TE6[i]->Spawn({ static_cast<float>(rand() % 1216 + 32),static_cast<float>(rand() % 656 + 32) });
+			TE6[i]->Update(player2, map);
 		}
 
 		if (Key::IsTrigger(DIK_C)) {
@@ -975,6 +998,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		player2.Draw(&scrollX);
 
+		for (int i = 0; i < 10; i++) {
+			TE6[i]->Draw(&scrollX);
+		}
+
 		Novice::ScreenPrintf(60, 200, "%d", slowTime);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
@@ -1011,6 +1038,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
 			break;
 		}
+	}
+
+	for (int i = 0; i < 10; i++) {
+		delete TE6[i];
 	}
 
 	// ライブラリの終了

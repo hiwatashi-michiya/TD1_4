@@ -98,6 +98,25 @@ public:
 	//îºåaÇ™ëÂÇ´Ç¢Ç©Ç«Ç§Ç©ÇÃéÊìæ
 	bool GetIsBig() { return isBigExp; }
 
+	//îöî≠íºå„Ç©Ç«Ç§Ç©ÇÃéÊìæ
+	bool GetIsHeat() {
+
+		if (isHeat > 0) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	//ë¨ìxå∏è≠
+	int isDecel;
+	void SetDecel() { isDecel = 120; }
+
+	//ìG6Ç…ìñÇΩÇ¡ÇΩÇ©Ç«Ç§Ç©
+	bool isHitTE6;
+	void SetIsHitTE6() { isHitTE6 = true; }
+
 	Quad GetPlayerQuad() { return playerColQuad; };
 	Vec2 GetPlayerPos() { return position;};
 	Vec2 GetPlayerKnockbackVelocity() { return knockBackVelocity; };

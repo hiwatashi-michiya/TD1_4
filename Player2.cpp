@@ -31,6 +31,8 @@ Player2::Player2()
 	isBigExp = false;
 	isHeat = 0;
 	color = 0xFFFFFFFF;
+	isDecel = 0;
+	isHitTE6 = false;
 
 }
 
@@ -62,6 +64,8 @@ void Player2::Init()
 	isBigExp = false;
 	isHeat = 0;
 	color = 0xFFFFFFFF;
+	isDecel = 0;
+	isHitTE6 = false;
 
 }
 
@@ -95,7 +99,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	Novice::GetHitKeyStateAll(keys);
 
 	moveVector.x = 0;
-	//moveVector.y = 0;
+	moveVector.y = 0;
 
 	float minusSpeed = 0.5f;
 
@@ -110,6 +114,17 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		knockBackVelocity.x = 0;
 	}
 
+	if (knockBackVelocity.y > 0) {
+		knockBackVelocity.y -= minusSpeed * slow;
+	}
+	if (knockBackVelocity.y < 0) {
+		knockBackVelocity.y += minusSpeed * slow;
+	}
+
+	if (knockBackVelocity.y <= minusSpeed * slow && knockBackVelocity.y >= -minusSpeed * slow) {
+		knockBackVelocity.y = 0;
+	}
+
 	if (isHeat > 0) {
 		isHeat--;
 		color = 0xFF0000FF;
@@ -120,19 +135,37 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
 
-	if (((keys[DIK_W] && preKeys[DIK_W] == 0) || Controller::IsTriggerButton(0, Controller::bA) == 1) && canJump == true) {
-		moveVector.y -= 13;
-		canJump = false;
-		//moveVector.y -= speed;
+	if (keys[DIK_W] || stickPositionY > 0) {
+		moveVector.y -= speed;
 	}
 	if (keys[DIK_A] || stickPositionX < 0) {
 		moveVector.x -= speed;
 	}
-	/*if (keys[DIK_S]) {
+	if (keys[DIK_S] || stickPositionY < 0) {
 		moveVector.y += speed;
-	}*/
+	}
 	if (keys[DIK_D] || stickPositionX > 0) {
 		moveVector.x += speed;
+	}
+
+	//ƒqƒbƒgƒtƒ‰ƒO‚ª—§‚Á‚½‚çŒ¸‘¬’Ç‰Á
+	if (isHitTE6 == true && isDecel == 0) {
+		SetDecel();
+	}
+
+	//Œ¸‘¬
+	if (isDecel > 0) {
+
+		moveVector.x /= 2.0f;
+		moveVector.y /= 2.0f;
+		isDecel--;
+		color = 0x00FF00FF;
+
+		//ŽžŠÔŒo‰ß‚Åƒtƒ‰ƒO‚ð–ß‚·
+		if (isDecel == 0) {
+			isHitTE6 = false;
+		}
+
 	}
 
 	if (BombRad > 0) {
@@ -192,7 +225,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			}
 
 			//”š”­ƒQ[ƒW‚ð‰ÁŽZ
-			overHeatGage += 20;
+			overHeatGage += 100;
 
 			//ƒQ[ƒW‚ªÅ‘å’l‚ÉŽû‚Ü‚é‚æ‚¤’²®
 			if (overHeatGage > maxOverHeatGage) {
@@ -229,7 +262,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				}
 
 				//”š”­ƒQ[ƒW‚ð‰ÁŽZ
-				overHeatGage += 30;
+				overHeatGage += 100;
 
 				//ƒQ[ƒW‚ªÅ‘å’l‚ÉŽû‚Ü‚é‚æ‚¤’²®
 				if (overHeatGage > maxOverHeatGage) {
@@ -264,7 +297,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				}
 
 				//”š”­ƒQ[ƒW‚ð‰ÁŽZ
-				overHeatGage += 30;
+				overHeatGage += 100;
 
 				//ƒQ[ƒW‚ªÅ‘å’l‚ÉŽû‚Ü‚é‚æ‚¤’²®
 				if (overHeatGage > maxOverHeatGage) {
@@ -299,7 +332,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				}
 
 				//”š”­ƒQ[ƒW‚ð‰ÁŽZ
-				overHeatGage += 30;
+				overHeatGage += 100;
 
 				//ƒQ[ƒW‚ªÅ‘å’l‚ÉŽû‚Ü‚é‚æ‚¤’²®
 				if (overHeatGage > maxOverHeatGage) {
@@ -334,7 +367,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 				}
 
 				//”š”­ƒQ[ƒW‚ð‰ÁŽZ
-				overHeatGage += 30;
+				overHeatGage += 100;
 
 				//ƒQ[ƒW‚ªÅ‘å’l‚ÉŽû‚Ü‚é‚æ‚¤’²®
 				if (overHeatGage > maxOverHeatGage) {
@@ -371,7 +404,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
 
-	moveVector.y += G * Weight * slow;
+	/*moveVector.y += G * Weight * slow;*/
 
 	nextPosition.x = position.x + (moveVector.x + knockBackVelocity.x) * slow;
 	nextPosition.y = position.y + (moveVector.y + knockBackVelocity.y) * slow;
@@ -581,7 +614,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		//Novice::ScreenPrintf(400, 440, "%d", (DownGrid)*MAP_SIZE);
 
 		if (map.AnyNone(map.map[UpGrid][PosXGrid]) == false) {
-			moveVector.y = 1;
+			moveVector.y = 0;
 			knockBackVelocity.y = 0;
 			nextPosition.y = (UpGrid + 1) * MAP_SIZE + size.y / 2;
 			GridInit();
@@ -695,7 +728,7 @@ void Player2::GridInit()
 	Left = nextPosition.x - size.x / 2 ;
 	Right = nextPosition.x + size.x / 2 - 1;
 	Up = nextPosition.y - size.y / 2;
-	Down = nextPosition.y + size.y / 2 ;
+	Down = nextPosition.y + size.y / 2 - 1;
 
 	LeftGrid = Left / MAP_SIZE;
 	RightGrid = Right / MAP_SIZE;
