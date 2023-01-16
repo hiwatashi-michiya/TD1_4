@@ -2,37 +2,32 @@
 #include"Circle.h"
 #include "Collision.h"
 #include <Novice.h>
-Candle::Candle(Map& map) {
-	Init(map);
+Candle::Candle() {
+	Init();
 }
 
 
-void Candle::Init(Map& map)
+void Candle::Init()
 {
 	isAlive = false;
-	for (int y = 0; y < kMapBlockHeight; y++) {
-		for (int x = 0; x < kMapBlockWidth; x++) {
-			candleMap[y][x] = map.map[y][x];
-		}
-	}
 }
 
-void Candle::Update(Map& map, Player2& player)
+void Candle::Update(Player2& player)
 {
-	Collision(map,player);
-	Move(map);
+	Collision(player);
+	Move();
 }
-void Candle::Collision(Map& map, Player2& player)
+void Candle::Collision(Player2& player)
 {
 	//ボムの半径がリセットされたとき
-	if (player.BombRad == player.MAXEXPSIZE) {
+	/*if (player.BombRad == player.MAXEXPSIZE) {
 		for (int y = 0; y < kMapBlockHeight; y++) {
 			for (int x = 0; x < kMapBlockWidth; x++) {
-				///スイッチ捜索
+				スイッチ捜索
 				if (candleMap[y][x] == Map::CANDLE_SWHITCH) {
 					Circle a = { { static_cast<float>(player.BombPos.x),static_cast<float>(player.BombPos.y) }, static_cast<float>(player.BombRad) };
 					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
-					///爆弾の範囲がスイッチと接触しているか
+					爆弾の範囲がスイッチと接触しているか
 					if (Collision::CircleToQuad(a, b) && !isAlive) {
 						isAlive = true;
 					}
@@ -42,12 +37,12 @@ void Candle::Collision(Map& map, Player2& player)
 				}
 			}
 		}
-	}
+	}*/
 }
 
-void Candle::Move(Map& map)
+void Candle::Move()
 {
-	if (isAlive) {
+	/*if (isAlive) {
 		for (int y = 0; y < kMapBlockHeight; y++) {
 			for (int x = 0; x < kMapBlockWidth; x++) {
 				if (candleMap[y][x] == Map::CANDLE_BLOCK) {
@@ -64,14 +59,14 @@ void Candle::Move(Map& map)
 				}
 			}
 		}
-	}
-	Novice::ScreenPrintf(800,400,"isAlive:%d", isAlive);
+	}*/
+	/*Novice::ScreenPrintf(800,400,"isAlive:%d", isAlive);*/
 }
 
-void Candle::LoadMap(Map& map) {
-	for (int y = 0; y < kMapBlockHeight; y++) {
+void Candle::LoadMap() {
+	/*for (int y = 0; y < kMapBlockHeight; y++) {
 		for (int x = 0; x < kMapBlockWidth; x++) {
 			candleMap[y][x] = map.map[y][x];
 		}
-	}
+	}*/
 }

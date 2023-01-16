@@ -99,6 +99,7 @@
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ControllerInput.cpp" />
     <ClCompile Include="EnemyRR.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="ControllerInput.h" />
     <ClInclude Include="EnemyRR.h" />
@@ -157,6 +159,7 @@
     <ClInclude Include="Key.h" />
     <ClInclude Include="Lift.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Matrix33 .h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Player2.h" />

@@ -20,6 +20,8 @@
 #include "Lift.h"
 #include "EnemyRR.h"
 
+#include "Coin.h"
+
 const char kWindowTitle[] = "map";
 
 int ColorReverse(int basecolor);
@@ -92,7 +94,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Map map;
 
 	//マップ切り替え
-	int Map = 0;
+	int Map = 4;
 
 	//ボーダー表示個数
 	const int kBorderNum = 15;
@@ -107,7 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	FILE* fp = NULL;
-	fopen_s(&fp, "./Resources/test.csv", "rt");
+	/*fopen_s(&fp, "./Resources/test.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -116,10 +118,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fscanf_s(fp, "%d,", &map.map[y][x]);
 		}
 	}
-	fclose(fp);
+	fclose(fp);*/
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/test2.csv", "rt");
+	fopen_s(&fp, "./Resources/test4.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -158,7 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Player2 player2;
 
 	//ギミック
-	Candle candle(map);
+	/*Candle candle(map);*/
 	Lift lift;
 	lift.Set({300,100},64,32);
 
@@ -194,6 +196,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	TestEnemy04 TE4;
 
+	Coin coin[3];
+
+	coin[0].Set({410.0f,100.0f});
+	coin[1].Set({3100.0f,630.0f});
+	coin[2].Set({4380.0f,530.0f});
+
 	//切り替え用のスイッチ
 	int SWITCH_ON = Novice::LoadTexture("./Resources/switch_on.png");
 	int SWITCH_OFF = Novice::LoadTexture("./Resources/switch_off.png");
@@ -201,11 +209,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isRedSwitchOn = false;
 	bool isGreenSwitchOn = false;
 	bool isBlueSwitchOn = false;
+	bool isCandleSwitchOn = false;
 
 	//スイッチに当たっているかどうかの判定
 	bool isHitRedSwitch = false;
 	bool isHitGreenSwitch = false;
 	bool isHitBlueSwitch = false;
+	bool isHitCandleSwitch = false;
 
 	//ゲート削除
 	gate.Delete();
@@ -333,6 +343,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				break;
 
+			case 4:
+				
+				fopen_s(&fp, "./Resources/test4.csv", "rt");
+
+				break;
+
 			}
 
 			if (fp == NULL) {
@@ -454,6 +470,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					break;
 
+				case 4:
+
+					fopen_s(&fp, "./Resources/test4.csv", "r+b");
+
+					break;
+
 				}
 
 				if (fp == NULL) {
@@ -490,6 +512,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					break;
 
+				case 4:
+
+					fopen_s(&fp, "./Resources/test4.csv", "rt");
+
+					break;
 				}
 
 				if (fp == NULL) {
@@ -580,12 +607,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
+				//キャンドル
+				if (map.map[y][x] == map.CANDLE_NONE || map.map[y][x] == map.CANDLE_BLOCK || map.map[y][x] == map.CANDLE_SWITCH) {
+					map.blockColor[y][x] = 0xFFFFFFFF;
+
+					if (isCandleSwitchOn == false) {
+
+						if (map.map[y][x] == map.CANDLE_NONE) {
+							map.map[y][x] = map.CANDLE_BLOCK;
+						}
+
+					}
+					else {
+
+						if (map.map[y][x] == map.CANDLE_BLOCK) {
+							map.map[y][x] = map.CANDLE_NONE;
+						}
+					}
+
+				}
+
 				if (map.map[y][x] == map.NEEDLE) {
 					map.blockColor[y][x] = 0x00FFFFFF;
 				}
 
 				if (map.map[y][x] == map.CANDLE_BLOCK) {
-					map.blockColor[y][x] = 0xdd50edFF;
+					map.blockColor[y][x] = 0xFFFFFFFF;
 				}
 				if (map.map[y][x] == map.ICE_BLOCK) {
 
@@ -630,9 +677,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			TE4.Update(slow, scrollX, player2.GetPlayerPos());
 
 		}
+		//キャン★ドゥの判定、map関数の中にでも入れたい
+		if (player2.BombRad == player2.MAXEXPSIZE) {
+			for (int y = 0; y < kMapBlockHeight; y++) {
+				for (int x = 0; x < kMapBlockWidth; x++) {
+					///スイッチ捜索
+					if (map.map[y][x] == map.CANDLE_SWITCH) {
+						Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
+						Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
+						///爆弾の範囲がスイッチと接触しているか
+						if (Collision::CircleToQuad(a, b) && !isCandleSwitchOn) {
+							isCandleSwitchOn = true;
+						}
+						else if (Collision::CircleToQuad(a, b) && isCandleSwitchOn) {
+							isCandleSwitchOn = false;
+						}
+					}
+				}
+			}
+		}
 
+		if (Map == 4) {
+			for (int i = 0; i < 3; i++) {
+				coin[i].Update(player2, &scrollX);
+			}
+		}
 		if (Key::IsTrigger(DIK_C)) {
-			candle.isAlive = false;
+			/*candle.isAlive = false;*/
 		}
 		/*candle.Update(map, player2);*/
 		//testEnemy.Update(player, map, slow);
@@ -708,6 +779,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			case 3:
 
 				fopen_s(&fp, "./Resources/test1.csv", "rt");
+
+				break;
+
+			case 4:
+
+				fopen_s(&fp, "./Resources/test4.csv", "rt");
 
 				break;
 
@@ -806,7 +883,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					}
 
-					if (map.map[y][x] == map.RED_NONE || map.map[y][x] == map.GREEN_NONE || map.map[y][x] == map.BLUE_NONE) {
+					if (map.map[y][x] == map.RED_NONE || map.map[y][x] == map.GREEN_NONE || map.map[y][x] == map.BLUE_NONE || map.map[y][x] == map.CANDLE_NONE) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
@@ -815,11 +892,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 
 					if (map.map[y][x] == map.RED_BLOCK || map.map[y][x] == map.GREEN_BLOCK || map.map[y][x] == map.BLUE_BLOCK ||
-						map.map[y][x] == map.CANDLE_SWHITCH || map.map[y][x] == map.CANDLE_BLOCK || map.map[y][x] == map.ICE_BLOCK) {
+						map.map[y][x] == map.CANDLE_BLOCK  || map.map[y][x] == map.ICE_BLOCK) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
 							0, 0, 32, 32, COLORTILE, map.blockColor[y][x]);
+
+					}
+
+					if (map.map[y][x] == map.CANDLE_SWITCH) {
+						if (isCandleSwitchOn) {
+							Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
+								x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+						}
+						else {
+							Novice::DrawQuad(x* MAP_SIZE - scrollX, y* MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE,
+								x* MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE, x* MAP_SIZE + MAP_SIZE - scrollX, y* MAP_SIZE + MAP_SIZE,
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+						}
+						
 
 					}
 
@@ -988,12 +1080,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (Map == 2) {
 			enemyRR.Draw(&scrollX);
 		}
+		if (Map == 4) {
+			for (int i = 0; i < 3; i++) {
+				coin[i].Draw(&scrollX);
+				Novice::ScreenPrintf(200,400+i*20,"isAlive[%d]:%d",i,coin[i].isAlive);
+				Novice::ScreenPrintf(500, 400 + i * 20, "pos.x:%f,y:%f",coin[i].pos.x, coin[i].pos.y);
+			}
+		}
 		player2.Draw(&scrollX);
 
 		Novice::ScreenPrintf(60, 200, "%d", slowTime);
 		Novice::ScreenPrintf(10, 50, "W or SPACE to Jump");
 		Novice::ScreenPrintf(10, 30, "A : Left Move D : Right Move");
 		Novice::ScreenPrintf(10, 10, "Left Click to Make Block");
+		Novice::ScreenPrintf(100, 100, "Map:%d", Map);
 
 		//デバッグ機能、現在置こうとしているマップチップのナンバー表示
 		if (isEdit == true) {
@@ -1010,7 +1110,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//Novice::DrawBox(0, 0, 1280, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			Novice::DrawEllipse(expPos.x, expPos.y, expRad, expRad, 0, GREEN, kFillModeSolid);
 		}
-
+		Novice::ScreenPrintf(500, 500, "Pos.x:%f,%f",player2.GetPlayerPos().x , player2.GetPlayerPos().y);
 		Novice::DrawBox(0, 480, 100, 40, 0, BLACK, kFillModeSolid);
 		Novice::ScreenPrintf(0, 500, "FPS:%0.1f", 1.0f / ((double)(clock() - offset) / CLOCKS_PER_SEC));
 		offset = clock();
