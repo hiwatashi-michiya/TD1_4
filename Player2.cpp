@@ -34,6 +34,9 @@ Player2::Player2()
 	isDecel = 0;
 	isHitTE6 = false;
 
+	//リソース
+	decelSE = Novice::LoadAudio("./Resources/decel.wav");
+
 }
 
 void Player2::Init()
@@ -135,13 +138,13 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 
 	Novice::GetAnalogInputLeft(0, &stickPositionX, &stickPositionY);
 
-	if (keys[DIK_W] || stickPositionY > 0) {
+	if (keys[DIK_W] || stickPositionY < 0) {
 		moveVector.y -= speed;
 	}
 	if (keys[DIK_A] || stickPositionX < 0) {
 		moveVector.x -= speed;
 	}
-	if (keys[DIK_S] || stickPositionY < 0) {
+	if (keys[DIK_S] || stickPositionY > 0) {
 		moveVector.y += speed;
 	}
 	if (keys[DIK_D] || stickPositionX > 0) {
@@ -150,6 +153,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 
 	//ヒットフラグが立ったら減速追加
 	if (isHitTE6 == true && isDecel == 0) {
+		Novice::PlayAudio(decelSE, 0, 0.5f);
 		SetDecel();
 	}
 
@@ -225,7 +229,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			}
 
 			//爆発ゲージを加算
-			overHeatGage += 100;
+			overHeatGage += 50;
 
 			//ゲージが最大値に収まるよう調整
 			if (overHeatGage > maxOverHeatGage) {
@@ -693,15 +697,18 @@ void Player2::Draw(float* scrollX)
 
 	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10, 32, 5, 0.0f, BLUE, kFillModeWireFrame);
 
-	Novice::DrawQuad(
-		position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
-		position.x + size.x / 2 - *scrollX, position.y - size.y / 2,
-		position.x - size.x / 2 - *scrollX, position.y + size.y / 2,
-		position.x + size.x / 2 - *scrollX, position.y + size.y / 2,
-		0, 0,
-		size.x, size.y,
-		0, color
-	);
+	if (isDecel % 2 == 0) {
+		Novice::DrawQuad(
+			position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
+			position.x + size.x / 2 - *scrollX, position.y - size.y / 2,
+			position.x - size.x / 2 - *scrollX, position.y + size.y / 2,
+			position.x + size.x / 2 - *scrollX, position.y + size.y / 2,
+			0, 0,
+			size.x, size.y,
+			0, color
+		);
+	}
+	
 //	Novice::DrawEllipse(Left, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 //	Novice::DrawEllipse(Right, nextPosition.y, 3, 3, 0, RED, kFillModeSolid);
 	//Novice::DrawEllipse(nextPosition.x, Up, 3, 3, 0, RErD, kFillModeSolid);

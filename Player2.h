@@ -121,6 +121,10 @@ public:
 	Vec2 GetPlayerPos() { return position;};
 	Vec2 GetPlayerKnockbackVelocity() { return knockBackVelocity; };
 	Circle GetBombCircle() { return BombCircle; };
+
+	//SE
+	int decelSE;
+
 };
 
 
