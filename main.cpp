@@ -134,18 +134,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	fclose(fp);
 
-	for (int y = 0; y < kMapBlockHeight; y++) {
-
-		for (int x = 0; x < kMapBlockWidth; x++) {
-
-			map.blockColor[y][x] = 0xFFFFFFFF;
-
-			//test2.tmpTime[y][x] = 0;
-
-			//test2.blockColor[y][x] = 0xFFFFFFFF;
-		}
-
-	}
+	map.blockColor = 0xFFFFFFFF;
 
 	bool isEdit = false;
 
@@ -519,18 +508,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 
-		//着色
+		//マップ処理
 		for (int y = 0; y < kMapBlockHeight; y++) {
 
 			for (int x = 0; x < kMapBlockWidth; x++) {
 
-				if (map.map[y][x] == map.NONE || map.map[y][x] == map.CANTBLOCK) {
-					map.blockColor[y][x] = 0xFFFFFFFF;
-				}
-
 				//赤
 				if (map.map[y][x] == map.RED_NONE || map.map[y][x] == map.RED_BLOCK || map.map[y][x] == map.RED_SWITCH) {
-					map.blockColor[y][x] = 0xFF0000FF;
 
 					if (isRedSwitchOn == true) {
 						
@@ -551,8 +535,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//緑
 				if (map.map[y][x] == map.GREEN_NONE || map.map[y][x] == map.GREEN_BLOCK || map.map[y][x] == map.GREEN_SWITCH) {
-					map.blockColor[y][x] = 0x00FF00FF;
-
+					
 					if (isGreenSwitchOn == true) {
 
 						if (map.map[y][x] == map.GREEN_NONE) {
@@ -572,8 +555,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//青
 				if (map.map[y][x] == map.BLUE_NONE || map.map[y][x] == map.BLUE_BLOCK || map.map[y][x] == map.BLUE_SWITCH) {
-					map.blockColor[y][x] = 0x0000FFFF;
-
+					
 					if (isBlueSwitchOn == true) {
 
 						if (map.map[y][x] == map.BLUE_NONE) {
@@ -590,16 +572,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
-				if (map.map[y][x] == map.NEEDLE) {
-					map.blockColor[y][x] = 0x00FFFFFF;
-				}
-
-				if (map.map[y][x] == map.CANDLE_BLOCK) {
-					map.blockColor[y][x] = 0xdd50edFF;
-				}
 				if (map.map[y][x] == map.ICE_BLOCK) {
-
-					map.blockColor[y][x] = 0xAAAAFFFF;
 
 					Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
 					Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},
@@ -808,12 +781,42 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < kMapBlockWidth; x++) {
 
+				if (map.map[y][x] == map.NONE || map.map[y][x] == map.CANTBLOCK) {
+					map.blockColor = 0xFFFFFFFF;
+				}
+
+				//赤
+				if (map.map[y][x] == map.RED_NONE || map.map[y][x] == map.RED_BLOCK || map.map[y][x] == map.RED_SWITCH) {
+					map.blockColor = 0xFF0000FF;
+				}
+
+				//緑
+				if (map.map[y][x] == map.GREEN_NONE || map.map[y][x] == map.GREEN_BLOCK || map.map[y][x] == map.GREEN_SWITCH) {
+					map.blockColor = 0x00FF00FF;
+				}
+
+				//青
+				if (map.map[y][x] == map.BLUE_NONE || map.map[y][x] == map.BLUE_BLOCK || map.map[y][x] == map.BLUE_SWITCH) {
+					map.blockColor = 0x0000FFFF;
+				}
+
+				if (map.map[y][x] == map.NEEDLE) {
+					map.blockColor = 0x00FFFFFF;
+				}
+
+				if (map.map[y][x] == map.CANDLE_BLOCK) {
+					map.blockColor = 0xdd50edFF;
+				}
+				if (map.map[y][x] == map.ICE_BLOCK) {
+					map.blockColor = 0xAAAAFFFF;
+				}
+
 				if (scrollX + 1280 > x * MAP_SIZE && y < 23) {
 					if (map.map[y][x] == map.BREAKBLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-							0, 0, 32, 32, TILE, map.blockColor[y][x]);
+							0, 0, 32, 32, TILE, map.blockColor);
 
 					}
 
@@ -821,7 +824,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-							0, 0, 32, 32, COLORNONE, map.blockColor[y][x]);
+							0, 0, 32, 32, COLORNONE, map.blockColor);
 
 					}
 
@@ -830,7 +833,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-							0, 0, 32, 32, COLORTILE, map.blockColor[y][x]);
+							0, 0, 32, 32, COLORTILE, map.blockColor);
 
 					}
 
@@ -840,14 +843,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+								0, 0, 32, 32, SWITCH_ON, map.blockColor);
 
 						}
 						else {
 
 							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor);
 
 						}
 
@@ -859,14 +862,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+								0, 0, 32, 32, SWITCH_ON, map.blockColor);
 
 						}
 						else {
 
 							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor);
 
 						}
 
@@ -878,14 +881,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-								0, 0, 32, 32, SWITCH_ON, map.blockColor[y][x]);
+								0, 0, 32, 32, SWITCH_ON, map.blockColor);
 
 						}
 						else {
 
 							Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 								x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
-								0, 0, 32, 32, SWITCH_OFF, map.blockColor[y][x]);
+								0, 0, 32, 32, SWITCH_OFF, map.blockColor);
 
 						}
 
