@@ -74,10 +74,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//スクロール値
 	float scrollX = 0;
 
-	int TILE = Novice::LoadTexture("./Resources/tile.png");
-	int COLORTILE = Novice::LoadTexture("./Resources/colortile.png");
-	int COLORNONE = Novice::LoadTexture("./Resources/colornone.png");
-	int FRAMEBORDER = Novice::LoadTexture("./Resources/frameborder.png");
+	int TILE = Novice::LoadTexture("./Resources/Images/tile.png");
+	int COLORTILE = Novice::LoadTexture("./Resources/Images/colortile.png");
+	int COLORNONE = Novice::LoadTexture("./Resources/Images/colornone.png");
+	int FRAMEBORDER = Novice::LoadTexture("./Resources/Images/frameborder.png");
+
+	//切り替え用のスイッチ
+	int SWITCH_ON = Novice::LoadTexture("./Resources/Images/switch_on.png");
+	int SWITCH_OFF = Novice::LoadTexture("./Resources/Images/switch_off.png");
 
 	bool isShowBorder = false;
 
@@ -194,10 +198,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	coin[2].Set({4380.0f,530.0f});
 
 	Line line;
-
-	//切り替え用のスイッチ
-	int SWITCH_ON = Novice::LoadTexture("./Resources/switch_on.png");
-	int SWITCH_OFF = Novice::LoadTexture("./Resources/switch_off.png");
 
 	bool isRedSwitchOn = false;
 	bool isGreenSwitchOn = false;
