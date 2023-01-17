@@ -107,6 +107,7 @@
     <ClCompile Include="Gate.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="Lift.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Missile.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Lift.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Matrix33 .h" />
     <ClInclude Include="Missile.h" />

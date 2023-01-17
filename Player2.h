@@ -76,6 +76,9 @@ private:
 	//プレイヤーの色
 	int color;
 
+	//減速カウント
+	int decelCount;
+
 public:
 
 	Vec2 BombPos = { 9999,9999 };

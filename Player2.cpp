@@ -31,6 +31,7 @@ Player2::Player2()
 	isBigExp = false;
 	isHeat = 0;
 	color = 0xFFFFFFFF;
+	decelCount = 0;
 
 	BombPow = 3;
 }
@@ -63,6 +64,7 @@ void Player2::Init()
 	isBigExp = false;
 	isHeat = 0;
 	color = 0xFFFFFFFF;
+	decelCount = 0;
 
 }
 
@@ -417,10 +419,14 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
 
+	////Œ¸‘¬’Ç‰Á
+	//moveVector.x *= static_cast<float>(100 / (decelCount + 100));
+	//knockBackVelocity.x *= static_cast<float>(100 / (decelCount + 100));
+
 	moveVector.y += G * Weight * slow;
 
 	nextPosition.x = position.x + (moveVector.x + knockBackVelocity.x) * slow;
-	nextPosition.y = position.y + (moveVector.y + knockBackVelocity.y) * slow;
+	nextPosition.y = position.y + (moveVector.y + knockBackVelocity.y);
 
 	nextPlayerColQuad = { {nextPosition.x ,nextPosition.y}, int(size.x), int(size.y) };
 
@@ -450,6 +456,20 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			Init();
 			GridInit();
 			map.isHitNeedle = true;
+		}
+
+		if (map.map[UpGrid][LeftGrid] == map.SPEEDDOWN ||
+			map.map[UpGrid][RightGrid] == map.SPEEDDOWN ||
+			map.map[DownGrid][LeftGrid] == map.SPEEDDOWN ||
+			map.map[DownGrid][RightGrid] == map.SPEEDDOWN) {
+			
+			if (decelCount < 30) {
+				decelCount++;
+			}
+			
+		}
+		else {
+			decelCount = 0;
 		}
 
 		if (map.map[UpGrid][LeftGrid] == map.ICE_BLOCK ||

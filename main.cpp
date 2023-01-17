@@ -21,10 +21,12 @@
 #include "EnemyRR.h"
 
 #include "Coin.h"
+#include "Line.h"
 
 const char kWindowTitle[] = "map";
 
 int ColorReverse(int basecolor);
+bool IsInScreen(int x,int y,float screenX);
 
 float isColorReverse = 0;
 
@@ -152,7 +154,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//書き込み時の文字列、最大数はブロックの種類に依存。
 	char string[kMaxBlock][4] = { 
 		"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-		"20", "21", "22", "23", "24", "25", "26", "27"/*, "28", "29"*/
+		"20", "21", "22", "23", "24", "25", "26", "27", "28", "29"
 	};
 
 	//test2.blockCount = 25;
@@ -195,12 +197,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gate.Set({ 1168,288}, { 32, 160 } , scrollX);
 
 	TestEnemy04 TE4;
-
+	//おれてすと
 	Coin coin[3];
 
 	coin[0].Set({410.0f,100.0f});
 	coin[1].Set({3100.0f,630.0f});
 	coin[2].Set({4380.0f,530.0f});
+
+	Line line;
 
 	//切り替え用のスイッチ
 	int SWITCH_ON = Novice::LoadTexture("./Resources/switch_on.png");
@@ -310,6 +314,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				isEdit = false;
 			}
 
+			//
+			line.stop++;
 		}
 
 		Novice::ScreenPrintf(300,300,"%d", Map);
@@ -631,6 +637,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					map.blockColor[y][x] = 0x00FFFFFF;
 				}
 
+				if (map.map[y][x] == map.SPEEDDOWN) {
+					map.blockColor[y][x] = 0x2E8B57FF;
+				}
+
 				if (map.map[y][x] == map.CANDLE_BLOCK) {
 					map.blockColor[y][x] = 0xFFFFFFFF;
 				}
@@ -667,6 +677,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (Map == 2) {
 			enemyRR.Update(player2,&scrollX);
+			line.Update(player2);
 		}
 
 		if (Map == 1) {
@@ -681,16 +692,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (player2.BombRad == player2.MAXEXPSIZE) {
 			for (int y = 0; y < kMapBlockHeight; y++) {
 				for (int x = 0; x < kMapBlockWidth; x++) {
-					///スイッチ捜索
-					if (map.map[y][x] == map.CANDLE_SWITCH) {
-						Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
-						Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
-						///爆弾の範囲がスイッチと接触しているか
-						if (Collision::CircleToQuad(a, b) && !isCandleSwitchOn) {
-							isCandleSwitchOn = true;
+					if (IsInScreen(x, y, scrollX)) {
+						///スイッチ捜索
+						if (map.map[y][x] == map.CANDLE_SWITCH) {
+							Circle a = { { static_cast<float>(player2.BombPos.x),static_cast<float>(player2.BombPos.y) }, static_cast<float>(player2.BombRad) };
+							Quad b = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
+							///爆弾の範囲がスイッチと接触しているか
+							if (Collision::CircleToQuad(a, b) && !isCandleSwitchOn) {
+								isCandleSwitchOn = true;
+							}
+							else if (Collision::CircleToQuad(a, b) && isCandleSwitchOn) {
+								isCandleSwitchOn = false;
+							}
 						}
-						else if (Collision::CircleToQuad(a, b) && isCandleSwitchOn) {
-							isCandleSwitchOn = false;
+					}
+				}
+			}
+		}
+		for (int y = 0; y < kMapBlockHeight; y++) {
+			for (int x = 0; x < kMapBlockWidth; x++) {
+				if (IsInScreen(x, y, scrollX)) {
+					///スピードダウンブロック捜索
+					if (map.map[y][x] == map.SPEEDDOWN) {
+						Quad a = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
+						///スピードダウンブロック接触しているか
+						if (Collision::QuadToQuad(a, player2.GetPlayerQuad())) {
+							//スピードダウン処理
 						}
 					}
 				}
@@ -874,8 +901,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int x = 0; x < kMapBlockWidth; x++) {
 
-				if (scrollX + 1280 > x * MAP_SIZE && y < 23 && x * MAP_SIZE > scrollX - MAP_SIZE) {
-					if (map.map[y][x] == map.BREAKBLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE) {
+				if (IsInScreen(x,y,scrollX)) {
+					if (map.map[y][x] == map.BREAKBLOCK || map.map[y][x] == map.CANTBLOCK || map.map[y][x] == map.TMPBLOCK || map.map[y][x] == map.NEEDLE || map.map[y][x]==map.SPEEDDOWN) {
 
 						Novice::DrawQuad(x * MAP_SIZE - scrollX, y * MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE,
 							x * MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE, x * MAP_SIZE + MAP_SIZE - scrollX, y * MAP_SIZE + MAP_SIZE,
@@ -1078,13 +1105,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		if (Map == 2) {
-			enemyRR.Draw(&scrollX);
+			/*enemyRR.Draw(&scrollX);*/
+			line.Draw(&scrollX);
 		}
 		if (Map == 4) {
 			for (int i = 0; i < 3; i++) {
 				coin[i].Draw(&scrollX);
-				Novice::ScreenPrintf(200,400+i*20,"isAlive[%d]:%d",i,coin[i].isAlive);
-				Novice::ScreenPrintf(500, 400 + i * 20, "pos.x:%f,y:%f",coin[i].pos.x, coin[i].pos.y);
+				/*Novice::ScreenPrintf(200,400+i*20,"isAlive[%d]:%d",i,coin[i].isAlive);
+				Novice::ScreenPrintf(500, 400 + i * 20, "pos.x:%f,y:%f",coin[i].pos.x, coin[i].pos.y);*/
 			}
 		}
 		player2.Draw(&scrollX);
@@ -1110,7 +1138,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//Novice::DrawBox(0, 0, 1280, 64, 0, 0xFFFF00FF, kFillModeSolid);
 			Novice::DrawEllipse(expPos.x, expPos.y, expRad, expRad, 0, GREEN, kFillModeSolid);
 		}
-		Novice::ScreenPrintf(500, 500, "Pos.x:%f,%f",player2.GetPlayerPos().x , player2.GetPlayerPos().y);
+		/*Novice::ScreenPrintf(500, 500, "Pos.x:%f,%f",player2.GetPlayerPos().x , player2.GetPlayerPos().y);*/
 		Novice::DrawBox(0, 480, 100, 40, 0, BLACK, kFillModeSolid);
 		Novice::ScreenPrintf(0, 500, "FPS:%0.1f", 1.0f / ((double)(clock() - offset) / CLOCKS_PER_SEC));
 		offset = clock();
@@ -1144,4 +1172,12 @@ int ColorReverse(int basecolor)
 	BaseColorB = BaseColorB * isColorReverse + (255 - BaseColorB) * (1.0f - isColorReverse);
 
 	return (BaseColorR << 24) + (BaseColorG << 16) + (BaseColorB << 8) + 255;
+}
+
+bool IsInScreen(int x,int y,float scrollX) {
+	if (x * MAP_SIZE > 0 + scrollX - MAP_SIZE && x * MAP_SIZE < 1280 + scrollX + MAP_SIZE&&
+		y*MAP_SIZE > 0 - MAP_SIZE&& y * MAP_SIZE < 720 + MAP_SIZE) {
+		return true;
+	}
+	return false;
 }

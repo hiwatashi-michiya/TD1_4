@@ -4,7 +4,7 @@
 const int MAP_SIZE = 32;
 
 //ブロックの種類
-const int kMaxBlock = 19;
+const int kMaxBlock = 20;
 
 //マップチップの横最大数
 const int kMapBlockWidth = 500;
@@ -32,7 +32,8 @@ struct Map{
 		ICE_BLOCK,//25
 		RED_SWITCH,//26
 		GREEN_SWITCH,//27
-		BLUE_SWITCH//28
+		BLUE_SWITCH,//28
+		SPEEDDOWN,//29
 	};
 
 	int map[kMapBlockHeight][kMapBlockWidth];
