@@ -127,7 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);*/
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/stage3.csv", "rt");
+	fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -318,29 +318,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 				
-				fopen_s(&fp, "./Resources/test2.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 				
 				break;
 			case 1:
 
-				fopen_s(&fp, "./Resources/test.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 
 				break;
 			case 2:
 
-				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 
 				break;
 
 			case 3:
 
-				fopen_s(&fp, "./Resources/test1.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test1.csv", "rt");
 
 				break;
 
 			case 4:
 				
-				fopen_s(&fp, "./Resources/test4.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test4.csv", "rt");
 
 				break;
 
@@ -445,29 +445,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/test2.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test2.csv", "r+b");
 
 					break;
 				case 1:
 
-					fopen_s(&fp, "./Resources/test.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test.csv", "r+b");
 
 					break;
 				case 2:
 
-					fopen_s(&fp, "./Resources/stage3.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/stage3.csv", "r+b");
 
 					break;
 
 				case 3:
 
-					fopen_s(&fp, "./Resources/test1.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test1.csv", "r+b");
 
 					break;
 
 				case 4:
 
-					fopen_s(&fp, "./Resources/test4.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test4.csv", "r+b");
 
 					break;
 
@@ -487,29 +487,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/test2.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 
 					break;
 				case 1:
 
-					fopen_s(&fp, "./Resources/test.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 
 					break;
 				case 2:
 
-					fopen_s(&fp, "./Resources/stage3.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 
 					break;
 
 				case 3:
 
-					fopen_s(&fp, "./Resources/test1.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test1.csv", "rt");
 
 					break;
 
 				case 4:
 
-					fopen_s(&fp, "./Resources/test4.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test4.csv", "rt");
 
 					break;
 				}
@@ -754,38 +754,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 
-				fopen_s(&fp, "./Resources/test2.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 
 				break;
 			case 1:
 
-				fopen_s(&fp, "./Resources/test.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 
 				TE4.Set({ 1000,100},scrollX);
 				windMill.Delete();
 				break;
 			case 2:
 
-				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 				TE4.Delete();
 				break;
 			
 			
 			case 3:
 
-				fopen_s(&fp, "./Resources/test1.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test1.csv", "rt");
 
 				break;
 
 			case 4:
 
-				fopen_s(&fp, "./Resources/test4.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test4.csv", "rt");
 
 				break;
 
 			default:
 
-				fopen_s(&fp, "./Resources/test2.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 				
 				TE4.Delete();
 				windMill.Set({ 1000,300 }, scrollX);
