@@ -8,7 +8,7 @@ TestEnemy06::TestEnemy06(Vec2 position)
 	Init(position);
 
 	//ÉäÉ\Å[ÉX
-	mKnockSE = Novice::LoadAudio("./Resources/knock.wav");
+	mKnockSE = Novice::LoadAudio("./Resources/SE/knock.wav");
 
 }
 

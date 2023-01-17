@@ -74,10 +74,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//スクロール値
 	float scrollX = 0;
 
-	int TILE = Novice::LoadTexture("./Resources/tile.png");
-	int COLORTILE = Novice::LoadTexture("./Resources/colortile.png");
-	int COLORNONE = Novice::LoadTexture("./Resources/colornone.png");
-	int FRAMEBORDER = Novice::LoadTexture("./Resources/frameborder.png");
+	int TILE = Novice::LoadTexture("./Resources/Images/tile.png");
+	int COLORTILE = Novice::LoadTexture("./Resources/Images/colortile.png");
+	int COLORNONE = Novice::LoadTexture("./Resources/Images/colornone.png");
+	int FRAMEBORDER = Novice::LoadTexture("./Resources/Images/frameborder.png");
+
+	//切り替え用のスイッチ
+	int SWITCH_ON = Novice::LoadTexture("./Resources/Images/switch_on.png");
+	int SWITCH_OFF = Novice::LoadTexture("./Resources/Images/switch_off.png");
 
 	bool isShowBorder = false;
 
@@ -111,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	FILE* fp = NULL;
-	fopen_s(&fp, "./Resources/test.csv", "rt");
+	fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -123,7 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/test2.csv", "rt");
+	fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -180,10 +184,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gate.Set({ 1168,288}, { 32, 160 } , scrollX);
 
 	TestEnemy04 TE4;
-
-	//切り替え用のスイッチ
-	int SWITCH_ON = Novice::LoadTexture("./Resources/switch_on.png");
-	int SWITCH_OFF = Novice::LoadTexture("./Resources/switch_off.png");
 
 	bool isRedSwitchOn = false;
 	bool isGreenSwitchOn = false;
@@ -312,23 +312,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 				
-				fopen_s(&fp, "./Resources/test2.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 				
 				break;
 			case 1:
 
-				fopen_s(&fp, "./Resources/test.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 
 				break;
 			case 2:
 
-				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 
 				break;
 
 			case 3:
 
-				fopen_s(&fp, "./Resources/test1.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test1.csv", "rt");
 
 				break;
 
@@ -433,23 +433,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/test2.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test2.csv", "r+b");
 
 					break;
 				case 1:
 
-					fopen_s(&fp, "./Resources/test.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test.csv", "r+b");
 
 					break;
 				case 2:
 
-					fopen_s(&fp, "./Resources/stage3.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/stage3.csv", "r+b");
 
 					break;
 
 				case 3:
 
-					fopen_s(&fp, "./Resources/test1.csv", "r+b");
+					fopen_s(&fp, "./Resources/Maps/test1.csv", "r+b");
 
 					break;
 
@@ -469,23 +469,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case 0:
 
-					fopen_s(&fp, "./Resources/test2.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 
 					break;
 				case 1:
 
-					fopen_s(&fp, "./Resources/test.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 
 					break;
 				case 2:
 
-					fopen_s(&fp, "./Resources/stage3.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 
 					break;
 
 				case 3:
 
-					fopen_s(&fp, "./Resources/test1.csv", "rt");
+					fopen_s(&fp, "./Resources/Maps/test1.csv", "rt");
 
 					break;
 
@@ -672,32 +672,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 			case 0:
 
-				fopen_s(&fp, "./Resources/test2.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 
 				break;
 			case 1:
 
-				fopen_s(&fp, "./Resources/test.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test.csv", "rt");
 
 				TE4.Set({ 1000,100},scrollX);
 				windMill.Delete();
 				break;
 			case 2:
 
-				fopen_s(&fp, "./Resources/stage3.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/stage3.csv", "rt");
 				TE4.Delete();
 				break;
 			
 			
 			case 3:
 
-				fopen_s(&fp, "./Resources/test1.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test1.csv", "rt");
 
 				break;
 
 			default:
 
-				fopen_s(&fp, "./Resources/test2.csv", "rt");
+				fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 				
 				TE4.Delete();
 				windMill.Set({ 1000,300 }, scrollX);

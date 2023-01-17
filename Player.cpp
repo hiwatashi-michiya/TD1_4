@@ -14,9 +14,9 @@ Player::Player() {
 
 void Player::Init() {
 	position = { 32.0f,640.0f };
-	LeftTop = { position.x+0,position.y + 0 };
+	LeftTop = { position.x + 0,position.y + 0 };
 	RightTop = { position.x + 32,position.y + 0 };
-	LeftBottom = { position.x+0,position.y + 32 };
+	LeftBottom = { position.x + 0,position.y + 32 };
 	RightBottom = { position.x + 32,position.y + 32 };
 
 	playerColQuad = { LeftTop ,RightTop ,LeftBottom ,RightBottom };
@@ -28,7 +28,7 @@ void Player::Init() {
 	gravityVelocity = { 0,0 };
 	gravitySpeed = 0.5;
 
-	knockBackVelocity = {0,0};
+	knockBackVelocity = { 0,0 };
 
 	jumpFlag = false;
 	jumpSpeed = 15.0f;
@@ -42,7 +42,7 @@ void Player::Init() {
 	BombInit();
 
 	texture = Novice::LoadTexture("white1x1.png");
-	bombTexture = Novice::LoadTexture("./Resources/bomb.png");
+	bombTexture = Novice::LoadTexture("white1x1.png");
 }
 
 //É{ÉÄÇÃà íuÇÃèâä˙âª

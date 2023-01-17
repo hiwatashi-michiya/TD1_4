@@ -35,7 +35,7 @@ Player2::Player2()
 	isHitTE6 = false;
 
 	//ÉäÉ\Å[ÉX
-	decelSE = Novice::LoadAudio("./Resources/decel.wav");
+	decelSE = Novice::LoadAudio("./Resources/SE/decel.wav");
 
 }
 
