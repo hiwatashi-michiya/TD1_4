@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Map map;
 
 	//マップ切り替え
-	int Map = 4;
+	int Map = 2;
 
 	//ボーダー表示個数
 	const int kBorderNum = 15;
@@ -123,7 +123,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);*/
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/test4.csv", "rt");
+	fopen_s(&fp, "./Resources/stage3.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -1105,7 +1105,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		if (Map == 2) {
-			/*enemyRR.Draw(&scrollX);*/
+			///*enemyRR.Draw(&scrollX);*/
 			line.Draw(&scrollX);
 		}
 		if (Map == 4) {

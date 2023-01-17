@@ -419,9 +419,9 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
 
-	////Œ¸‘¬’Ç‰Á
-	//moveVector.x *= static_cast<float>(100 / (decelCount + 100));
-	//knockBackVelocity.x *= static_cast<float>(100 / (decelCount + 100));
+	//Œ¸‘¬’Ç‰Á
+	moveVector.x *= 10.0f / (decelCount + 10.0f);
+	knockBackVelocity.x *= 100.0f / (decelCount + 100.0f);
 
 	moveVector.y += G * Weight * slow;
 
