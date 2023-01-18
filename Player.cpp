@@ -42,7 +42,8 @@ void Player::Init() {
 	BombInit();
 
 	texture = Novice::LoadTexture("white1x1.png");
-	bombTexture = Novice::LoadTexture("./Resources/bomb.png");
+	bombTexture = Novice::LoadTexture("white1x1.png");
+
 }
 
 //ƒ{ƒ€‚ÌˆÊ’u‚Ì‰Šú‰»
