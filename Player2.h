@@ -24,9 +24,6 @@ private:
 	int stickPositionX;
 	int stickPositionY;
 
-	int prestickPositionX;
-	int prestickPositionY;
-
 	int bombCount;
 	int bombCountMax;
 
