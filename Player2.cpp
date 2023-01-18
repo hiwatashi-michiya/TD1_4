@@ -80,6 +80,9 @@ void Player2::Init()
 	wallFlag = false;
 	wallCount=0;
 	wallCountMax=30;
+
+	prestickPositionX=0;
+	prestickPositionY=0;
 }
 
 void Player2::Charge() {
@@ -112,7 +115,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
 
-	if (Controller::IsTriggerButton(0, Controller::lSHOULDER) && !canJump) {
+	if (Controller::IsTriggerButton(0, Controller::bA) && !canJump) {
 		wallFlag = true;
 	}
 	if (wallFlag) {
@@ -163,15 +166,13 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		canJump = false;
 		//moveVector.y -= speed;
 	}
-	if (keys[DIK_A] || stickPositionX < 0) {
+	/*if (keys[DIK_A] || stickPositionX < 0) {
 		moveVector.x -= speed;
-	}
-	/*if (keys[DIK_S]) {
-		moveVector.y += speed;
 	}*/
-	if (keys[DIK_D] || stickPositionX > 0) {
+	
+	/*if (keys[DIK_D] || stickPositionX > 0) {
 		moveVector.x += speed;
-	}
+	}*/
 
 	if (BombRad > 0) {
 		BombRad-= 3;
@@ -207,14 +208,14 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	//オーバーヒートゲージが満タンでない時爆発可能
 	if (overHeatGage < maxOverHeatGage) {
 		if (StickStetting == true) {
-			if ((fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 ||
-				fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) &&
+			if ((fabs(stickPositionX) - fabs(prestickPositionX) > 10000 ||
+				fabs(stickPositionY) - fabs(prestickPositionY) > 10000) &&
 				isCharge == false && bombCount > 0) {
 				//
 				bombCount--;
 				//
-				bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-				bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+				bombVelocity.x = (cosf((stickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(stickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 			moveVector.y = 0;
 			isHeat = 30;
@@ -250,8 +251,8 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		else {
 			if (Controller::IsTriggerButton(0, Controller::rSHOULDER) == 1 &&
 				isCharge == false && bombCount > 0) {
-				bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
-				bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
+				bombVelocity.x = (cosf((prestickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
+				bombVelocity.y = sinf(prestickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 
@@ -466,6 +467,9 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
+
+	prestickPositionX = stickPositionX;
+	prestickPositionY = stickPositionY;
 
 	//減速追加
 	moveVector *= 10.0f / (decelCount + 10.0f);

@@ -127,7 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);*/
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/test2.csv", "rt");
+	fopen_s(&fp, "./Resources/Maps/test2.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
