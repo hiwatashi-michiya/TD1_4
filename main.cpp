@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Map map;
 
 	//マップ切り替え
-	int Map = 2;
+	int Map = 0;
 
 	//ボーダー表示個数
 	const int kBorderNum = 15;
@@ -123,7 +123,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	fclose(fp);*/
 
 	fp = NULL;
-	fopen_s(&fp, "./Resources/stage3.csv", "rt");
+	fopen_s(&fp, "./Resources/test2.csv", "rt");
 	if (fp == NULL) {
 		return 0;
 	}
@@ -704,20 +704,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							else if (Collision::CircleToQuad(a, b) && isCandleSwitchOn) {
 								isCandleSwitchOn = false;
 							}
-						}
-					}
-				}
-			}
-		}
-		for (int y = 0; y < kMapBlockHeight; y++) {
-			for (int x = 0; x < kMapBlockWidth; x++) {
-				if (IsInScreen(x, y, scrollX)) {
-					///スピードダウンブロック捜索
-					if (map.map[y][x] == map.SPEEDDOWN) {
-						Quad a = { {static_cast<float>(x * MAP_SIZE),static_cast<float>(y * MAP_SIZE)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>(y * MAP_SIZE)},{static_cast<float>(x * MAP_SIZE),static_cast<float>((y + 1) * MAP_SIZE - 1)},{static_cast<float>((x + 1) * MAP_SIZE - 1),static_cast<float>((y + 1) * MAP_SIZE - 1)} };
-						///スピードダウンブロック接触しているか
-						if (Collision::QuadToQuad(a, player2.GetPlayerQuad())) {
-							//スピードダウン処理
 						}
 					}
 				}

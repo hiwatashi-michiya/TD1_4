@@ -24,6 +24,9 @@ private:
 	int stickPositionX;
 	int stickPositionY;
 
+	int bombCount;
+	int bombCountMax;
+
 	Vec2 bombVelocity;
 
 	Vec2 knockBackVelocity;
@@ -59,6 +62,10 @@ private:
 	int maxOverHeatGage;
 	int coolTimeGage;
 
+	//ï«Ç∑ÇÍ
+	bool wallFlag;
+	int wallCount;
+	int wallCountMax;
 	//É`ÉÉÅ[ÉW
 	bool isCharge;
 	int chargeTime;

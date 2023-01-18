@@ -10,10 +10,9 @@ Line::Line()
 void Line::Init()
 {
 	mPosition = {0.0f,0.0f};
-	mSpeed = 1.0f;
+	mSpeed = 15.0f;
 	mCount = 0;
 	mCountMax = 60;
-
 	stop = 0;
 }
 

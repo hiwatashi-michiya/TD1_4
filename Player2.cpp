@@ -34,6 +34,13 @@ Player2::Player2()
 	decelCount = 0;
 
 	BombPow = 3;
+
+	bombCount = 0;
+	bombCountMax = 3;
+
+	wallFlag = false;
+	wallCount = 0;
+	wallCountMax = 30;
 }
 
 void Player2::Init()
@@ -66,10 +73,18 @@ void Player2::Init()
 	color = 0xFFFFFFFF;
 	decelCount = 0;
 
+
+	bombCount = bombCountMax;
+	bombCountMax = 3;
+
+	wallFlag = false;
+	wallCount=0;
+	wallCountMax=30;
 }
 
 void Player2::Charge() {
 
+	
 	if (Controller::IsTriggerButton(0, Controller::rTrigger) || (keys[DIK_G] && preKeys[DIK_G] == 0)) {
 
 		//チャージしていないとき且つチャージ後でないとき
@@ -96,6 +111,17 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
+
+	if (Controller::IsTriggerButton(0, Controller::lSHOULDER) && !canJump) {
+		wallFlag = true;
+	}
+	if (wallFlag) {
+		wallCount++;
+		if (wallCount > wallCountMax) {
+			wallFlag = false;
+			wallCount = 0;
+		}
+	}
 
 	if (keys[DIK_T] != 0 && preKeys[DIK_T] == 0) {
 		if (StickStetting == true) {
@@ -183,7 +209,10 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		if (StickStetting == true) {
 			if ((fabs(bombStickPositionX) - fabs(preBombStickPositionX) > 10000 ||
 				fabs(bombStickPositionY) - fabs(preBombStickPositionY) > 10000) &&
-				isCharge == false) {
+				isCharge == false && bombCount > 0) {
+				//
+				bombCount--;
+				//
 				bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
@@ -220,11 +249,15 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		}
 		else {
 			if (Controller::IsTriggerButton(0, Controller::rSHOULDER) == 1 &&
-				isCharge == false) {
+				isCharge == false && bombCount > 0) {
 				bombVelocity.x = (cosf((bombStickPositionX - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(bombStickPositionY * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
+
+				//
+				bombCount--;
+				//
 
 				//チャージされていたら飛距離を伸ばし、チャージリセット
 				if (chargeTime == 120) {
@@ -256,12 +289,16 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		}
 		//上下左右キーでばくはつ(コントローラー繋ぐのめんどい時よう)
 		{
-			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0 && isCharge == false) {
+			if (keys[DIK_RIGHT] != 0 && preKeys[DIK_RIGHT] == 0 && isCharge == false && bombCount > 0) {
 				bombVelocity.x = (cosf((32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 				isHeat = 30;
+
+				//
+				bombCount--;
+				//
 
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
@@ -291,13 +328,17 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			canJump = false;
 		}
 
-			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0 && isCharge == false) {
+			if (keys[DIK_LEFT] != 0 && preKeys[DIK_LEFT] == 0 && isCharge == false && bombCount > 0) {
 				bombVelocity.x = (cosf((-32768 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(0 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 				isHeat = 30;
 
+				//
+				bombCount--;
+				//
+
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
 					chargeMag = 1.5f;
@@ -326,13 +367,17 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			canJump = false;
 		}
 
-			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0 && isCharge == false) {
+			if (keys[DIK_UP] != 0 && preKeys[DIK_UP] == 0 && isCharge == false && bombCount > 0) {
 				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(-32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 				isHeat = 30;
 
+				//
+				bombCount--;
+				//
+
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
 					chargeMag = 1.5f;
@@ -361,12 +406,16 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			canJump = false;
 		}
 
-			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0 && isCharge == false) {
+			if (keys[DIK_DOWN] != 0 && preKeys[DIK_DOWN] == 0 && isCharge == false && bombCount > 0) {
 				bombVelocity.x = (cosf((0 - pow(2, 15)) * M_PI / powf(2, 16)) * 5.0f);
 				bombVelocity.y = sinf(32768 * M_PI / powf(2, 16)) * 5.0f;
 
 				moveVector.y = 0;
 				isHeat = 30;
+
+				//
+				bombCount--;
+				//
 
 				//チャージされていたら飛距離を伸ばす
 				if (chargeTime == 120) {
@@ -399,7 +448,6 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 		}
 
 	}
-
 	//クールタイムが0でオーバーヒートした場合、クールタイムを設定
 	//if (overHeatGage == maxOverHeatGage && coolTimeGage == 0) {
 
@@ -420,8 +468,8 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	preBombStickPositionY = bombStickPositionY;
 
 	//減速追加
-	moveVector.x *= 10.0f / (decelCount + 10.0f);
-	knockBackVelocity.x *= 100.0f / (decelCount + 100.0f);
+	moveVector *= 10.0f / (decelCount + 10.0f);
+	knockBackVelocity *= 100.0f / (decelCount + 100.0f);
 
 	moveVector.y += G * Weight * slow;
 
@@ -447,6 +495,19 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	//当たり判定
 	{
 		GridInit();
+		if (wallFlag) {
+			if (map.map[UpGrid][LeftGrid] == map.CANTBLOCK ||
+				map.map[UpGrid][RightGrid] == map.CANTBLOCK ||
+				map.map[DownGrid][LeftGrid] == map.CANTBLOCK ||
+				map.map[DownGrid][RightGrid] == map.CANTBLOCK) {
+				if (bombCount < bombCountMax) {
+					bombCount++;
+				}
+				wallFlag = false;
+				wallCount = 0;
+			}
+		}
+		
 
 
 		if (map.map[UpGrid][LeftGrid] == map.NEEDLE ||
@@ -658,6 +719,7 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 			moveVector.y = 0;
 			knockBackVelocity.y = 0;
 			canJump = true;
+			bombCount = bombCountMax;
 			nextPosition.y = DownGrid * MAP_SIZE - size.y / 2;
 			GridInit();
 		}
@@ -727,6 +789,18 @@ void Player2::Draw(float* scrollX)
 
 	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10, 32, 5, 0.0f, BLUE, kFillModeWireFrame);
 
+	for (int i = 0; i < 3; i++) {
+		if (i < bombCount) {
+			Novice::DrawEllipse(64, 400 + i * 20, 10, 10, 0.0f, 0xFFD700FF, kFillModeSolid);
+		}
+	}
+
+	if (wallFlag) {
+		color = 0xFFD700FF;
+	}
+	else {
+		color = 0xFFFFFFFF;
+	}
 	Novice::DrawQuad(
 		position.x - size.x / 2 - *scrollX, position.y - size.y / 2,
 		position.x + size.x / 2 - *scrollX, position.y - size.y / 2,
