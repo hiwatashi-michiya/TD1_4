@@ -639,9 +639,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 		player2.Update(slow, map, &scrollX, gate.GetGateQuad());
 		
-		if (Map == 3) {
+		/*if (Map == 3) {
 			enemy5.Update(map, &isRedSwitchOn, &isGreenSwitchOn, &isBlueSwitchOn, &isHitRedSwitch, &isHitGreenSwitch, &isHitBlueSwitch);
-		}
+		}*/
 
 		if (Map == 2) {
 			enemyRR.Update(player2,&scrollX);
@@ -1093,9 +1093,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		TE4.Draw();
 
-		if (Map == 3) {
+		/*if (Map == 3) {
 			enemy5.Draw(&scrollX);
-		}
+		}*/
 
 		if (Map == 2) {
 			///*enemyRR.Draw(&scrollX);*/
