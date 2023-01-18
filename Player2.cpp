@@ -36,7 +36,7 @@ Player2::Player2()
 	BombPow = 3;
 
 	bombCount = 0;
-	bombCountMax = 3;
+	bombCountMax = 1;
 
 	wallFlag = false;
 	wallCount = 0;
@@ -75,7 +75,7 @@ void Player2::Init()
 
 
 	bombCount = bombCountMax;
-	bombCountMax = 3;
+	bombCountMax = 1;
 
 	wallFlag = false;
 	wallCount=0;
@@ -465,6 +465,8 @@ void Player2::Update(float slow, Map& map, float* scrollX, Quad GateQuad)
 	preBombStickPositionX = bombStickPositionX;
 	preBombStickPositionY = bombStickPositionY;
 
+
+
 	//Œ¸‘¬’Ç‰Á
 	moveVector *= 10.0f / (decelCount + 10.0f);
 	knockBackVelocity *= 100.0f / (decelCount + 100.0f);
@@ -787,7 +789,7 @@ void Player2::Draw(float* scrollX)
 
 	Novice::DrawBox(position.x - size.x / 2 - *scrollX, position.y - size.y / 2 - 10, 32, 5, 0.0f, BLUE, kFillModeWireFrame);
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < bombCountMax; i++) {
 		if (i < bombCount) {
 			Novice::DrawEllipse(64, 400 + i * 20, 10, 10, 0.0f, 0xFFD700FF, kFillModeSolid);
 		}
